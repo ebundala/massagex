@@ -1,0 +1,77 @@
+mutation paybill($data: PaybillRequest!) {
+	paybill(data: $data) {
+		message
+		status
+		data {
+			id
+			status
+			type
+			status
+			updatedAt
+			createdAt
+			order {
+				id
+				quantity
+				service {
+					id
+					description
+					price
+					image {
+						id
+						path
+						attachmentType
+						mimetype
+						updatedAt
+					}
+				}
+			}
+			paymentMethod {
+				id
+				name
+				logo {
+					id
+					path
+					attachmentType
+					mimetype
+					updatedAt
+				}
+			}
+			
+			selcomPayment {
+				id
+				msisdn
+				amount
+				status
+				reference
+				resultCode
+				utilityref
+				status
+				status
+				operator
+				updatedAt
+				createdAt
+				transaction {
+					id
+				}
+			}
+			mpesaPayment {
+				id
+				output_ResponseCode
+				output_ResponseDesc
+				output_TransactionID
+				output_ConversationID
+				output_ThirdPartyConversationID
+				input_Currency
+				input_Amount
+				input_CustomerMSISDN
+				input_PurchasedItemsDesc
+				input_ServiceProviderCode
+				status
+				transaction {
+					id
+					status
+				}
+			}
+		}
+	}
+}

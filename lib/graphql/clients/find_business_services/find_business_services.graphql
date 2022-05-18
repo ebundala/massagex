@@ -1,0 +1,25 @@
+query findBusinessServices{
+  findUniqueUser(where: {
+    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
+  }){
+    status
+    message
+    data{
+      id
+      businessProfile{
+        id
+        services{
+          id
+          name
+          price
+          metadata
+        }
+      }
+      
+    }
+    
+  }
+  
+  
+}
+

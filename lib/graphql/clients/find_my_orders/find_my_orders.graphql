@@ -1,0 +1,33 @@
+query findMyOrders{
+  findUniqueUser(where: {
+    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
+  }){
+    status
+    message
+    data{
+      id
+      ordered{
+        id
+        orderStatus
+        transactions{
+          id
+          status
+          paymentMethod{
+            id
+            name
+          }
+        }
+        service{
+          id
+          name
+          price
+          metadata
+        }
+      }
+    }
+    
+  }
+  
+  
+}
+

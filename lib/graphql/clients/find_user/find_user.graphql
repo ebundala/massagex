@@ -1,0 +1,21 @@
+query findUser($id: String!){
+  findUniqueUser(where:{
+      id:$id
+  }){
+    message
+    status
+    data{
+      id
+      displayName
+      email
+      phoneNumber
+      role
+      metadata
+      avator{
+        id
+        path
+      }
+      
+    }
+  }
+}

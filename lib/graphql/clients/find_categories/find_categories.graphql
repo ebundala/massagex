@@ -1,0 +1,11 @@
+query findCategories{
+  findManyCategory{
+    status
+    message
+     data{
+      id
+      name
+    }
+  }
+}
+

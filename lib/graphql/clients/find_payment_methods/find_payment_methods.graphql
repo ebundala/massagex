@@ -1,0 +1,12 @@
+query findPaymentMethods{
+  findManyPaymentMethod{
+    status
+   
+    message
+     data{
+      id
+      name
+      code
+    }
+  }
+}

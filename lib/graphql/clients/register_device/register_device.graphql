@@ -1,0 +1,12 @@
+mutation registerDevice($device: RegisterDeviceInput!) {
+	registerDevice(data: $device) {
+		status
+		message
+		data {
+			id
+			fcm_id
+			type
+			userId
+		}
+	}
+}

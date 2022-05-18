@@ -1,0 +1,150 @@
+mutation createOrder{
+  updateOneUser(where: {
+    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
+  }, data: {
+      ordered:{
+        create:[{          
+          quantity: 1
+          service:{
+            connect: {id:"cl2lgml7e000733p5uaizhjf4"}
+          }
+        },
+          {          
+          quantity: 10
+          service:{
+            connect: {id:"cl2lgml7e000733p5uaizhjf4"}
+          }
+        }
+        
+        ]
+      }
+  }
+    
+  ){
+    status    
+    message
+    data{
+      ...userInfo
+    }
+  }
+}
+
+
+fragment userInfo on User {
+  id
+  disabled
+  emailVerified
+  displayName
+  phoneNumber
+  email
+  role  
+  createdAt
+  updatedAt
+  location{
+      lat
+      lon
+      name
+    }
+  avator {
+    id
+    path
+    mimetype
+  }
+  businessProfile{
+    id
+    owner{
+      id
+    }
+    businessName
+    about
+    mode
+    location{
+      lat
+      lon
+      name
+    }
+    cover{
+    id
+    path
+    mimetype
+  }
+    attachments{
+      id
+      path
+      mimetype
+      
+    }
+    services {
+      id
+      name
+      currency
+      price
+      image{
+        id
+        path
+        mimetype
+      }
+    }
+  }
+  reviewed{
+    id
+    value
+    content
+    attachments {
+    id
+    path
+    mimetype
+  }
+    comments{
+    id
+    content
+    review{
+      id
+    }
+      attachments{
+         id
+    path
+    mimetype
+  }
+      }
+  }
+  comments{
+    id
+    content
+    review{
+      id
+    }
+  }
+  favorited{
+    id
+    type{
+    name
+   }
+    business{
+      id
+      businessName
+    }
+  }
+  ordered{
+  id
+    quantity
+    service{
+      name
+    }
+    business{
+      id
+      businessName
+    }
+}
+  abuseReported{
+    id
+    type {
+      name
+    }
+    service{
+      id 
+      name
+    }
+  }
+}
+

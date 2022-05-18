@@ -1,0 +1,11 @@
+mutation recoverAccount($email: String!) {
+	recoverAccount(email: $email) {
+		status
+		token
+		message
+		data {
+			id
+			displayName
+		}
+	}
+}

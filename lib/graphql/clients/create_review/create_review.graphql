@@ -1,0 +1,145 @@
+mutation createReview($attachments:[AttachmentCreateWithoutReviewsInput!]){
+  updateOneUser(where: {
+    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
+  }, data: {
+      reviewed:{
+        create:{
+          reviewee:{
+            connect:{id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"}
+          }
+          value:2
+          content: "very bad in deed"
+          attachments:{
+            create:$attachments
+          }
+        }
+      }
+  }
+    
+  ){
+    status    
+    message
+    data{
+      ...userInfo
+    }
+  }
+}
+
+fragment userInfo on User {
+  id
+  disabled
+  emailVerified
+  displayName
+  phoneNumber
+  email
+  role  
+  createdAt
+  updatedAt
+  location{
+      lat
+      lon
+      name
+    }
+  avator {
+    id
+    path
+    mimetype
+  }
+  businessProfile{
+    id
+    owner{
+      id
+    }
+    businessName
+    about
+    mode
+    location{
+      lat
+      lon
+      name
+    }
+    cover{
+    id
+    path
+    mimetype
+  }
+    attachments{
+      id
+      path
+      mimetype
+      
+    }
+    services {
+      id
+      name
+      currency
+      price
+      image{
+        id
+        path
+        mimetype
+      }
+    }
+  }
+  reviewed{
+    id
+    value
+    content
+    attachments {
+    id
+    path
+    mimetype
+  }
+    comments{
+    id
+    content
+    review{
+      id
+    }
+      attachments{
+         id
+    path
+    mimetype
+  }
+      }
+  }
+  comments{
+    id
+    content
+    review{
+      id
+    }
+  }
+  favorited{
+    id
+    type{
+    name
+   }
+    business{
+      id
+      businessName
+    }
+  }
+  ordered{
+  id
+    quantity
+    service{
+      name
+    }
+    business{
+      id
+      businessName
+    }
+}
+  abuseReported{
+    id
+    type {
+      name
+    }
+    service{
+      id 
+      name
+    }
+  }
+}
+

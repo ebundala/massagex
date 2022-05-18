@@ -1,0 +1,30 @@
+mutation signin($credentials: AuthInput!) {
+	signin(credentials: $credentials) {
+		status
+		message
+		token
+		data {
+			...userInfo
+		}
+	}
+}
+
+fragment userInfo on User {
+	id
+	disabled
+	emailVerified
+	displayName
+	phoneNumber
+	email
+	role
+	lastSeen
+	createdAt
+	updatedAt
+	avator {
+		id
+		path
+		attachmentType
+		mimetype
+		updatedAt
+	}
+}

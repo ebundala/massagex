@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+echo ".........code generator starting............"
+flutter pub run build_runner build --delete-conflicting-outputs 
+flutter format .
+# dart fix --apply
+echo ".........code generator finished............"

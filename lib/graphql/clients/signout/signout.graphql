@@ -1,0 +1,6 @@
+mutation signout {
+	signout {
+		status
+		message 
+	}
+}

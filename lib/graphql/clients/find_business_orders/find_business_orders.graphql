@@ -1,0 +1,34 @@
+query findBusinessOrders{
+  findUniqueUser(where: {
+    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
+  }){
+    status
+    message
+    data{
+      id
+      businessProfile{
+        id
+        orders{
+        id
+        orderStatus
+        transactions{
+          id
+          status
+          paymentMethod{
+            id
+            name
+          }
+        }
+        service{
+          id
+          name
+          price
+          metadata
+        }
+      }
+      }
+      
+    }
+    
+  } 
+}
