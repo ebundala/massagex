@@ -5,60 +5,6 @@ import 'package:iconly/iconly.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 class PrimaryTextInput extends StatelessWidget {
-  final TextEditingController? controller;
-  final String? initialValue;
-  final FocusNode? focusNode;
-  final InputDecoration? decoration;
-  final TextInputType? keyboardType;
-  final TextCapitalization textCapitalization;
-  final TextInputAction? textInputAction;
-  final TextStyle? style;
-  final StrutStyle? strutStyle;
-  final TextDirection? textDirection;
-  final TextAlign textAlign;
-  final TextAlignVertical? textAlignVertical;
-  final bool autofocus;
-  final bool readOnly;
-  final ToolbarOptions? toolbarOptions;
-  final bool? showCursor;
-  final String obscuringCharacter;
-  final bool obscureText;
-  final bool autocorrect;
-  final SmartDashesType? smartDashesType;
-  final SmartQuotesType? smartQuotesType;
-  final bool enableSuggestions;
-  final MaxLengthEnforcement? maxLengthEnforcement;
-  final int? maxLines;
-  final int? minLines;
-  final bool expands;
-  final int? maxLength;
-  final ValueChanged<String>? onChanged;
-  final GestureTapCallback? onTap;
-  final VoidCallback? onEditingComplete;
-  final ValueChanged<String>? onFieldSubmitted;
-  final FormFieldSetter<String>? onSaved;
-  final FormFieldValidator<String>? validator;
-  final List<TextInputFormatter>? inputFormatters;
-  final bool? enabled;
-  final double cursorWidth;
-  final double? cursorHeight;
-  final Radius? cursorRadius;
-  final Color? cursorColor;
-  final Brightness? keyboardAppearance;
-  final EdgeInsets scrollPadding;
-  final bool? enableInteractiveSelection;
-  final TextSelectionControls? selectionControls;
-  final InputCounterWidgetBuilder? buildCounter;
-  final ScrollPhysics? scrollPhysics;
-  final Iterable<String>? autofillHints;
-  final AutovalidateMode? autovalidateMode;
-  final ScrollController? scrollController;
-  final String? restorationId;
-  final bool enableIMEPersonalizedLearning;
-  final MouseCursor? mouseCursor;
-
-  final Widget? label;
-
   const PrimaryTextInput(
       {Key? key,
       this.controller,
@@ -114,6 +60,59 @@ class PrimaryTextInput extends StatelessWidget {
       this.readOnly = false,
       this.maxLines})
       : super(key: key);
+
+  final bool autocorrect;
+  final Iterable<String>? autofillHints;
+  final bool autofocus;
+  final AutovalidateMode? autovalidateMode;
+  final InputCounterWidgetBuilder? buildCounter;
+  final TextEditingController? controller;
+  final Color? cursorColor;
+  final double? cursorHeight;
+  final Radius? cursorRadius;
+  final double cursorWidth;
+  final InputDecoration? decoration;
+  final bool enableIMEPersonalizedLearning;
+  final bool? enableInteractiveSelection;
+  final bool enableSuggestions;
+  final bool? enabled;
+  final bool expands;
+  final FocusNode? focusNode;
+  final String? initialValue;
+  final List<TextInputFormatter>? inputFormatters;
+  final Brightness? keyboardAppearance;
+  final TextInputType? keyboardType;
+  final Widget? label;
+  final int? maxLength;
+  final MaxLengthEnforcement? maxLengthEnforcement;
+  final int? maxLines;
+  final int? minLines;
+  final MouseCursor? mouseCursor;
+  final bool obscureText;
+  final String obscuringCharacter;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<String>? onFieldSubmitted;
+  final FormFieldSetter<String>? onSaved;
+  final GestureTapCallback? onTap;
+  final bool readOnly;
+  final String? restorationId;
+  final ScrollController? scrollController;
+  final EdgeInsets scrollPadding;
+  final ScrollPhysics? scrollPhysics;
+  final TextSelectionControls? selectionControls;
+  final bool? showCursor;
+  final SmartDashesType? smartDashesType;
+  final SmartQuotesType? smartQuotesType;
+  final StrutStyle? strutStyle;
+  final TextStyle? style;
+  final TextAlign textAlign;
+  final TextAlignVertical? textAlignVertical;
+  final TextCapitalization textCapitalization;
+  final TextDirection? textDirection;
+  final TextInputAction? textInputAction;
+  final ToolbarOptions? toolbarOptions;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
@@ -197,37 +196,6 @@ class PrimaryTextInput extends StatelessWidget {
 }
 
 class DropdownInput<T> extends StatelessWidget {
-  final List<DropdownMenuItem<T>>? items;
-  final DropdownButtonBuilder? selectedItemBuilder;
-  final T? value;
-  final Widget? hint;
-  final Widget? disabledHint;
-  final void Function(T?)? onChanged;
-  final VoidCallback? onTap;
-  final int elevation;
-  final TextStyle? style;
-  final Widget? icon;
-  final Color? iconDisabledColor;
-  final Color? iconEnabledColor;
-  final double iconSize;
-  final bool isDense;
-  final bool isExpanded;
-  final double? itemHeight;
-  final Color? focusColor;
-  final FocusNode? focusNode;
-  final bool autofocus;
-  final Color? dropdownColor;
-  final InputDecoration? decoration;
-  final FormFieldSetter<T>? onSaved;
-  final FormFieldValidator<T>? validator;
-  final AutovalidateMode? autovalidateMode;
-  final double? menuMaxHeight;
-  final bool? enableFeedback;
-  final AlignmentGeometry alignment;
-  final BorderRadius? borderRadius;
-
-  final Widget? label;
-
   const DropdownInput(
       {Key? key,
       required this.items,
@@ -260,6 +228,36 @@ class DropdownInput<T> extends StatelessWidget {
       this.borderRadius,
       this.label})
       : super(key: key);
+
+  final void Function(T?)? onChanged;
+  final AlignmentGeometry alignment;
+  final bool autofocus;
+  final AutovalidateMode? autovalidateMode;
+  final BorderRadius? borderRadius;
+  final InputDecoration? decoration;
+  final Widget? disabledHint;
+  final Color? dropdownColor;
+  final int elevation;
+  final bool? enableFeedback;
+  final Color? focusColor;
+  final FocusNode? focusNode;
+  final Widget? hint;
+  final Widget? icon;
+  final Color? iconDisabledColor;
+  final Color? iconEnabledColor;
+  final double iconSize;
+  final bool isDense;
+  final bool isExpanded;
+  final double? itemHeight;
+  final List<DropdownMenuItem<T>>? items;
+  final Widget? label;
+  final double? menuMaxHeight;
+  final FormFieldSetter<T>? onSaved;
+  final VoidCallback? onTap;
+  final DropdownButtonBuilder? selectedItemBuilder;
+  final TextStyle? style;
+  final FormFieldValidator<T>? validator;
+  final T? value;
 
   @override
   Widget build(BuildContext context) {
@@ -321,16 +319,6 @@ class DropdownInput<T> extends StatelessWidget {
 }
 
 class DatePickerInput extends StatefulWidget {
-  final DateTime firstDate;
-
-  final DateTime lastDate;
-
-  final DateTime initialDate;
-  final DateTime? selectedDate;
-
-  final void Function(DateTime) onChanged;
-
-  final Widget? label;
   const DatePickerInput(
       {Key? key,
       required this.firstDate,
@@ -341,6 +329,13 @@ class DatePickerInput extends StatefulWidget {
       this.label})
       : super(key: key);
 
+  final DateTime firstDate;
+  final DateTime initialDate;
+  final Widget? label;
+  final DateTime lastDate;
+  final void Function(DateTime) onChanged;
+  final DateTime? selectedDate;
+
   @override
   State<DatePickerInput> createState() => _DatePickerInputState();
 }
@@ -348,6 +343,16 @@ class DatePickerInput extends StatefulWidget {
 class _DatePickerInputState extends State<DatePickerInput> {
   final _focusNode = FocusNode();
   final _textController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.selectedDate != null) {
+      formatDate(widget.selectedDate!);
+    }
+  }
+
   void onFocused() async {
     final date = await showDatePicker(
         context: context,
@@ -356,17 +361,20 @@ class _DatePickerInputState extends State<DatePickerInput> {
         lastDate: widget.lastDate);
     _focusNode.nextFocus();
     if (date != null) {
-      _textController.text = date.toString();
+      formatDate(date);
+
       widget.onChanged(date);
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void formatDate(DateTime date) {
+    final splited = date.toString().split(" ");
+    if (splited.length == 2) {
+      final date = splited.first;
 
-    if (widget.selectedDate != null) {
-      _textController.text = widget.selectedDate.toString();
+      _textController.value = TextEditingValue(text: date);
+    } else {
+      _textController.value = TextEditingValue.empty;
     }
   }
 
@@ -376,21 +384,166 @@ class _DatePickerInputState extends State<DatePickerInput> {
       label: widget.label,
       focusNode: _focusNode,
       controller: _textController,
+      inputFormatters: [
+        TextInputFormatter.withFunction((oldValue, newValue) {
+          final splited = newValue.text.split(" ");
+          if (splited.length == 2) {
+            final date = splited.first;
+
+            return TextEditingValue(text: date);
+          }
+          return TextEditingValue.empty;
+        })
+      ],
       onTap: () => onFocused(),
     );
   }
 }
 
-class OTPInput extends StatelessWidget {
-  const OTPInput({Key? key}) : super(key: key);
+class OTPInput extends StatefulWidget {
+  const OTPInput({Key? key, this.length = 4}) : super(key: key);
+
+  final int length;
+
+  @override
+  State<OTPInput> createState() => _OTPInputState();
+}
+
+class _OTPInputState extends State<OTPInput> {
+  final List<TextEditingController> controllers = [];
+  final List<FocusNode> _focusNodes = [];
+  InputDecoration getDecoration(radius) => InputDecoration(
+      //  focusColor: const Color.fromRGBO(255, 138, 0, 1),
+      isDense: true,
+      // hintText: "*",
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      isCollapsed: true,
+      counter: const SizedBox(
+        height: 0,
+        width: 0,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Color.fromRGBO(255, 138, 0, 1)),
+        borderRadius: BorderRadius.all(
+          Radius.circular(radius),
+        ),
+      ),
+      border: OutlineInputBorder(
+        // borderSide: BorderSide(color: Color.fromRGBO(255, 138, 0, 1)),
+
+        borderRadius: BorderRadius.all(
+          Radius.circular(radius),
+        ),
+      ));
+
+  @override
+  void initState() {
+    controllers.addAll(
+        List.generate(widget.length, (index) => TextEditingController()));
+    _focusNodes.addAll(
+      List.generate(
+        widget.length,
+        (index) => FocusNode(
+          onKeyEvent: (node, event) => onKeyEvent(node, event, index),
+        ),
+      ),
+    );
+
+    super.initState();
+  }
+
+  KeyEventResult onKeyEvent(FocusNode node, KeyEvent event, int index) {
+    if (event is KeyDownEvent &&
+        index != 0 &&
+        event.logicalKey.keyLabel == "Backspace" &&
+        controllers[index].text.isEmpty) {
+      _focusNodes[index - 1].requestFocus();
+      return KeyEventResult.handled;
+    }
+    if (event.character?.contains(RegExp('^[a-zA-Z0-9]*\$')) == true &&
+        index + 1 < widget.length) {
+      controllers[index].text = event.character!;
+      _focusNodes[index + 1].requestFocus();
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
+  }
+
+  TextEditingValue textFormator(
+      TextEditingValue oldValue, TextEditingValue newValue, int index) {
+    if (oldValue.text != newValue.text &&
+        newValue.text.length > 1 &&
+        index == 0) {
+      var v;
+      final len = newValue.text.characters.length;
+      if (len > 0) {
+        for (var i = 0; i < widget.length; i++) {
+          if (i < len) {
+            final character = newValue.text.characters.elementAt(i);
+            if (i != index) {
+              controllers[i].value = TextEditingValue(text: character);
+            } else {
+              v = TextEditingValue(text: character);
+            }
+          }
+        }
+        return v ?? newValue;
+      }
+    }
+    return newValue;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return TextFormField();
+    const style = TextStyle(
+        fontFamily: 'Gordita',
+        fontWeight: FontWeight.w700,
+        // textBaseline: TextBaseline.ideographic,
+        fontSize: 24,
+        height: 1.625);
+
+    return Row(
+      children: [
+        for (var i = 0; i < widget.length; i++)
+          SizedBox(
+              height: 66,
+              width: 66,
+              child: Center(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                  child: LayoutBuilder(builder: (context, constraints) {
+                    final radius = constraints.maxHeight / 2;
+                    return TextFormField(
+                      // obscureText: true,
+                      controller: controllers[i],
+                      focusNode: _focusNodes[i],
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((oldValue, newValue) =>
+                            textFormator(oldValue, newValue, i))
+                      ],
+                      textAlign: TextAlign.center,
+                      textAlignVertical: TextAlignVertical.center,
+                      onEditingComplete: () {
+                        _focusNodes[i].nextFocus();
+                      },
+                      style: style,
+                      decoration: getDecoration(radius),
+                      maxLength: 1,
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                    );
+                  }),
+                ),
+              )),
+      ],
+    );
   }
 }
 
 class SearchInput extends StatelessWidget {
   const SearchInput({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TextFormField();
@@ -399,6 +552,7 @@ class SearchInput extends StatelessWidget {
 
 class LocationInput extends StatelessWidget {
   const LocationInput({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TextFormField();
@@ -407,6 +561,7 @@ class LocationInput extends StatelessWidget {
 
 class ScheduleInput extends StatelessWidget {
   const ScheduleInput({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return PrimaryTextInput(
@@ -426,6 +581,7 @@ class ScheduleInput extends StatelessWidget {
 
 class PhoneInput extends StatelessWidget {
   const PhoneInput({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TextFormField();
@@ -434,6 +590,7 @@ class PhoneInput extends StatelessWidget {
 
 class FilledTextInput extends StatelessWidget {
   const FilledTextInput({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return TextFormField();
