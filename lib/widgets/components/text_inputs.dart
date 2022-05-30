@@ -196,6 +196,8 @@ class PrimaryTextInput extends StatelessWidget {
 }
 
 class DropdownInput<T> extends StatelessWidget {
+  final double fontSize;
+
   const DropdownInput(
       {Key? key,
       required this.items,
@@ -226,7 +228,8 @@ class DropdownInput<T> extends StatelessWidget {
       this.enableFeedback,
       this.alignment = AlignmentDirectional.center,
       this.borderRadius,
-      this.label})
+      this.label,
+      this.fontSize = 18})
       : super(key: key);
 
   final void Function(T?)? onChanged;
@@ -261,9 +264,9 @@ class DropdownInput<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final styled = const TextStyle(
-            color: Color.fromRGBO(22, 10, 49, 1),
-            fontSize: 15,
+    final styled = TextStyle(
+            color: const Color.fromRGBO(22, 10, 49, 1),
+            fontSize: fontSize,
             fontFamily: 'Gordita',
             fontWeight: FontWeight.w400,
             textBaseline: TextBaseline.ideographic)
@@ -329,9 +332,10 @@ class DatePickerInput extends StatefulWidget {
       required this.initialDate,
       this.selectedDate,
       required this.onChanged,
-      this.label})
+      this.label,
+      this.fontSize = 18})
       : super(key: key);
-
+  final double fontSize;
   final DateTime firstDate;
   final DateTime initialDate;
   final Widget? label;
@@ -387,6 +391,14 @@ class _DatePickerInputState extends State<DatePickerInput> {
       label: widget.label,
       focusNode: _focusNode,
       controller: _textController,
+      decoration: InputDecoration(
+        // suffixIconConstraints: ,
+        suffixIcon: Icon(
+          IconlyLight.arrow_down_2,
+          size: widget.fontSize,
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
+      ),
       inputFormatters: [
         TextInputFormatter.withFunction((oldValue, newValue) {
           final splited = newValue.text.split(" ");
@@ -545,11 +557,194 @@ class _OTPInputState extends State<OTPInput> {
 }
 
 class SearchInput extends StatelessWidget {
-  const SearchInput({Key? key}) : super(key: key);
+  final String? hintText;
+
+  const SearchInput(
+      {Key? key,
+      this.controller,
+      this.initialValue,
+      this.label,
+      this.focusNode,
+      this.keyboardType,
+      this.textInputAction,
+      this.style = const TextStyle(fontSize: 15),
+      this.strutStyle,
+      this.textDirection,
+      this.textAlignVertical,
+      this.toolbarOptions,
+      this.showCursor,
+      this.smartDashesType,
+      this.smartQuotesType,
+      this.maxLengthEnforcement,
+      this.minLines,
+      this.maxLength,
+      this.onChanged,
+      this.onTap,
+      this.onEditingComplete,
+      this.onFieldSubmitted,
+      this.onSaved,
+      this.validator,
+      this.inputFormatters,
+      this.enabled,
+      this.cursorHeight,
+      this.cursorRadius,
+      this.cursorColor,
+      this.keyboardAppearance,
+      this.enableInteractiveSelection,
+      this.selectionControls,
+      this.buildCounter,
+      this.scrollPhysics,
+      this.autofillHints,
+      this.autovalidateMode,
+      this.scrollController,
+      this.restorationId,
+      this.mouseCursor,
+      this.enableIMEPersonalizedLearning = true,
+      this.scrollPadding = const EdgeInsets.all(20.0),
+      this.cursorWidth = 2.0,
+      this.expands = false,
+      this.enableSuggestions = true,
+      this.decoration = const InputDecoration(),
+      this.textCapitalization = TextCapitalization.none,
+      this.autocorrect = true,
+      this.obscuringCharacter = '•',
+      this.obscureText = false,
+      this.textAlign = TextAlign.start,
+      this.autofocus = false,
+      this.readOnly = false,
+      this.maxLines,
+      this.hintText = "Search masseu or centre"})
+      : super(key: key);
+
+  final bool autocorrect;
+  final Iterable<String>? autofillHints;
+  final bool autofocus;
+  final AutovalidateMode? autovalidateMode;
+  final InputCounterWidgetBuilder? buildCounter;
+  final TextEditingController? controller;
+  final Color? cursorColor;
+  final double? cursorHeight;
+  final Radius? cursorRadius;
+  final double cursorWidth;
+  final InputDecoration? decoration;
+  final bool enableIMEPersonalizedLearning;
+  final bool? enableInteractiveSelection;
+  final bool enableSuggestions;
+  final bool? enabled;
+  final bool expands;
+  final FocusNode? focusNode;
+  final String? initialValue;
+  final List<TextInputFormatter>? inputFormatters;
+  final Brightness? keyboardAppearance;
+  final TextInputType? keyboardType;
+  final Widget? label;
+  final int? maxLength;
+  final MaxLengthEnforcement? maxLengthEnforcement;
+  final int? maxLines;
+  final int? minLines;
+  final MouseCursor? mouseCursor;
+  final bool obscureText;
+  final String obscuringCharacter;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<String>? onFieldSubmitted;
+  final FormFieldSetter<String>? onSaved;
+  final GestureTapCallback? onTap;
+  final bool readOnly;
+  final String? restorationId;
+  final ScrollController? scrollController;
+  final EdgeInsets scrollPadding;
+  final ScrollPhysics? scrollPhysics;
+  final TextSelectionControls? selectionControls;
+  final bool? showCursor;
+  final SmartDashesType? smartDashesType;
+  final SmartQuotesType? smartQuotesType;
+  final StrutStyle? strutStyle;
+  final TextStyle? style;
+  final TextAlign textAlign;
+  final TextAlignVertical? textAlignVertical;
+  final TextCapitalization textCapitalization;
+  final TextDirection? textDirection;
+  final TextInputAction? textInputAction;
+  final ToolbarOptions? toolbarOptions;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField();
+    return TextFormField(
+      focusNode: focusNode,
+      controller: controller,
+      decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.grey.shade400,
+          border: const OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
+            ),
+          ),
+          prefixIcon: Icon(
+            IconlyLight.search,
+            size: style!.fontSize! * 1.25,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          hintStyle: TextStyle(fontSize: style!.fontSize! * 0.85),
+          hintText: hintText),
+      initialValue: initialValue,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      style: const TextStyle(
+              color: Color.fromRGBO(22, 10, 49, 1),
+              fontSize: 15,
+              fontFamily: 'Gordita',
+              // height: 1,
+              fontWeight: FontWeight.w400)
+          .merge(style),
+      strutStyle: strutStyle,
+      textDirection: textDirection,
+      textAlignVertical: textAlignVertical,
+      toolbarOptions: toolbarOptions,
+      showCursor: showCursor,
+      smartDashesType: smartDashesType,
+      smartQuotesType: smartQuotesType,
+      maxLengthEnforcement: maxLengthEnforcement,
+      minLines: minLines,
+      maxLines: maxLines,
+      maxLength: maxLength,
+      onChanged: onChanged,
+      onTap: onTap,
+      onEditingComplete: onEditingComplete,
+      onFieldSubmitted: onFieldSubmitted,
+      onSaved: onSaved,
+      validator: validator,
+      inputFormatters: inputFormatters,
+      enabled: enabled,
+      cursorHeight: cursorHeight,
+      cursorRadius: cursorRadius,
+      cursorColor: cursorColor,
+      keyboardAppearance: keyboardAppearance,
+      enableInteractiveSelection: enableInteractiveSelection,
+      selectionControls: selectionControls,
+      buildCounter: buildCounter,
+      scrollPhysics: scrollPhysics,
+      autofillHints: autofillHints,
+      autovalidateMode: autovalidateMode,
+      scrollController: scrollController,
+      restorationId: restorationId,
+      mouseCursor: mouseCursor,
+      enableIMEPersonalizedLearning: enableIMEPersonalizedLearning,
+      scrollPadding: scrollPadding,
+      cursorWidth: cursorWidth,
+      expands: expands,
+      enableSuggestions: enableSuggestions,
+      textCapitalization: textCapitalization,
+      autocorrect: autocorrect,
+      obscuringCharacter: obscuringCharacter,
+      obscureText: obscureText,
+      textAlign: textAlign,
+      autofocus: autofocus,
+      readOnly: readOnly,
+    );
   }
 }
 
@@ -707,6 +902,16 @@ class _PhoneInputState<T> extends State<PhoneInput<T>> {
                 decoration: decoration,
               ),
             ),
+            SizedBox(
+              height: size,
+              width: size,
+              child: Center(
+                child: Icon(
+                  IconlyLight.danger,
+                  size: widget.fontSize,
+                ),
+              ),
+            )
           ],
         ),
       );
@@ -738,22 +943,51 @@ Widget getTextField(BuildContext context) => Container(
     );
 
 @WidgetbookUseCase(name: "Dropdown", type: DropdownInput)
-Widget getTextField1(BuildContext context) => Container(
-      color: Theme.of(context).colorScheme.background,
-      height: 500,
-      width: 500,
-      child: Center(
-        child: SizedBox(
-          height: 88,
-          child: DropdownInput<int>(
-            label: const Text(
-              "Your name here",
-            ),
-            onChanged: (v) {},
-            items: [1, 2, 3]
-                .map((e) => DropdownMenuItem(
-                    value: e, child: SizedBox(height: 30, child: Text("$e"))))
-                .toList(),
+Widget getTextField1(BuildContext context) => Center(
+      child: Container(
+        color: Theme.of(context).colorScheme.background,
+        height: 500,
+        width: 500,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SizedBox(
+                height: 88,
+                child: DropdownInput<int>(
+                  label: const Text(
+                    "Your name here",
+                  ),
+                  onChanged: (v) {},
+                  items: [1, 2, 3]
+                      .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: SizedBox(height: 30, child: Text("$e"))))
+                      .toList(),
+                ),
+              ),
+              SizedBox(
+                height: 56,
+                child: DropdownInput<String>(
+                  items: ['Male', 'Female']
+                      .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: SizedBox(height: 30, child: Text(e))))
+                      .toList(),
+                  onChanged: (v) {},
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.0),
+                        ),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade400),
+                ),
+              )
+            ],
           ),
         ),
       ),
