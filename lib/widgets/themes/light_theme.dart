@@ -50,7 +50,7 @@ final mainTheme = ThemeData(
       // alignment: Alignment.center,
       // minimumSize: MaterialStateProperty.all(const Size(80, 50)),
       shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(7)))),
+          borderRadius: BorderRadius.all(Radius.circular(8)))),
       //padding: MaterialStateProperty.all(const EdgeInsets.all(8)),
       backgroundColor: MaterialStateProperty.all(
         const Color.fromRGBO(136, 9, 174, 1),
@@ -67,7 +67,7 @@ final mainTheme = ThemeData(
     floatingLabelBehavior: FloatingLabelBehavior.never,
   ),
 );
-//45678 45678
+
 @WidgetbookTheme(name: 'Dark', isDefault: true)
 ThemeData getDarkTheme() => mainTheme.copyWith(brightness: Brightness.dark);
 

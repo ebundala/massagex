@@ -224,7 +224,7 @@ class DropdownInput<T> extends StatelessWidget {
       this.autovalidateMode,
       this.menuMaxHeight,
       this.enableFeedback,
-      this.alignment = AlignmentDirectional.centerStart,
+      this.alignment = AlignmentDirectional.center,
       this.borderRadius,
       this.label})
       : super(key: key);
@@ -261,9 +261,16 @@ class DropdownInput<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final styled = const TextStyle(
+            color: Color.fromRGBO(22, 10, 49, 1),
+            fontSize: 15,
+            fontFamily: 'Gordita',
+            fontWeight: FontWeight.w400,
+            textBaseline: TextBaseline.ideographic)
+        .merge(style);
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null)
           Padding(
@@ -284,15 +291,11 @@ class DropdownInput<T> extends StatelessWidget {
             onChanged: onChanged,
             onTap: onTap,
             elevation: elevation,
-            style: const TextStyle(
-                    color: Color.fromRGBO(22, 10, 49, 1),
-                    fontSize: 15,
-                    fontFamily: 'Gordita',
-                    fontWeight: FontWeight.w400)
-                .merge(style),
+            style: styled,
             icon: icon ??
                 Icon(
                   IconlyLight.arrow_down_2,
+                  size: styled.fontSize,
                   color: Theme.of(context).colorScheme.onBackground,
                 ),
             iconDisabledColor: iconDisabledColor,
@@ -579,12 +582,135 @@ class ScheduleInput extends StatelessWidget {
   }
 }
 
-class PhoneInput extends StatelessWidget {
-  const PhoneInput({Key? key}) : super(key: key);
+class PhoneInput<T> extends StatefulWidget {
+  const PhoneInput(
+      {Key? key,
+      required this.prefixes,
+      required this.itemBuilder,
+      this.fontSize = 18})
+      : super(key: key);
+  final List<T> prefixes;
+  final double fontSize;
+
+  final Widget Function(BuildContext context, T value, int index) itemBuilder;
+  @override
+  State<PhoneInput<T>> createState() => _PhoneInputState<T>();
+}
+
+class _PhoneInputState<T> extends State<PhoneInput<T>> {
+  Color borderColor = Colors.grey;
+  final _prefixNode = FocusNode();
+  final _contentNode = FocusNode();
+
+  T? prefix;
+
+  bool _focused = false;
 
   @override
+  void initState() {
+    _prefixNode.addListener(onFocus);
+    _contentNode.addListener(onFocus);
+    super.initState();
+  }
+
+  void onFocus() {
+    if (_prefixNode.hasFocus || _contentNode.hasFocus) {
+      setState(() {
+        borderColor = Theme.of(context).colorScheme.primary;
+        _focused = true;
+      });
+    } else {
+      setState(() {
+        borderColor = Colors.grey;
+        _focused = false;
+      });
+    }
+  }
+
+  final decoration = const InputDecoration(
+      border: InputBorder.none,
+      contentPadding: EdgeInsets.all(0), //EdgeInsets.fromLTRB(12, 8, 12, 8),
+      isCollapsed: true,
+      // isDense: true,
+      counter: SizedBox(
+        height: 0,
+        width: 0,
+      ));
+  @override
   Widget build(BuildContext context) {
-    return TextFormField();
+    final styled = TextStyle(fontSize: widget.fontSize);
+    final items = List.generate(
+      widget.prefixes.length,
+      (i) => DropdownMenuItem<T>(
+        value: widget.prefixes.elementAt(i),
+        child: widget.itemBuilder(context, widget.prefixes.elementAt(i), i),
+      ),
+    );
+
+    return LayoutBuilder(builder: (context, constraints) {
+      final size = widget.fontSize > 32.0 ? widget.fontSize : 32.0;
+      final height = constraints.minHeight;
+      final availableSpace = (height - size);
+      final space = availableSpace > 0 ? availableSpace / 2 : 8.0;
+
+      return InputDecorator(
+        isFocused: _focused,
+        decoration: InputDecoration(
+          border: Theme.of(context).inputDecorationTheme.border,
+          contentPadding: EdgeInsets.fromLTRB(12, space, 12, space),
+          // isCollapsed: true,
+        ),
+        child: Row(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //mainAxisSize: MainAxisSize.min,
+
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              flex: 1,
+              child: DropdownInput<T>(
+                focusNode: _prefixNode,
+                value: prefix,
+                decoration: decoration,
+                alignment: AlignmentDirectional.bottomEnd,
+                iconSize: styled.fontSize!,
+                style: styled,
+                onChanged: (v) {
+                  setState(() {
+                    prefix = v;
+                  });
+                },
+                items: items,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
+              child: SizedBox(
+                width: 1,
+                height: size,
+                child: Divider(
+                  thickness: size - 4,
+                  height: size - 4,
+                  color: borderColor,
+                  indent: 0,
+                  endIndent: 0,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 3,
+              child: PrimaryTextInput(
+                focusNode: _contentNode,
+                textAlign: TextAlign.start,
+                // textAlignVertical: TextAlignVertical.center,
+                style: styled,
+                decoration: decoration,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
@@ -617,15 +743,18 @@ Widget getTextField1(BuildContext context) => Container(
       height: 500,
       width: 500,
       child: Center(
-        child: DropdownInput<int>(
-          label: const Text(
-            "Your name here",
+        child: SizedBox(
+          height: 88,
+          child: DropdownInput<int>(
+            label: const Text(
+              "Your name here",
+            ),
+            onChanged: (v) {},
+            items: [1, 2, 3]
+                .map((e) => DropdownMenuItem(
+                    value: e, child: SizedBox(height: 30, child: Text("$e"))))
+                .toList(),
           ),
-          onChanged: (v) {},
-          items: [1, 2, 3]
-              .map((e) => DropdownMenuItem(
-                  value: e, child: SizedBox(height: 30, child: Text("$e"))))
-              .toList(),
         ),
       ),
     );
@@ -706,11 +835,19 @@ Widget getTextField7(BuildContext context) => Container(
       color: Theme.of(context).colorScheme.background,
       height: 500,
       width: 500,
-      child: const Center(
-        child: PhoneInput(
-            // onPressed: () {},
-            // child: const Gordita(text: text),
+      child: Center(
+        child: SizedBox(
+          height: 56,
+          child: PhoneInput<String>(
+            prefixes: const ["+145", "+255", "+367", "+423", "+512", "+643"],
+            itemBuilder: (ctx, v, i) => Center(
+              child: SizedBox(
+                height: 18,
+                child: Text(v),
+              ),
             ),
+          ),
+        ),
       ),
     );
 
