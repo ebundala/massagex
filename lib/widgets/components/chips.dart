@@ -1,21 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:iconly/iconly.dart';
+import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 class OutlinedChip extends StatelessWidget {
-  const OutlinedChip({Key? key}) : super(key: key);
+  final Widget label;
+
+  const OutlinedChip({Key? key, required this.label}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Chip(
+        label: label,
+        backgroundColor: const Color.fromRGBO(244, 244, 245, 1),
+        labelStyle: GoogleFonts.nunito(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            color: const Color.fromRGBO(22, 10, 49, 1)),
+        shape: const RoundedRectangleBorder(
+          side: BorderSide.none,
+          borderRadius: BorderRadius.all(Radius.circular(6)),
+        ));
   }
 }
 
 class DistanceChip extends StatelessWidget {
-  const DistanceChip({Key? key}) : super(key: key);
+  final Widget label;
+  const DistanceChip({Key? key, required this.label}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Chip(
+      label: label,
+      avatar: const Icon(
+        IconlyLight.location,
+        size: 16,
+        color: Color.fromRGBO(237, 36, 132, 1),
+      ),
+      backgroundColor: const Color.fromRGBO(243, 222, 234, 1),
+      labelStyle: GoogleFonts.nunito(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: const Color.fromRGBO(237, 36, 132, 1),
+      ),
+      // shape: const RoundedRectangleBorder(
+      //   side: BorderSide.none,
+      //   borderRadius: BorderRadius.all(Radius.circular(6)),
+      // ),
+    );
   }
 }
 
@@ -25,7 +58,9 @@ Widget getChip(BuildContext context) => Container(
       height: 500,
       width: 500,
       child: const Center(
-        child: OutlinedChip(),
+        child: OutlinedChip(
+          label: Nunito(text: "Reduce anxiety"),
+        ),
       ),
     );
 
@@ -35,6 +70,12 @@ Widget getChip1(BuildContext context) => Container(
       height: 500,
       width: 500,
       child: const Center(
-        child: DistanceChip(),
+        child: DistanceChip(
+          label: Nunito(
+            text: "3 KM away",
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
     );
