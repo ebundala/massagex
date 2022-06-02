@@ -688,7 +688,9 @@ class SearchInput extends StatelessWidget {
             size: style!.fontSize! * 1.25,
             color: Theme.of(context).colorScheme.primary,
           ),
-          hintStyle: TextStyle(fontSize: style!.fontSize! * 0.85),
+          hintStyle: TextStyle(
+            fontSize: style!.fontSize! * 0.85,
+          ),
           hintText: hintText),
       initialValue: initialValue,
       keyboardType: keyboardType,
