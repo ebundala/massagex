@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/animation.dart';
 import 'package:massagex/widgets/components/swipable_button/button_slider_thumb_shape.dart';
 import 'package:massagex/widgets/components/swipable_button/track.dart';
 

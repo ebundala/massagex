@@ -33,6 +33,7 @@ class PrimarySpinar extends StatefulWidget {
 class _PrimarySpinarState extends State<PrimarySpinar>
     with TickerProviderStateMixin {
   late AnimationController _controller;
+  late AnimationController _ctr;
   @override
   void initState() {
     super.initState();
@@ -41,7 +42,8 @@ class _PrimarySpinarState extends State<PrimarySpinar>
       upperBound: 2 * math.pi,
       duration: const Duration(milliseconds: 750),
     );
-    //CurvedAnimation(parent: _controller, curve: Curves.linear);
+    _ctr = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     if (widget.angle == null) {
       _controller.repeat();
     } else {
@@ -102,6 +104,7 @@ class _PrimarySpinarState extends State<PrimarySpinar>
   @override
   void dispose() {
     _controller.dispose();
+    _ctr.dispose();
     super.dispose();
   }
 

@@ -489,7 +489,7 @@ class _OTPInputState extends State<OTPInput> {
     if (oldValue.text != newValue.text &&
         newValue.text.length > 1 &&
         index == 0) {
-      var v;
+      TextEditingValue? v;
       final len = newValue.text.characters.length;
       if (len > 0) {
         for (var i = 0; i < widget.length; i++) {

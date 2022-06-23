@@ -297,7 +297,7 @@ Widget getButton3(BuildContext context) => Container(
         child: SwipableButton(
           label: "Swipe to unlock",
           onUnlocked: () {
-            print("unlocked");
+            //print("unlocked");
           },
         ),
       ),
