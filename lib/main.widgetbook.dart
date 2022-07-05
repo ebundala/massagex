@@ -55,6 +55,7 @@ import 'package:massagex/widgets/components/cards.dart';
 import 'package:massagex/widgets/components/chips.dart';
 import 'package:massagex/widgets/components/spinars.dart';
 import 'package:massagex/widgets/components/text_inputs.dart';
+import 'package:massagex/widgets/components/stars_rating.dart';
 
 void main() {
   runApp(HotReload());
@@ -67,7 +68,7 @@ class HotReload extends StatelessWidget {
   Widget build(BuildContext context) {
     return Widgetbook.material(
       appInfo: AppInfo(
-        name: 'Meal App',
+        name: 'massagex',
       ),
       themes: [
         WidgetbookTheme(
@@ -346,6 +347,16 @@ class HotReload extends StatelessWidget {
                 WidgetbookFolder(
                   name: 'components',
                   widgets: [
+                    WidgetbookComponent(
+                      name: 'Stars rating',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'StarsRating',
+                          builder: (context) => getStarsRating(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
                     WidgetbookComponent(
                       name: 'DistanceChip',
                       useCases: [

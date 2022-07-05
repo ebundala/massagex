@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:place_picker/place_picker.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 class PrimaryTextInput extends StatelessWidget {
@@ -751,11 +752,36 @@ class SearchInput extends StatelessWidget {
 }
 
 class LocationInput extends StatelessWidget {
-  const LocationInput({Key? key}) : super(key: key);
+  LocationInput({Key? key, required this.apiKey}) : super(key: key);
+  final _inputController = TextEditingController();
+  final String apiKey;
+  Future<LocationResult?> showPlacePicker(BuildContext context,
+      [LatLng? displayLocation]) async {
+    LocationResult result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PlacePicker(
+          apiKey,
+          displayLocation: displayLocation,
+        ),
+      ),
+    );
+    // Handle the result in your way
+    print(result);
+    return result;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField();
+    return PrimaryTextInput(
+      controller: _inputController,
+      label: const Text("Location"),
+      onTap: () async {
+        final result = await showPlacePicker(context);
+        if (result != null) {
+          _inputController.text = result.formattedAddress ?? "";
+        }
+      },
+    );
   }
 }
 
@@ -1054,15 +1080,15 @@ Widget getTextField5(BuildContext context) => Container(
     );
 
 @WidgetbookUseCase(name: "location", type: LocationInput)
-Widget getTextField6(BuildContext context) => Container(
-      color: Theme.of(context).colorScheme.background,
-      height: 500,
-      width: 500,
-      child: const Center(
-        child: LocationInput(
-            // onPressed: () {},
-            // child: const Gordita(text: text),
-            ),
+Widget getTextField6(BuildContext context) => Center(
+      child: Container(
+        color: Theme.of(context).colorScheme.background,
+        height: 500,
+        width: 500,
+        child: Center(
+          child:
+              LocationInput(apiKey: 'AIzaSyBgZaG8eAlP2-14754vMKU-2DwxRBV0Jy8'),
+        ),
       ),
     );
 

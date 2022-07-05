@@ -1,4 +1,4 @@
-package com.example.massagex
+package com.mechsoft.massagex
 
 import io.flutter.embedding.android.FlutterActivity
 
