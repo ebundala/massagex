@@ -56,6 +56,7 @@ import 'package:massagex/widgets/components/chips.dart';
 import 'package:massagex/widgets/components/spinars.dart';
 import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/components/stars_rating.dart';
+import 'package:massagex/widgets/components/photo_gallery.dart';
 
 void main() {
   runApp(HotReload());
@@ -81,6 +82,17 @@ class HotReload extends StatelessWidget {
         ),
       ],
       devices: [
+        Device(
+          name: 'Galaxy A10',
+          resolution: Resolution(
+            nativeSize: DeviceSize(
+              height: 1520.0,
+              width: 720.0,
+            ),
+            scaleFactor: 3.0,
+          ),
+          type: DeviceType.mobile,
+        ),
         Device(
           name: 'iPhone 12',
           resolution: Resolution(
@@ -347,6 +359,16 @@ class HotReload extends StatelessWidget {
                 WidgetbookFolder(
                   name: 'components',
                   widgets: [
+                    WidgetbookComponent(
+                      name: 'Photo gallery',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'PhotoGallery',
+                          builder: (context) => getPhotoGallery(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
                     WidgetbookComponent(
                       name: 'Stars rating',
                       useCases: [

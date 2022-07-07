@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'package:massagex/secrets/api_keys.dart';
+import 'package:massagex/widgets/components/photo_gallery.dart';
+import 'package:massagex/widgets/components/text_inputs.dart';
+import 'package:massagex/widgets/texts/app_name.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 import 'package:flutter/foundation.dart';
@@ -100,184 +104,198 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (ctx) => signupBloc),
         BlocProvider(create: (ctx) => recoverAccount)
       ],
-      child: Builder(builder: (context) {
-        return SafeArea(
-          child: MaterialApp(
+      child: Center(
+        child: Builder(builder: (context) {
+          return MaterialApp(
             theme: mainTheme,
-            home: Scaffold(
-              appBar: AppBar(
-                title: const Text("test app"),
-              ),
-              floatingActionButton: FloatingActionButton(
-                child: const Icon(Icons.more),
-                onPressed: () {
-                  BlocProvider.of<UpdateMyProfileBloc>(context).add(excuted);
-                },
-              ),
-              body: SizedBox.expand(
-                child: Builder(builder: (context) {
-                  return BlocConsumer<UpdateMyProfileBloc,
-                      UpdateMyProfileState>(
-                    listener: (context, state) {
-                      if (state is UpdateMyProfileSuccess) {
-                        if (kDebugMode) {
-                          print(state.message);
-                        }
-                      }
-                    },
-                    builder: (context, state) {
-                      return RefreshIndicator(
-                        onRefresh: () {
-                          BlocProvider.of<UpdateMyProfileBloc>(context)
-                              .add(retried);
-                          return Future.value();
+            home: SafeArea(
+              child: Scaffold(
+                appBar: AppBar(
+                  title: const AppName(),
+                ),
+                floatingActionButton: FloatingActionButton(
+                  child: const Icon(Icons.more),
+                  onPressed: () {
+                    BlocProvider.of<UpdateMyProfileBloc>(context).add(excuted);
+                  },
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox.expand(
+                    child: Builder(builder: (context) {
+                      return BlocConsumer<UpdateMyProfileBloc,
+                          UpdateMyProfileState>(
+                        listener: (context, state) {
+                          if (state is UpdateMyProfileSuccess) {
+                            if (kDebugMode) {
+                              print(state.message);
+                            }
+                          }
                         },
-                        child: ListView(
-                          children: [
-                            if (state is UpdateMyProfileInProgress)
-                              const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            if (state is UpdateMyProfileSuccess)
-                              ListTile(
-                                title: Text(state.data.data?.displayName ??
-                                    "not changed"),
-                              ),
-                            if (state is UpdateMyProfileFailure ||
-                                state is UpdateMyProfileError)
-                              ListTile(
-                                title:
-                                    Text(state.data?.message ?? "not changed"),
-                              ),
-                            BlocBuilder<FindUserBloc, FindUserState>(
-                              builder: (context, state) {
-                                return ListBody(
-                                  children: [
-                                    if (state is FindUserSuccess)
-                                      Text(jsonEncode(
-                                          state.data.data!.toJson())),
-                                    if (state is FindUserError)
-                                      Text(state.message!),
-                                    SizedBox(
-                                      height: 30,
-                                      child: ElevatedButton(
-                                          child: const Text("finduser"),
-                                          onPressed: () {
-                                            BlocProvider.of<FindUserBloc>(
-                                                    context)
-                                                .add(
-                                              FindUserExcuted(
-                                                  id: "TuyoLCVuK1VTMIXwFHxWrniFRLn1"),
-                                            );
-                                          }),
-                                    )
-                                  ],
-                                );
-                              },
-                            ),
-                            BlocBuilder<SigninBloc, SigninState>(
-                                builder: (context, state) {
-                              if (state is SigninInProgress) {
-                                return const SizedBox(
-                                    height: 30,
-                                    width: 30,
-                                    child: CircularProgressIndicator());
-                              }
-                              if (state is SigninError) {
-                                return Text(state.data.message!);
-                              }
-                              if (state is SigninSuccess) {
-                                return Text(
-                                    jsonEncode(state.data.data!.toJson()));
-                              }
-                              return SizedBox(
-                                height: 30,
-                                child: ElevatedButton(
-                                  child: const Text("signin"),
-                                  onPressed: () {
-                                    BlocProvider.of<SigninBloc>(context).add(
-                                        SigninExcuted(
-                                            credentials: AuthInput(
-                                                password: "password",
-                                                email:
-                                                    "ebundala+107@gmail.com")));
+                        builder: (context, state) {
+                          return RefreshIndicator(
+                            onRefresh: () {
+                              BlocProvider.of<UpdateMyProfileBloc>(context)
+                                  .add(retried);
+                              return Future.value();
+                            },
+                            child: ListView(
+                              children: [
+                                /* if (state is UpdateMyProfileInProgress)
+                                  const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                if (state is UpdateMyProfileSuccess)
+                                  ListTile(
+                                    title: Text(state.data.data?.displayName ??
+                                        "not changed"),
+                                  ),
+                                if (state is UpdateMyProfileFailure ||
+                                    state is UpdateMyProfileError)
+                                  ListTile(
+                                    title: Text(
+                                        state.data?.message ?? "not changed"),
+                                  ),
+                                BlocBuilder<FindUserBloc, FindUserState>(
+                                  builder: (context, state) {
+                                    return ListBody(
+                                      children: [
+                                        if (state is FindUserSuccess)
+                                          Text(jsonEncode(
+                                              state.data.data!.toJson())),
+                                        if (state is FindUserError)
+                                          Text(state.message!),
+                                        SizedBox(
+                                          height: 30,
+                                          child: ElevatedButton(
+                                              child: const Text("finduser"),
+                                              onPressed: () {
+                                                BlocProvider.of<FindUserBloc>(
+                                                        context)
+                                                    .add(
+                                                  FindUserExcuted(
+                                                      id: "TuyoLCVuK1VTMIXwFHxWrniFRLn1"),
+                                                );
+                                              }),
+                                        )
+                                      ],
+                                    );
                                   },
                                 ),
-                              );
-                            }),
-                            BlocBuilder<SignupBloc, SignupState>(
-                                builder: (context, state) {
-                              if (state is SignupInProgress) {
-                                return const SizedBox(
+                                BlocBuilder<SigninBloc, SigninState>(
+                                    builder: (context, state) {
+                                  if (state is SigninInProgress) {
+                                    return const SizedBox(
+                                        height: 30,
+                                        width: 30,
+                                        child: CircularProgressIndicator());
+                                  }
+                                  if (state is SigninError) {
+                                    return Text(state.data.message!);
+                                  }
+                                  if (state is SigninSuccess) {
+                                    return Text(
+                                        jsonEncode(state.data.data!.toJson()));
+                                  }
+                                  return SizedBox(
                                     height: 30,
-                                    width: 30,
-                                    child: CircularProgressIndicator());
-                              }
-                              if (state is SignupError) {
-                                return Text(state.data.message!);
-                              }
-                              if (state is SignupSuccess) {
-                                return Text(
-                                    jsonEncode(state.data.data!.toJson()));
-                              }
-                              return SizedBox(
-                                height: 30,
-                                child: ElevatedButton(
-                                  child: const Text("signup"),
-                                  onPressed: () {
-                                    BlocProvider.of<SignupBloc>(context).add(
-                                        SignupExcuted(
+                                    child: ElevatedButton(
+                                      child: const Text("signin"),
+                                      onPressed: () {
+                                        BlocProvider.of<SigninBloc>(context).add(
+                                            SigninExcuted(
+                                                credentials: AuthInput(
+                                                    password: "password",
+                                                    email:
+                                                        "ebundala+107@gmail.com")));
+                                      },
+                                    ),
+                                  );
+                                }),
+                                BlocBuilder<SignupBloc, SignupState>(
+                                    builder: (context, state) {
+                                  if (state is SignupInProgress) {
+                                    return const SizedBox(
+                                        height: 30,
+                                        width: 30,
+                                        child: CircularProgressIndicator());
+                                  }
+                                  if (state is SignupError) {
+                                    return Text(state.data.message!);
+                                  }
+                                  if (state is SignupSuccess) {
+                                    return Text(
+                                        jsonEncode(state.data.data!.toJson()));
+                                  }
+                                  return SizedBox(
+                                    height: 30,
+                                    child: ElevatedButton(
+                                      child: const Text("signup"),
+                                      onPressed: () {
+                                        BlocProvider.of<SignupBloc>(context).add(
+                                          SignupExcuted(
                                             credentials: SignupInput(
-                                                displayName: "Joseph Doe",
-                                                password: "password",
-                                                gender: Gender.MALE,
-                                                phoneNumber: PhoneNumber(
-                                                    "+255753040270"),
-                                                email: EmailAddress(
-                                                    "ebundala130@gmail.com"),
-                                                avator: MultipartFile.fromBytes(
-                                                    "",
-                                                    "hello test cover"
-                                                        .codeUnits),
-                                                business:
-                                                    BusinessCreateWithoutOwnerInput(
-                                                        businessName:
-                                                            "Joseph SHop",
-                                                        about: "nice shop here",
-                                                        mode: BusinessMode
-                                                            .MOBILE$MODE,
-                                                        cover:
-                                                            AttachmentCreateNestedOneWithoutBusinessesInput(
-                                                          create:
-                                                              AttachmentCreateWithoutBusinessesInput(
-                                                            path: MultipartFile
-                                                                .fromBytes(
-                                                                    "",
-                                                                    "hello test cover"
-                                                                        .codeUnits),
-                                                          ),
-                                                        ),
-                                                        metadata: JSONObject(
-                                                          {
-                                                            "shop":
-                                                                "good shop here"
-                                                          },
-                                                        )))));
-                                  },
+                                              displayName: "Joseph Doe",
+                                              password: "password",
+                                              gender: Gender.MALE,
+                                              phoneNumber:
+                                                  PhoneNumber("+255753040270"),
+                                              email: EmailAddress(
+                                                  "ebundala130@gmail.com"),
+                                              avator: MultipartFile.fromBytes("",
+                                                  "hello test cover".codeUnits),
+                                              business:
+                                                  BusinessCreateWithoutOwnerInput(
+                                                businessName: "Joseph SHop",
+                                                about: "nice shop here",
+                                                mode: BusinessMode.MOBILE$MODE,
+                                                cover:
+                                                    AttachmentCreateNestedOneWithoutBusinessesInput(
+                                                  create:
+                                                      AttachmentCreateWithoutBusinessesInput(
+                                                    path: MultipartFile.fromBytes(
+                                                        "",
+                                                        "hello test cover"
+                                                            .codeUnits),
+                                                  ),
+                                                ),
+                                                metadata: JSONObject(
+                                                  {"shop": "good shop here"},
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }),
+                                */
+                                SizedBox(
+                                  height: 100,
+                                  child: LocationInput(apiKey: apiKeyGMP),
                                 ),
-                              );
-                            })
-                          ],
-                        ),
+                                SizedBox(
+                                    height: 400,
+                                    child: PhotoGallery(
+                                      photos: List.generate(4, (i) {
+                                        return Image.asset(
+                                            "assets/images/intro_picture_${i + 1}.png");
+                                      }),
+                                    ))
+                              ],
+                            ),
+                          );
+                        },
                       );
-                    },
-                  );
-                }),
+                    }),
+                  ),
+                ),
               ),
             ),
-          ),
-        );
-      }),
+          );
+        }),
+      ),
     );
   }
 }
