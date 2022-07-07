@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
 import 'package:place_picker/place_picker.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
+import 'package:massagex/secrets/api_keys.dart';
 
 class PrimaryTextInput extends StatelessWidget {
   const PrimaryTextInput(
@@ -1086,8 +1087,7 @@ Widget getTextField6(BuildContext context) => Center(
         height: 500,
         width: 500,
         child: Center(
-          child:
-              LocationInput(apiKey: 'AIzaSyBgZaG8eAlP2-14754vMKU-2DwxRBV0Jy8'),
+          child: LocationInput(apiKey: apiKeyGMP),
         ),
       ),
     );
