@@ -53,3 +53,5 @@ assets/images/intro_small_shape.svg
 assets/images/intro_large_shape.svg
 assets/images/intro_small_shape_primary.svg
 assets/images/combinedshape.svg
+lib/secrets/
+android/app/google-services*.json

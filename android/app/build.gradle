@@ -21,6 +21,33 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+
+def mapsProperties = new Properties()
+def localMapsPropertiesFile = rootProject.file('local_maps.properties')
+if (localMapsPropertiesFile.exists()) {
+    project.logger.info('Load maps properties from local file')
+    localMapsPropertiesFile.withReader('UTF-8') { reader ->
+        mapsProperties.load(reader)
+    }
+} else {
+    project.logger.info('Load maps properties from environment')
+    try {
+        mapsProperties['MAPS_API_KEY'] = System.getenv('MAPS_API_KEY')
+    } catch(NullPointerException e) {
+        project.logger.warn('Failed to load MAPS_API_KEY from environment.', e)
+    }
+}
+def mapsApiKey = mapsProperties.getProperty('MAPS_API_KEY')
+if(mapsApiKey == null){
+    mapsApiKey = ""
+    project.logger.error('Google Maps Api Key not configured. Set it in `local_maps.properties` or in the environment variable `MAPS_API_KEY`')
+}
+
+
+
+
+
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -52,13 +79,22 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+         
     }
 
     buildTypes {
+        debug {
+            manifestPlaceholders = [MAPS_API_KEY: mapsApiKey]
+        }
+        profile {
+            manifestPlaceholders = [MAPS_API_KEY: mapsApiKey]
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+            manifestPlaceholders = [MAPS_API_KEY: mapsApiKey]
         }
     }
 }
@@ -71,4 +107,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    
 }
