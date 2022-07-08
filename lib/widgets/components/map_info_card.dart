@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:massagex/widgets/components/avators.dart';
 import 'package:massagex/widgets/components/buttons.dart';
-import 'package:massagex/widgets/components/cards.dart';
 import 'package:massagex/widgets/components/stars_rating.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart'
@@ -46,160 +45,154 @@ class TravelerMapInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
+    return Column(
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 68,
-                  child: PrimaryAvator(
-                    radius: 30,
-                    backgroundImage: AssetImage(avator),
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Gilroy(
-                        text: displayName,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Nunito(
-                        text: userSubTitle,
-                        fontSize: 14,
-                        color: const Color.fromRGBO(108, 108, 108, 1),
-                        fontWeight: FontWeight.w400,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      StarsRating(
-                        rating: rating,
-                        count: count,
-                        iconSize: 12,
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: 60,
-                  child: Row(
-                    children: [
-                      const Icon(IconlyLight.time_circle),
-                      Nunito(
-                        text: eta,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      )
-                    ],
-                  ),
-                )
-              ],
+            SizedBox(
+              width: 68,
+              child: PrimaryAvator(
+                radius: 30,
+                backgroundImage: AssetImage(avator),
+              ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Nunito(
-                        text: title,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Nunito(
-                        text: discription,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    ],
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Gilroy(
+                    text: displayName,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Gordita(
-                  text: price,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                )
-              ],
-            ),
-            const Divider(
-              thickness: 1,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: onCall,
-                  child: Row(
-                    children: [
-                      Icon(
-                        IconlyLight.call,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const Nunito(
-                        text: "Call",
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Color.fromRGBO(22, 10, 49, 1),
-                      )
-                    ],
-                  ),
-                ),
-                TextButton(
-                    onPressed: onCancel,
-                    child: Row(
-                      children: [
-                        Icon(
-                          IconlyLight.shield_fail,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        const Nunito(
-                          text: "Cancel",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Color.fromRGBO(22, 10, 49, 1),
-                        )
-                      ],
-                    ))
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            if (!isArrived)
-              PrimaryButton(
-                  height: 45,
-                  width: double.infinity,
-                  onPressed: onArrival,
-                  child: const Nunito(
-                    text: "Arrived",
-                    fontSize: 17,
+                  Nunito(
+                    text: userSubTitle,
+                    fontSize: 14,
+                    color: const Color.fromRGBO(108, 108, 108, 1),
                     fontWeight: FontWeight.w400,
-                  )),
-            if (isArrived)
-              SecondaryButton(
-                  height: 45,
-                  width: double.infinity,
-                  onPressed: () {
-                    onPayment(isProvider);
-                  },
-                  child: Nunito(
-                    text: isProvider ? "Request payment" : "Make payment",
-                    fontSize: 17,
-                    fontWeight: FontWeight.w400,
-                  )),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  StarsRating(
+                    rating: rating,
+                    count: count,
+                    iconSize: 12,
+                  )
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 60,
+              child: Row(
+                children: [
+                  const Icon(IconlyLight.time_circle),
+                  Nunito(
+                    text: eta,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  )
+                ],
+              ),
+            )
           ],
         ),
-      ),
+        Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Nunito(
+                    text: title,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Nunito(
+                    text: discription,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                ],
+              ),
+            ),
+            Gordita(
+              text: price,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            )
+          ],
+        ),
+        const Divider(
+          thickness: 1,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: onCall,
+              child: Row(
+                children: [
+                  Icon(
+                    IconlyLight.call,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const Nunito(
+                    text: "Call",
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color.fromRGBO(22, 10, 49, 1),
+                  )
+                ],
+              ),
+            ),
+            TextButton(
+                onPressed: onCancel,
+                child: Row(
+                  children: [
+                    Icon(
+                      IconlyLight.shield_fail,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const Nunito(
+                      text: "Cancel",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color.fromRGBO(22, 10, 49, 1),
+                    )
+                  ],
+                ))
+          ],
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        if (!isArrived)
+          PrimaryButton(
+              height: 45,
+              width: double.infinity,
+              onPressed: onArrival,
+              child: const Nunito(
+                text: "Arrived",
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
+              )),
+        if (isArrived)
+          SecondaryButton(
+              height: 45,
+              width: double.infinity,
+              onPressed: () {
+                onPayment(isProvider);
+              },
+              child: Nunito(
+                text: isProvider ? "Request payment" : "Make payment",
+                fontSize: 17,
+                fontWeight: FontWeight.w400,
+              )),
+      ],
     );
   }
 }

@@ -61,6 +61,17 @@ void main(List<String> args) async {
     ),
   ],
   devices: [
+    Device.mobile(
+      name: 'Galaxy A10',
+      resolution: Resolution(
+        nativeSize: DeviceSize(
+          height: 1520.0,
+          width: 720.0,
+        ),
+        scaleFactor: 3.0,
+      ),
+      type: DeviceType.mobile,
+    ),
     Apple.iPhone12,
   ],
   textScaleFactors: [
