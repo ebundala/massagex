@@ -8,6 +8,7 @@ final mainTheme = ThemeData(
   // primaryColor: const Color.fromRGBO(136, 9, 174, 1),
   // primaryColorLight: const Color.fromRGBO(136, 9, 174, 1),
   // primaryColorDark: const Color.fromRGBO(33, 3, 43, 1),
+
   colorScheme: const ColorScheme(
       // seedColor: const Color(0x8809ae),
       brightness: Brightness.light,

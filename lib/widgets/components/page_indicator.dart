@@ -6,11 +6,6 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart'
 import 'package:widgetbook/widgetbook.dart' hide WidgetbookUseCase;
 
 class PageIndicator extends StatelessWidget {
-  final int selected;
-  final int pageCount;
-  final Color? activeColor;
-  final Color? inactiveColor;
-  final Duration duration;
   const PageIndicator(
       {Key? key,
       this.selected = 0,
@@ -19,6 +14,12 @@ class PageIndicator extends StatelessWidget {
       this.activeColor,
       this.inactiveColor})
       : super(key: key);
+
+  final Color? activeColor;
+  final Duration duration;
+  final Color? inactiveColor;
+  final int pageCount;
+  final int selected;
 
   @override
   Widget build(BuildContext context) {

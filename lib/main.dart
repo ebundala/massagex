@@ -34,8 +34,6 @@ import 'package:models/scalars/phone_number.dart';
 import 'package:models/signup_input.dart';
 import 'package:models/string_field_update_operations_input.dart';
 
-//import 'package:example/graphql/models/lib/string_field_update_operations_input.dart';
-
 void main(List<String> args) async {
   if (kDebugMode) {
     print(args);
@@ -62,7 +60,9 @@ void main(List<String> args) async {
       allowsDevices: false,
     ),
   ],
-  devices: [Apple.iPhone12],
+  devices: [
+    Apple.iPhone12,
+  ],
   textScaleFactors: [
     1,
     2,

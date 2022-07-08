@@ -11,7 +11,7 @@ class UserLocationMarker extends StatelessWidget {
         super(key: key);
   final double heading;
   double angleToRadiansWithOffset() {
-    return (heading + 90) * pi / 180;
+    return heading * pi / 180;
   }
 
   @override

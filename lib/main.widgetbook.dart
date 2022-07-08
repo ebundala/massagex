@@ -57,6 +57,8 @@ import 'package:massagex/widgets/components/spinars.dart';
 import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/components/stars_rating.dart';
 import 'package:massagex/widgets/components/photo_gallery.dart';
+import 'package:massagex/widgets/components/map_markers.dart';
+import 'package:massagex/widgets/components/map_info_card.dart';
 
 void main() {
   runApp(HotReload());
@@ -82,7 +84,7 @@ class HotReload extends StatelessWidget {
         ),
       ],
       devices: [
-        Device(
+        Device.mobile(
           name: 'Galaxy A10',
           resolution: Resolution(
             nativeSize: DeviceSize(
@@ -93,7 +95,7 @@ class HotReload extends StatelessWidget {
           ),
           type: DeviceType.mobile,
         ),
-        Device(
+        Device.mobile(
           name: 'iPhone 12',
           resolution: Resolution(
             nativeSize: DeviceSize(
@@ -266,6 +268,26 @@ class HotReload extends StatelessWidget {
                   name: 'shapes',
                   widgets: [
                     WidgetbookComponent(
+                      name: 'UserLocationMarker',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) => getUserLocationMarker(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'DestinationMarker',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) => getDestinationMarker(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
                       name: 'ActivePageIndicator',
                       useCases: [
                         WidgetbookUseCase(
@@ -359,6 +381,36 @@ class HotReload extends StatelessWidget {
                 WidgetbookFolder(
                   name: 'components',
                   widgets: [
+                    WidgetbookComponent(
+                      name: 'Waiting map info',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'Provider',
+                          builder: (context) => getWaitingMapInfoCard(context),
+                        ),
+                        WidgetbookUseCase(
+                          name: 'Customer',
+                          builder: (context) =>
+                              getCustomerWaitingMapInfoCard(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'Traveling map info',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'Provider',
+                          builder: (context) => getTravelerMapInfoCard(context),
+                        ),
+                        WidgetbookUseCase(
+                          name: 'Customer',
+                          builder: (context) =>
+                              getCustomerTravelerMapInfoCard(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
                     WidgetbookComponent(
                       name: 'Photo gallery',
                       useCases: [
@@ -672,10 +724,14 @@ class HotReload extends StatelessWidget {
           ],
           widgets: [
             WidgetbookComponent(
-              name: 'MyApp',
+              name: 'MassageX',
               useCases: [
                 WidgetbookUseCase(
-                  name: 'Main app',
+                  name: 'light',
+                  builder: (context) => mainApp(context),
+                ),
+                WidgetbookUseCase(
+                  name: 'dark',
                   builder: (context) => mainApp(context),
                 ),
               ],
