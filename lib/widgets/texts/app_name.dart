@@ -5,8 +5,9 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 class AppName extends StatelessWidget {
   final bool isPrimary;
 
-  const AppName({Key? key, this.isPrimary = true}) : super(key: key);
-
+  const AppName({Key? key, this.isPrimary = true, this.fontSize = 24})
+      : super(key: key);
+  final double fontSize;
   @override
   Widget build(BuildContext context) {
     final style = TextStyle(color: Theme.of(context).colorScheme.secondary);
@@ -20,7 +21,7 @@ class AppName extends StatelessWidget {
         ],
         style: GoogleFonts.playfairDisplay(
           fontWeight: FontWeight.w700,
-          fontSize: 24,
+          fontSize: fontSize,
         ),
       ),
     );

@@ -60,6 +60,7 @@ import 'package:massagex/widgets/components/photo_gallery.dart';
 import 'package:massagex/widgets/components/map_markers.dart';
 import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/map_location_name_card.dart';
+import 'package:massagex/widgets/components/bottom_sheets.dart';
 
 void main() {
   runApp(HotReload());
@@ -382,6 +383,27 @@ class HotReload extends StatelessWidget {
                 WidgetbookFolder(
                   name: 'components',
                   widgets: [
+                    WidgetbookComponent(
+                      name: 'RequestBottomSheet',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) => getRequestBottomSheet(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'NotificationBottomSheet',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) =>
+                              getNotificationBottomSheet(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
                     WidgetbookComponent(
                       name: 'MapNavigationDestinationInfo',
                       useCases: [

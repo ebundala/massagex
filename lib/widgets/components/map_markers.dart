@@ -26,7 +26,7 @@ class UserLocationMarker extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: CustomPaint(
-            painter: HeadingMarkerDrawer(),
+            foregroundPainter: HeadingMarkerDrawer(),
           ),
         ),
       ),
@@ -37,6 +37,13 @@ class UserLocationMarker extends StatelessWidget {
 class HeadingMarkerDrawer extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    Paint paint2Stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.004779486;
+    paint2Stroke.color = const Color(0xff8809AE).withOpacity(1.0);
+    canvas.drawCircle(center, size.height / 2, paint2Stroke);
+
     Path path_2 = Path();
     path_2.moveTo(size.width * 0.5091792, size.height * 0.5635625);
     path_2.lineTo(size.width * 0.5097208, size.height * 0.5637028);
@@ -200,12 +207,30 @@ class HeadingMarkerDrawer extends CustomPainter {
     path_2.lineTo(size.width * 0.5172306, size.height * 0.5479333);
     path_2.close();
 
-    Paint paint2Stroke = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = size.width * 0.004779486;
-    paint2Stroke.color = const Color(0xff8809AE).withOpacity(1.0);
-    canvas.drawPath(path_2, paint2Stroke);
-
+    // Paint paint2Stroke = Paint()
+    //   ..style = PaintingStyle.stroke
+    //   ..strokeWidth = size.width * 0.004779486;
+    // paint2Stroke.color = const Color(0xff8809AE).withOpacity(1.0);
+    // canvas.drawPath(path_2, paint2Stroke);
+    // final scale = Float64List.fromList([
+    //   2, //size.width / 2,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   6, //size.height / 2,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   6,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   2
+    // ]);
+    //final path = path_2.transform(scale);
     Paint paint2Fill = Paint()..style = PaintingStyle.fill;
     paint2Fill.color = const Color(0xff8809AE).withOpacity(1.0);
     canvas.drawPath(path_2, paint2Fill);

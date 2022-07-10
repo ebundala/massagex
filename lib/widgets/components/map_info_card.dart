@@ -47,55 +47,25 @@ class TravelerMapInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 68,
-              child: PrimaryAvator(
-                radius: 30,
-                backgroundImage: AssetImage(avator),
-              ),
+        ProfileTile(
+          avator: avator,
+          displayName: displayName,
+          userSubTitle: userSubTitle,
+          rating: rating,
+          count: count,
+          action: SizedBox(
+            width: 60,
+            child: Row(
+              children: [
+                const Icon(IconlyLight.time_circle),
+                Nunito(
+                  text: eta,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                )
+              ],
             ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Gilroy(
-                    text: displayName,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Nunito(
-                    text: userSubTitle,
-                    fontSize: 14,
-                    color: const Color.fromRGBO(108, 108, 108, 1),
-                    fontWeight: FontWeight.w400,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  StarsRating(
-                    rating: rating,
-                    count: count,
-                    iconSize: 12,
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              width: 60,
-              child: Row(
-                children: [
-                  const Icon(IconlyLight.time_circle),
-                  Nunito(
-                    text: eta,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  )
-                ],
-              ),
-            )
-          ],
+          ),
         ),
         Row(
           children: [
@@ -192,6 +162,68 @@ class TravelerMapInfoCard extends StatelessWidget {
                 fontSize: 17,
                 fontWeight: FontWeight.w400,
               )),
+      ],
+    );
+  }
+}
+
+class ProfileTile extends StatelessWidget {
+  const ProfileTile({
+    Key? key,
+    required this.avator,
+    required this.displayName,
+    required this.userSubTitle,
+    required this.rating,
+    required this.count,
+    this.avatorWidth = 68,
+    this.action,
+  }) : super(key: key);
+
+  final String avator;
+  final String displayName;
+  final String userSubTitle;
+  final double rating;
+  final int count;
+  final Widget? action;
+  final double avatorWidth;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: avatorWidth,
+          child: PrimaryAvator(
+            radius: avatorWidth * 15 / 34,
+            backgroundImage: AssetImage(avator),
+          ),
+        ),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Gilroy(
+                text: displayName,
+                fontSize: avatorWidth * 5 / 17,
+                fontWeight: FontWeight.w600,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Nunito(
+                text: userSubTitle,
+                fontSize: avatorWidth * 7 / 34,
+                color: const Color.fromRGBO(108, 108, 108, 1),
+                fontWeight: FontWeight.w400,
+                overflow: TextOverflow.ellipsis,
+              ),
+              StarsRating(
+                rating: rating,
+                count: count,
+                iconSize: avatorWidth * 3 / 17,
+              )
+            ],
+          ),
+        ),
+        if (action != null) action!
       ],
     );
   }

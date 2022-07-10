@@ -8,15 +8,20 @@ class PrimaryBadge extends StatelessWidget {
 
   final String text;
   final Widget icon;
+  final double width;
   const PrimaryBadge(
-      {Key? key, required this.subText, required this.text, required this.icon})
+      {Key? key,
+      required this.subText,
+      required this.text,
+      required this.icon,
+      this.width = 97})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 97,
-      height: 104,
+      width: width,
+      height: 104 / 97 * width,
       child: Card(
         color: const Color.fromRGBO(244, 244, 245, 1),
         shape: const RoundedRectangleBorder(
@@ -26,8 +31,8 @@ class PrimaryBadge extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              width: 44,
-              height: 48,
+              width: 44 / 97 * width,
+              height: 48 / 97 * width,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary,
                 borderRadius: const BorderRadius.only(
@@ -42,24 +47,24 @@ class PrimaryBadge extends StatelessWidget {
             const Spacer(),
             SizedBox(
               //  width: 30,
-              height: 15,
+              height: 15 / 97 * width,
               child: Gilroy(
                 fontWeight: FontWeight.w700,
                 text: text,
-                fontSize: 17,
-                height: 1,
+                fontSize: 17 / 97 * width,
+                // height: 1,
                 color: const Color.fromRGBO(53, 54, 79, 1),
               ),
             ),
             const Spacer(),
             SizedBox(
               // width: 31,
-              height: 9,
+              height: 9 / 97 * width,
               child: Gordita(
                 fontWeight: FontWeight.w400,
                 text: subText,
-                fontSize: 9,
-                height: 1,
+                fontSize: 9 / 97 * width,
+                // height: 1,
                 color: const Color.fromRGBO(108, 108, 108, 1),
               ),
             ),
@@ -76,20 +81,25 @@ class SecondaryBadge extends StatelessWidget {
 
   final String text;
   final Widget icon;
+  final double width;
   const SecondaryBadge(
-      {Key? key, required this.subText, required this.text, required this.icon})
+      {Key? key,
+      required this.subText,
+      required this.text,
+      required this.icon,
+      this.width = 97})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 97,
-      height: 104,
+      width: width,
+      height: 104 / 97 * width,
       child: Column(
         children: [
           Container(
-            width: 44,
-            height: 48,
+            width: 44 / 97 * width,
+            height: 48 / 97 * width,
             decoration: const BoxDecoration(
               color: Color.fromRGBO(244, 244, 245, 1),
               borderRadius: BorderRadius.all(
@@ -103,24 +113,24 @@ class SecondaryBadge extends StatelessWidget {
           const Spacer(),
           SizedBox(
             //  width: 30,
-            height: 15,
+            height: 15 / 97 * width,
             child: Gilroy(
               fontWeight: FontWeight.w700,
               text: text,
-              fontSize: 17,
-              height: 1,
+              fontSize: 17 / 97 * width,
+              // height: 1,
               color: const Color.fromRGBO(53, 54, 79, 1),
             ),
           ),
           const Spacer(),
           SizedBox(
             // width: 31,
-            height: 9,
+            height: 9 / 97 * width,
             child: Gordita(
               fontWeight: FontWeight.w400,
               text: subText,
-              fontSize: 9,
-              height: 1,
+              fontSize: 9 / 97 * width,
+              //  height: 1,
               color: const Color.fromRGBO(108, 108, 108, 1),
             ),
           ),
