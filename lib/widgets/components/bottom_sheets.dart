@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
+import 'package:massagex/widgets/components/avators.dart';
 import 'package:massagex/widgets/components/badges.dart';
 import 'package:massagex/widgets/components/buttons.dart';
+import 'package:massagex/widgets/components/cards.dart';
+import 'package:massagex/widgets/components/chips.dart';
 import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/spinars.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
@@ -290,22 +293,287 @@ extension CustomBottomSheetExt on BuildContext {
   }
 }
 
+abstract class NotificationData {
+  final String avator;
+  final String cancelText;
+  final String title;
+  final String userName;
+  final String dateTime;
+
+  final void Function(BuildContext context) onCancel;
+  final void Function(BuildContext context, bool status) onComplete;
+  NotificationData(
+      {required this.avator,
+      required this.cancelText,
+      required this.title,
+      required this.userName,
+      required this.dateTime,
+      required this.onCancel,
+      required this.onComplete});
+}
+
+class IncomingRequestNotificationData extends NotificationData {
+  final String serviceTitle;
+  final double price;
+  final String description;
+  final String descriptionUnderline;
+  final String distanceText;
+  final String acceptText;
+  final String declineText;
+  final List<String> extras;
+  final void Function(BuildContext context) onAccept;
+  final void Function(BuildContext context) onDecline;
+
+  IncomingRequestNotificationData({
+    required super.avator,
+    required super.cancelText,
+    required super.title,
+    required super.userName,
+    required super.dateTime,
+    required super.onCancel,
+    required super.onComplete,
+    required this.serviceTitle,
+    required this.price,
+    required this.description,
+    required this.descriptionUnderline,
+    required this.extras,
+    required this.onAccept,
+    required this.onDecline,
+    required this.distanceText,
+    required this.declineText,
+    required this.acceptText,
+  });
+}
+
+class PaymentReceivedNotificationData extends IncomingRequestNotificationData {
+  PaymentReceivedNotificationData(
+      {required super.avator,
+      required super.cancelText,
+      required super.title,
+      required super.userName,
+      required super.dateTime,
+      required super.onCancel,
+      required super.onComplete,
+      required super.serviceTitle,
+      required super.price,
+      required super.description,
+      required super.descriptionUnderline,
+      required super.extras,
+      required super.onAccept,
+      required super.onDecline,
+      required super.distanceText,
+      required super.acceptText,
+      required super.declineText});
+}
+
+class ReviewNotificationData extends NotificationData {
+  final String ratingSubtitle;
+  final String reviewComment;
+  final double rating;
+  final void Function() onReply;
+  ReviewNotificationData(
+      {required super.avator,
+      required super.cancelText,
+      required super.title,
+      required super.userName,
+      required super.dateTime,
+      required super.onCancel,
+      required super.onComplete,
+      required this.onReply,
+      required this.rating,
+      required this.ratingSubtitle,
+      required this.reviewComment});
+}
+
 class NotificationBottomSheet extends StatelessWidget {
-  const NotificationBottomSheet({Key? key}) : super(key: key);
+  final NotificationData data;
+  const NotificationBottomSheet({Key? key, required this.data})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
-extension NotificationBottomSheetExt on BuildContext {
-  Future<T?> showNotificationBottomSheet<T>() {
-    return showModalBottomSheet<T>(
-        context: this,
-        builder: (ctx) {
-          return const NotificationBottomSheet();
-        });
+    return SizedBox.expand(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextsButton(
+                  onPressed: () => data.onCancel(context),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Nunito(
+                        text: data.cancelText,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      const Icon(
+                        IconlyLight.close_square,
+                        color: Colors.red,
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+            thickness: 1,
+          ),
+          Gilroy(
+            text: data.title,
+            fontWeight: FontWeight.w600,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: OutlinedAvator(
+              radius: 30,
+              border: Border.all(
+                width: 2,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              backgroundImage: AssetImage(data.avator),
+            ),
+          ),
+          //incomming request
+          if (data is IncomingRequestNotificationData) ...[
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+              child: DistanceChip(
+                label: Nunito(
+                  text: (data as IncomingRequestNotificationData).distanceText,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Nunito(
+                  text: (data as IncomingRequestNotificationData).dateTime,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                child: CardWithActions(
+                  color: Colors.white,
+                  actionMainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  actions: [
+                    PrimaryButton(
+                      onPressed: () => (data as IncomingRequestNotificationData)
+                          .onAccept(context),
+                      child: Nunito(
+                          text: (data as IncomingRequestNotificationData)
+                              .acceptText),
+                    ),
+                    SecondaryButton(
+                      onPressed: () => (data as IncomingRequestNotificationData)
+                          .onDecline(context),
+                      child: Nunito(
+                          text: (data as IncomingRequestNotificationData)
+                              .declineText),
+                    )
+                  ],
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Nunito(
+                              text: (data as IncomingRequestNotificationData)
+                                  .serviceTitle,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Gordita(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            text:
+                                '${(data as IncomingRequestNotificationData).price.toStringAsFixed(2)} Tsh',
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Nunito(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          text: (data as IncomingRequestNotificationData)
+                              .description),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Row(
+                        children: [
+                          const Icon(IconlyLight.time_circle),
+                          Expanded(
+                            child: Nunito(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                                text: (data as IncomingRequestNotificationData)
+                                    .descriptionUnderline),
+                          )
+                        ],
+                      ),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        direction: Axis.horizontal,
+                        children: [
+                          ...(data as IncomingRequestNotificationData)
+                              .extras
+                              .map((e) => SizedBox(
+                                    width: 70,
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          IconlyLight.tick_square,
+                                          size: 14,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 4.0),
+                                          child: Nunito(
+                                            text: e,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ))
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+          //payment recieved
+          if (data is PaymentReceivedNotificationData) ...[],
+          //review notification
+          if (data is ReviewNotificationData) ...[]
+        ],
+      ),
+    );
   }
 }
 
@@ -374,13 +642,42 @@ Widget getRequestBottomSheet(BuildContext context) {
 
 @WidgetbookUseCase(name: "Request", type: NotificationBottomSheet)
 Widget getNotificationBottomSheet(BuildContext context) {
+  double heightFactor = context.knobs
+      .slider(label: "Height Factor", min: 0, max: 1, initialValue: 0.89);
+
   return Center(
     child: SizedBox(
       height: 50,
       child: PrimaryButton(
         child: const Nunito(text: "Show sheet"),
         onPressed: () async {
-          context.showNotificationBottomSheet();
+          context.showCustomBottomSheet(
+              backgroundColor: Colors.white,
+              heightFactor: heightFactor,
+              elevation: 8,
+              builder: (context) {
+                return NotificationBottomSheet(
+                  data: IncomingRequestNotificationData(
+                      avator: 'assets/images/intro_picture_4.png',
+                      cancelText: "Cancel",
+                      title: "Incomming request",
+                      userName: "John Doe",
+                      dateTime: "22 jan 2022",
+                      onCancel: (ctx) {},
+                      onComplete: (ctx, status) {},
+                      serviceTitle: "Full body massage",
+                      price: 34.6,
+                      description:
+                          "This is description here test to view it here ",
+                      descriptionUnderline: "1 hour with full relaxation",
+                      extras: ["free", "good ", 'relax'],
+                      onAccept: (ctx) {},
+                      onDecline: (ctx) {},
+                      distanceText: "2km kwa mfipa kibaha",
+                      declineText: "Dicline",
+                      acceptText: "Accept"),
+                );
+              });
         },
       ),
     ),
