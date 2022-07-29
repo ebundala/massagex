@@ -6,15 +6,16 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart'
 import 'package:widgetbook/widgetbook.dart' hide WidgetbookUseCase;
 
 class StarsRating extends StatelessWidget {
-  const StarsRating({
-    Key? key,
-    this.count = 0,
-    this.rating = 0,
-    this.iconSize = 24,
-    this.starCount = 5,
-    this.activeColor,
-    this.inactiveColor,
-  })  : assert(rating <= starCount),
+  const StarsRating(
+      {Key? key,
+      this.count = 0,
+      this.rating = 0,
+      this.iconSize = 24,
+      this.starCount = 5,
+      this.activeColor,
+      this.inactiveColor,
+      this.showCount = true})
+      : assert(rating <= starCount),
         super(key: key);
   final double rating;
   final int count;
@@ -22,6 +23,7 @@ class StarsRating extends StatelessWidget {
   final Color? activeColor;
   final Color? inactiveColor;
   final int starCount;
+  final bool showCount;
   List<Widget> buildIcons(double rating, BuildContext context) {
     List<Widget> icons = [];
     while (icons.length < starCount) {
@@ -63,24 +65,26 @@ class StarsRating extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ...icons,
-          SizedBox(
-            width: iconSize / 2 * (ratingStr.length + 2) * textSizeFactor,
-            child: Nunito(
-              text: '($ratingStr)',
-              fontWeight: FontWeight.w600,
-              fontSize: iconSize * textSizeFactor,
-              color: Theme.of(context).colorScheme.onBackground,
+          if (showCount) ...[
+            SizedBox(
+              width: iconSize / 2 * (ratingStr.length + 2) * textSizeFactor,
+              child: Nunito(
+                text: '($ratingStr)',
+                fontWeight: FontWeight.w600,
+                fontSize: iconSize * textSizeFactor,
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
             ),
-          ),
-          SizedBox(
-            width: iconSize * countStr.length * textSizeFactor,
-            child: Nunito(
-              text: countStr,
-              fontWeight: FontWeight.w400,
-              fontSize: iconSize * textSizeFactor,
-              color: const Color.fromRGBO(128, 128, 128, 1),
-            ),
-          )
+            SizedBox(
+              width: iconSize * countStr.length * textSizeFactor,
+              child: Nunito(
+                text: countStr,
+                fontWeight: FontWeight.w400,
+                fontSize: iconSize * textSizeFactor,
+                color: const Color.fromRGBO(128, 128, 128, 1),
+              ),
+            )
+          ]
         ],
       ),
     );

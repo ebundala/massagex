@@ -7,6 +7,7 @@ import 'package:massagex/widgets/components/cards.dart';
 import 'package:massagex/widgets/components/chips.dart';
 import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/spinars.dart';
+import 'package:massagex/widgets/components/stars_rating.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart'
@@ -371,6 +372,7 @@ class ReviewNotificationData extends NotificationData {
   final String reviewComment;
   final double rating;
   final void Function() onReply;
+  final String replyText;
   ReviewNotificationData(
       {required super.avator,
       required super.cancelText,
@@ -382,7 +384,8 @@ class ReviewNotificationData extends NotificationData {
       required this.onReply,
       required this.rating,
       required this.ratingSubtitle,
-      required this.reviewComment});
+      required this.reviewComment,
+      required this.replyText});
 }
 
 class NotificationBottomSheet extends StatelessWidget {
@@ -568,9 +571,68 @@ class NotificationBottomSheet extends StatelessWidget {
             )
           ],
           //payment recieved
-          if (data is PaymentReceivedNotificationData) ...[],
+          // if (data is PaymentReceivedNotificationData) ...[],
           //review notification
-          if (data is ReviewNotificationData) ...[]
+          if (data is ReviewNotificationData) ...[
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+              child: StarsRating(
+                showCount: false,
+                rating: (data as ReviewNotificationData).rating,
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+              child: Nunito(
+                text: (data as ReviewNotificationData).ratingSubtitle,
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Nunito(
+                  text: (data as ReviewNotificationData).dateTime,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            Flexible(
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 2.0),
+                  child: Column(
+                    children: [
+                      PrimaryCard(
+                        color: const Color.fromRGBO(213, 221, 224, 1),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Nunito(
+                            text:
+                                (data as ReviewNotificationData).reviewComment,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: PrimaryButton(
+                          child: Gilroy(
+                            text: (data as ReviewNotificationData).replyText,
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
+            )
+          ]
         ],
       ),
     );
@@ -644,7 +706,75 @@ Widget getRequestBottomSheet(BuildContext context) {
 Widget getNotificationBottomSheet(BuildContext context) {
   double heightFactor = context.knobs
       .slider(label: "Height Factor", min: 0, max: 1, initialValue: 0.89);
+  NotificationData? data;
 
+  bool isPayment =
+      context.knobs.boolean(label: "is payment", initialValue: false);
+  bool isReview =
+      context.knobs.boolean(label: "is Review", initialValue: false);
+
+  if (isPayment) {
+    data = PaymentReceivedNotificationData(
+      avator: 'assets/images/intro_picture_4.png',
+      cancelText: "Cancel",
+      title: "Payment Received",
+      userName: "John Doe",
+      dateTime: "22 jan 2022",
+      onCancel: (ctx) {
+        Navigator.of(ctx).pop();
+      },
+      onComplete: (ctx, status) {},
+      serviceTitle: "Full body massage",
+      price: 34.6,
+      description: "This is description here test to view it here ",
+      descriptionUnderline: "1 hour with full relaxation",
+      extras: ["free", "good ", 'relax'],
+      onAccept: (ctx) {},
+      onDecline: (ctx) {},
+      distanceText: "2km kwa mfipa kibaha",
+      declineText: "Decline",
+      acceptText: "Accept",
+    );
+  } else if (isReview) {
+    data = ReviewNotificationData(
+      avator: 'assets/images/intro_picture_4.png',
+      cancelText: "Cancel",
+      title: "You have been rated!",
+      userName: "John Doe",
+      dateTime: "22 jan 2022",
+      replyText: "Reply",
+      onCancel: (ctx) {
+        Navigator.of(ctx).pop();
+      },
+      onComplete: (ctx, status) {},
+      onReply: () {},
+      rating: 4.13,
+      ratingSubtitle: "good ",
+      reviewComment:
+          "This is the review comment you have been left by your reviewer",
+    );
+  } else {
+    data = IncomingRequestNotificationData(
+        avator: 'assets/images/intro_picture_4.png',
+        cancelText: "Cancel",
+        title: "Incomming request",
+        userName: "John Doe",
+        dateTime: "22 jan 2022",
+        onCancel: (ctx) {
+          Navigator.of(ctx).pop();
+        },
+        onComplete: (ctx, status) {},
+        serviceTitle: "Full body massage",
+        price: 34.6,
+        description: "This is description here test to view it here ",
+        descriptionUnderline: "1 hour with full relaxation",
+        extras: ["free", "good ", 'relax'],
+        onAccept: (ctx) {},
+        onDecline: (ctx) {},
+        distanceText: "2km kwa mfipa kibaha",
+        declineText: "Dicline",
+        acceptText: "Accept");
+  }
   return Center(
     child: SizedBox(
       height: 50,
@@ -657,25 +787,7 @@ Widget getNotificationBottomSheet(BuildContext context) {
               elevation: 8,
               builder: (context) {
                 return NotificationBottomSheet(
-                  data: IncomingRequestNotificationData(
-                      avator: 'assets/images/intro_picture_4.png',
-                      cancelText: "Cancel",
-                      title: "Incomming request",
-                      userName: "John Doe",
-                      dateTime: "22 jan 2022",
-                      onCancel: (ctx) {},
-                      onComplete: (ctx, status) {},
-                      serviceTitle: "Full body massage",
-                      price: 34.6,
-                      description:
-                          "This is description here test to view it here ",
-                      descriptionUnderline: "1 hour with full relaxation",
-                      extras: ["free", "good ", 'relax'],
-                      onAccept: (ctx) {},
-                      onDecline: (ctx) {},
-                      distanceText: "2km kwa mfipa kibaha",
-                      declineText: "Dicline",
-                      acceptText: "Accept"),
+                  data: data!,
                 );
               });
         },
