@@ -53,14 +53,18 @@ class TravelerMapInfoCard extends StatelessWidget {
           userSubTitle: userSubTitle,
           rating: rating,
           count: count,
+          avatorWidth: 40,
           action: SizedBox(
-            width: 60,
+            width: 48,
             child: Row(
               children: [
-                const Icon(IconlyLight.time_circle),
+                const Icon(
+                  IconlyLight.time_circle,
+                  size: 12,
+                ),
                 Nunito(
                   text: eta,
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: FontWeight.w500,
                 )
               ],
@@ -75,13 +79,13 @@ class TravelerMapInfoCard extends StatelessWidget {
                 children: [
                   Nunito(
                     text: title,
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w500,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Nunito(
                     text: discription,
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: FontWeight.w400,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -91,7 +95,7 @@ class TravelerMapInfoCard extends StatelessWidget {
             ),
             Gordita(
               text: price,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
             )
           ],
@@ -99,50 +103,55 @@ class TravelerMapInfoCard extends StatelessWidget {
         const Divider(
           thickness: 1,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextButton(
-              onPressed: onCall,
-              child: Row(
-                children: [
-                  Icon(
-                    IconlyLight.call,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const Nunito(
-                    text: "Call",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Color.fromRGBO(22, 10, 49, 1),
-                  )
-                ],
-              ),
-            ),
-            TextButton(
-                onPressed: onCancel,
+        SizedBox(
+          height: 32,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                onPressed: onCall,
                 child: Row(
                   children: [
                     Icon(
-                      IconlyLight.shield_fail,
+                      IconlyLight.call,
+                      size: 16,
                       color: Theme.of(context).colorScheme.primary,
                     ),
                     const Nunito(
-                      text: "Cancel",
+                      text: "Call",
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: Color.fromRGBO(22, 10, 49, 1),
                     )
                   ],
-                ))
-          ],
+                ),
+              ),
+              TextButton(
+                  onPressed: onCancel,
+                  child: Row(
+                    children: [
+                      Icon(
+                        IconlyLight.shield_fail,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const Nunito(
+                        text: "Cancel",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Color.fromRGBO(22, 10, 49, 1),
+                      )
+                    ],
+                  ))
+            ],
+          ),
         ),
         const SizedBox(
-          height: 8,
+          height: 4,
         ),
         if (!isArrived)
           PrimaryButton(
-              height: 45,
+              height: 28,
               width: double.infinity,
               onPressed: onArrival,
               child: const Nunito(
@@ -152,14 +161,14 @@ class TravelerMapInfoCard extends StatelessWidget {
               )),
         if (isArrived)
           SecondaryButton(
-              height: 45,
+              height: 28,
               width: double.infinity,
               onPressed: () {
                 onPayment(isProvider);
               },
               child: Nunito(
                 text: isProvider ? "Request payment" : "Make payment",
-                fontSize: 17,
+                fontSize: 14,
                 fontWeight: FontWeight.w400,
               )),
       ],

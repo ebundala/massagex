@@ -318,6 +318,21 @@ class DestinationMarkerPainter extends CustomPainter {
   }
 }
 
+class StartingPointMarker extends StatelessWidget {
+  final double radius;
+
+  const StartingPointMarker({Key? key, this.radius = 10}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: radius * 2,
+      width: radius * 2,
+      decoration: BoxDecoration(
+          shape: BoxShape.circle, color: Theme.of(context).colorScheme.primary),
+    );
+  }
+}
+
 @WidgetbookUseCase(name: "primary", type: UserLocationMarker)
 Widget getUserLocationMarker(BuildContext context) {
   double height = context.knobs

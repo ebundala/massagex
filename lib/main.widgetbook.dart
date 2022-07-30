@@ -61,6 +61,7 @@ import 'package:massagex/widgets/components/map_markers.dart';
 import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/map_location_name_card.dart';
 import 'package:massagex/widgets/components/bottom_sheets.dart';
+import 'package:massagex/widgets/components/live_map.dart';
 
 void main() {
   runApp(HotReload());
@@ -383,6 +384,16 @@ class HotReload extends StatelessWidget {
                 WidgetbookFolder(
                   name: 'components',
                   widgets: [
+                    WidgetbookComponent(
+                      name: 'LiveMap',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) => getTravellerLivemap(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
                     WidgetbookComponent(
                       name: 'RequestBottomSheet',
                       useCases: [

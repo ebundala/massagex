@@ -61,7 +61,7 @@ class MapNavigationDestinationInfo extends StatelessWidget {
             Flexible(
               child: Nunito(
                 text: startingPointSubtitle,
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w300,
                 color: const Color.fromRGBO(128, 128, 128, 1),
                 overflow: TextOverflow.ellipsis,
@@ -71,7 +71,7 @@ class MapNavigationDestinationInfo extends StatelessWidget {
             Flexible(
               child: Gilroy(
                 text: startingPoint,
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: const Color.fromRGBO(48, 48, 48, 1),
                 overflow: TextOverflow.ellipsis,
@@ -87,7 +87,7 @@ class MapNavigationDestinationInfo extends StatelessWidget {
             Flexible(
               child: Nunito(
                 text: destinationSubTitle,
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w300,
                 color: const Color.fromRGBO(128, 128, 128, 1),
                 overflow: TextOverflow.ellipsis,
@@ -97,7 +97,7 @@ class MapNavigationDestinationInfo extends StatelessWidget {
             Flexible(
               child: Gilroy(
                 text: destination,
-                fontSize: 16,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: const Color.fromRGBO(48, 48, 48, 1),
                 overflow: TextOverflow.ellipsis,
