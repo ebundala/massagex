@@ -19,7 +19,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // make sure you call `initializeApp` before using other Firebase services.
   //await Firebase.initializeApp();
   await Hive.initFlutter();
-  var settings = await Hive.openBox(AppBloc.settingsKey);
+  var settings = await Hive.openBox(AppBloc.userSettingsKey);
   final notification = await handleNotificationPayload(settings, message);
   await settings.close();
   AndroidNotificationChannel channel;

@@ -17,7 +17,7 @@ void main() {
         link: HttpLink("http://localhost:3000/graphql"),
         cache: GraphQLCache(store: InMemoryStore()));
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(
+    await tester.pumpWidget(MassageX(
       client: client,
     ));
 

@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:graphql/client.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:massagex/graphql/clients/find_payment_methods/find_payment_methods_bloc.dart';
 import 'package:massagex/graphql/clients/find_user/find_user_bloc.dart';
 import 'package:massagex/graphql/clients/update_my_business_profile/update_my_business_profile_bloc.dart';
@@ -17,25 +17,28 @@ import 'package:massagex/state/app/fcm_background_handler.dart';
 import 'package:massagex/state/deeplink/deeplink_bloc.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
-import 'package:models/models.dart';
+import 'package:models/float_field_update_operations_input.dart';
+import 'package:models/image_size.dart';
+import 'package:models/location_update_without_users_input.dart';
+import 'package:models/user_response.dart';
+import 'package:models/notification_type.dart';
 import 'package:models/notification.dart' as _;
 import 'package:models/paybill_request.dart';
 import 'package:models/payment_method.dart';
 import 'package:models/register_device_input.dart';
+import 'package:models/review.dart';
 import 'package:models/scalars/phone_number.dart';
-import 'package:models/user_where_unique_input.dart';
+import 'package:models/user.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:massagex/state/geolocation/geolocation_bloc.dart';
-import 'package:models/auth_result.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:massagex/utils.dart';
-import 'package:models/lat_lon.dart';
 import 'package:models/order.dart';
 import 'package:massagex/graphql/clients/register_device/register_device_bloc.dart';
 import 'package:massagex/graphql/clients/paybill/paybill_bloc.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:uuid/uuid.dart';
@@ -44,43 +47,51 @@ part 'app_state.dart';
 
 Future<_.Notification?> handleNotificationPayload(
     Box box, RemoteMessage message) async {
-  if (message.data['payload'] != null) {
-    // await box.delete(AppBloc.notificationsKey);
-    var notifications =
-        await box.get(AppBloc.notificationsKey, defaultValue: <dynamic>[])
-            as List<dynamic>;
-    final notification =
-        jsonDecode(message.data["payload"]) as Map<dynamic, dynamic>;
-    notifications.insertAll(0, [notification]);
-    await box.put(AppBloc.notificationsKey, notifications);
-    print('Handling message $notification');
-    return _.Notification.fromJson(notification);
+  try {
+    if (message.data['payload'] != null) {
+      // await box.delete(AppBloc.notificationsKey);
+      var notifications =
+          await box.get(AppBloc.notificationsKey, defaultValue: <dynamic>[])
+              as List<dynamic>;
+      final notification =
+          jsonDecode(message.data["payload"]) as Map<dynamic, dynamic>;
+      notifications.insertAll(0, [notification]);
+      await box.put(AppBloc.notificationsKey, notifications);
+      print('Handling message $notification');
+      return _.Notification.fromJson(notification);
+    }
+  } catch (e) {
+    return null;
   }
   return null;
 }
 
 class AppBloc extends Bloc<AppEvent, AppState> {
-  static const authkey = "app_token";
-  static const providerkey = "isProvider";
-  static const firstLaunchKey = "first_launch";
+  AppBloc({required this.url, this.pageSize = 10})
+      : super(const AppInitial(
+            isProviderMode: false, isTravellingSalesman: false)) {
+    on<AppEvent>((event, emit) => handleEvents(event, emit));
+    bootstrap();
+  }
+
+  static const appSettingsKey = 'permanent_app_settings_key';
+  static const userProfileKey = "app_token";
+  static const dataKey = "app_data_key";
   static const deviceIdKey = "device_id_key";
   static const fcmIdKey = "fcm_id_key";
+  static const firstLaunchKey = "first_launch";
   static const idTokenKey = "idTokenKey";
   static const notificationsKey = "notifications_Key";
-  static const dataKey = "app_data_key";
-  static const settingsKey = "app_setting_key";
+  static const providerkey = "isProvider";
+  static const userSettingsKey = "temporary_app_setting_key";
   static const travellingSalesmanKey = "travelling_salesman_key";
 
-  Box<Map<dynamic, dynamic>?>? box;
-  Box? settings;
-  final String url;
-  final int pageSize;
-  GraphQLClient? client;
+  Box? appSettings;
 
-  /// plugins
-  final picker = ImagePicker();
-  final FirebaseMessaging messaging = FirebaseMessaging.instance;
-  final FirebaseAuth fauth = FirebaseAuth.instance;
+  /// hive box streams
+  StreamSubscription<BoxEvent>? authStream;
+
+  Box<Map<dynamic, dynamic>?>? box;
   final AndroidNotificationChannel channel = const AndroidNotificationChannel(
     'high_importance_channel', // id
     'High Importance Notifications', // title
@@ -88,54 +99,63 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         'This channel is used for important notifications.', // description
     importance: Importance.high,
   );
+
+  GraphQLClient? client;
+  DeeplinkBloc? deeplinkBloc;
+  final FirebaseAuth fauth = FirebaseAuth.instance;
+  StreamSubscription<BoxEvent>? fcmIdStream;
+  FindUserBloc? findUserBloc;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  /// hive box streams
-  StreamSubscription<BoxEvent>? authStream;
-  StreamSubscription<BoxEvent>? providerModeSub;
-  StreamSubscription<BoxEvent>? fcmIdStream;
-  StreamSubscription<BoxEvent>? idTokenStream;
-  StreamSubscription<BoxEvent>? notificationsStream;
-
   /// blocs
   GeolocationBloc? geolocationBloc;
-  UpdateMyBusinessProfileBloc? updateMyBusinessProfileBloc;
-  FindUserBloc? findUserBloc;
-  UpdateMyProfileBloc? updateMyProfileBloc;
-  RegisterDeviceBloc? registerDeviceBloc;
-  DeeplinkBloc? deeplinkBloc;
+
+  StreamSubscription<BoxEvent>? idTokenStream;
+  final FirebaseMessaging messaging = FirebaseMessaging.instance;
+  StreamSubscription<BoxEvent>? notificationsStream;
+  final int pageSize;
   PaybillBloc? paybillBloc;
 
-  //Geolocation blocs
-  // LocationsBloc routingFeedBloc;
-  // ReverseGeocodeBloc reverseGeocodeBloc;
-  // GeocodeBloc geocodeBloc;
-  // RouteBloc geoRoutingBloc;
+  /// plugins
+  final picker = ImagePicker();
 
-  AppBloc({required this.box, required this.url, this.pageSize = 10})
-      : super(const AppInitial(
-            isProviderMode: false, isTravellingSalesman: false)) {
-    bootstrap();
+  StreamSubscription<BoxEvent>? providerModeSub;
+  RegisterDeviceBloc? registerDeviceBloc;
+  Box? userSettings;
+  UpdateMyBusinessProfileBloc? updateMyBusinessProfileBloc;
+  UpdateMyProfileBloc? updateMyProfileBloc;
+  final String url;
+
+  @override
+  Future<void> close() async {
+    await authStream!.cancel();
+    await registerDeviceBloc!.close();
+    await idTokenStream!.cancel();
+    await fcmIdStream!.cancel();
+    await notificationsStream!.cancel();
+    await paybillBloc!.close();
+    await updateMyBusinessProfileBloc!.close();
+    await updateMyProfileBloc!.close();
+    await findUserBloc!.close();
+    await geolocationBloc!.close();
+    await deeplinkBloc!.close();
+    await authStream!.cancel();
+    await providerModeSub!.cancel();
+    await fcmIdStream!.cancel();
+    await idTokenStream!.cancel();
+    await notificationsStream!.cancel();
+
+    return super.close();
   }
 
   int get getPagesize => pageSize;
 
-  // reportLinkException(
-  //     Request, Stream<Response> Function(Request), LinkException) {}
-  // reportGraphQlException() {}
-  _initDeviceId() async {
-    if (deviceId == null) {
-      var uuid = const Uuid();
-      await settings!.put(deviceIdKey, uuid.v4());
-    }
-  }
-
   bootstrap() async {
     box = await Hive.openBox(AppBloc.dataKey);
-    settings = await Hive.openBox(AppBloc.settingsKey);
-    // _notificationOpenedBroadcastStream =
-    //     _notificationOpenedStream.stream.asBroadcastStream();
+    userSettings = await Hive.openBox(AppBloc.userSettingsKey);
+    appSettings = await Hive.openBox(AppBloc.appSettingsKey);
+
     _initDeviceId();
     final httplink = HttpLink(url);
     final tokenlink = AuthLink(getToken: () => token);
@@ -189,11 +209,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           geolocationBloc!.add(GeolocationListenForLocationChanged());
         }
       }
-      if (state is GeolocationPositionChanged && auth?.data?.id != null) {
+      if (state is GeolocationPositionChanged &&
+          currentUser?.data?.id != null) {
         // updateMyProfileBloc.add(UpdateMyProfileResseted());
         updateMyProfileBloc!.add(
           UpdateMyProfileExcuted(
-              id: auth!.data!.id!,
+              id: currentUser!.data!.id!,
               location: LocationUpdateWithoutUsersInput(
                   lat: FloatFieldUpdateOperationsInput(
                       set$: state.position.latitude),
@@ -205,34 +226,39 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         );
       }
     });
-
-    if (auth?.data?.id != null) {
-      findUserBloc!.add(
-        FindUserExcuted(
-          id: auth!.data!.id!,
-        ),
-      );
-      registerDeviceBloc!.add(
-        RegisterDeviceExcuted(
-          device: RegisterDeviceInput(userId: auth!.data!.id!, id: deviceId!),
-        ),
-      );
-    }
-    authStream = settings!.watch(key: authkey).listen((event) {
-      //todo link user and device here
-      if (auth?.data?.id != null) {
-        print("userid ${auth!.data!.id}");
-        findUserBloc!.add(
-          FindUserExcuted(id: auth!.data!.id!),
-        );
-        registerDeviceBloc!.add(
-          RegisterDeviceExcuted(
-            device: RegisterDeviceInput(userId: auth!.data!.id, id: deviceId!),
-          ),
-        );
-      }
+    findUserBloc!.stream.asBroadcastStream().listen((event) {
+      userSettings!.put(userProfileKey, event.data);
     });
-    fcmIdStream = settings!.watch(key: fcmIdKey).listen((event) {
+
+    // if (currentUser?.data?.id != null) {
+    //   findUserBloc!.add(
+    //     FindUserExcuted(
+    //       id: currentUser!.data!.id!,
+    //     ),
+    //   );
+    //   registerDeviceBloc!.add(
+    //     RegisterDeviceExcuted(
+    //       device: RegisterDeviceInput(userId: currentUser!.data!.id!, id: deviceId!),
+    //     ),
+    //   );
+    // }
+
+    // authStream = userSettings!.watch(key: authkey).listen((event) {
+    //   //Todo change to firebase auth
+    //   if (user?.data?.id != null) {
+    //     print("default auth  ${user!.data!.id}");
+    //     findUserBloc!.add(
+    //       FindUserExcuted(id: user!.data!.id!),
+    //     );
+    //     registerDeviceBloc!.add(
+    //       RegisterDeviceExcuted(
+    //         device: RegisterDeviceInput(userId: user!.data!.id, id: deviceId!),
+    //       ),
+    //     );
+    //   }
+    // });
+
+    fcmIdStream = appSettings!.watch(key: fcmIdKey).listen((event) {
       if (event.value != null) {
         print("fcmid ${event.value}");
         registerDeviceBloc!.add(
@@ -243,64 +269,76 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       }
     });
 
-    idTokenStream = settings!.watch(key: idTokenKey).listen((event) {
-      if (event.value != null) {
-        //todo fetch current user here
-        print("idToken ${event.value}");
-      }
-    });
+    // idTokenStream = userSettings!.watch(key: idTokenKey).listen((event) {
+    //   if (event.value != null) {
+    //     print("idToken changed ${event.value}");
+    //   }
+    // });
 
     notificationsStream =
-        settings!.watch(key: notificationsKey).listen((event) {
-      // if (event.value != null) {
-      //  print(event.value);
+        userSettings!.watch(key: notificationsKey).listen((event) {
       add(const AppResseted());
       add(AppNotified());
-      //  }
     });
-    providerModeSub = settings!.watch(key: providerkey).listen((event) {
+    providerModeSub = userSettings!.watch(key: providerkey).listen((event) {
       //disable traveling salesman if provider mode disabled
       if (event.value == false) {
-        settings!.put(travellingSalesmanKey, false);
+        userSettings!.put(travellingSalesmanKey, false);
       }
     });
-    await Firebase.initializeApp();
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((message) async {
-      final notification = await handleNotificationPayload(settings!, message);
-      final data = parseNotification(notification!);
-      var body = "";
-      if (data is Order) {
-        body = data.service!.name!;
-      }
-      if (data is Review) {
-        body = data.author!.displayName!;
-      }
+      final notification =
+          await handleNotificationPayload(userSettings!, message);
+      if (notification != null) {
+        final data = parseNotification(notification);
+        var body = "";
+        if (data is Order) {
+          body = data.service!.name!;
+        }
+        if (data is Review) {
+          body = data.author!.displayName!;
+        }
 
-      showNotification(
-          notification.hashCode,
-          notification!.notificationType!.toJson().replaceAll(RegExp("_"), " "),
-          body,
-          payload: message.data["payload"]);
+        showNotification(
+            notification.hashCode,
+            notification.notificationType!
+                .toJson()
+                .replaceAll(RegExp("_"), " "),
+            body,
+            payload: message.data["payload"]);
+      }
     });
 
     messaging.onTokenRefresh.listen((key) {
-      settings!.put(fcmIdKey, key);
+      appSettings!.put(fcmIdKey, key);
     });
 
     fauth.idTokenChanges().listen((user) async {
       final token = await fauth.currentUser?.getIdToken();
-      settings!.put(idTokenKey, token);
+      userSettings!.put(idTokenKey, token);
+      if (user != null) {
+        print("firebase login ${user.uid}");
+        findUserBloc!.add(
+          FindUserExcuted(id: user.uid),
+        );
+        registerDeviceBloc!.add(
+          RegisterDeviceExcuted(
+            device: RegisterDeviceInput(userId: user.uid, id: deviceId!),
+          ),
+        );
+      }
     });
+
     //get initial tokens
-    await settings!.put(fcmIdKey, await messaging.getToken());
-    await settings!.put(idTokenKey, await fauth.currentUser?.getIdToken());
+    await appSettings!.put(fcmIdKey, await messaging.getToken());
+    await userSettings!.put(idTokenKey, await fauth.currentUser?.getIdToken());
 
     flutterLocalNotificationsPlugin.initialize(
         const InitializationSettings(
           android: AndroidInitializationSettings(
-            "logo",
+            "launch_background",
           ),
         ), onSelectNotification: (payload) async {
       final data = jsonDecode(payload ?? '{}');
@@ -346,8 +384,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         print(e);
       }
     }
-
-    geolocationBloc!.add(GeolocationStart());
+    //  Todo start geolocation when user login
+    // geolocationBloc!.add(GeolocationStart());
   }
 
   showNotification(int id, String title, String body, {String? payload}) {
@@ -368,10 +406,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         payload: payload);
   }
 
-  AuthResult? getAuthFromJson(Map<dynamic, dynamic>? json) {
+  UserResponse? getAuthUserProfileFromJson(Map<dynamic, dynamic>? json) {
     try {
       if (json != null) {
-        return AuthResult.fromJson(json);
+        return UserResponse.fromJson(json);
       }
       return null;
     } catch (e) {
@@ -379,119 +417,103 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     }
   }
 
-  @override
-  Future<void> close() async {
-    await authStream!.cancel();
-    await registerDeviceBloc!.close();
-    await idTokenStream!.cancel();
-    await fcmIdStream!.cancel();
-    await notificationsStream!.cancel();
-    await paybillBloc!.close();
-    await updateMyBusinessProfileBloc!.close();
-    await updateMyProfileBloc!.close();
-    await findUserBloc!.close();
-    await geolocationBloc!.close();
-    await deeplinkBloc!.close();
-    await authStream!.cancel();
-    await providerModeSub!.cancel();
-    await fcmIdStream!.cancel();
-    await idTokenStream!.cancel();
-    await notificationsStream!.cancel();
-
-    return super.close();
-  }
-
-  @override
-  Stream<AppState> mapEventToState(
-    AppEvent event,
-  ) async* {
-    yield* init(event);
-  }
-
   String? get token {
-    return auth?.token != null ? "Bearer ${auth?.token}" : null;
+    final idToken = userSettings!.get(idTokenKey);
+    return idToken != null ? "Bearer $idToken" : null;
   }
 
-  AuthResult? get auth {
-    return getAuthFromJson(settings!.get(
-      authkey,
+  UserResponse? get currentUser {
+    return getAuthUserProfileFromJson(userSettings!.get(
+      userProfileKey,
     ));
   }
 
   bool get firstLauch {
-    return settings!.get(firstLaunchKey, defaultValue: true);
+    return appSettings!.get(firstLaunchKey, defaultValue: true);
   }
 
   String? get deviceId {
-    return settings!.get(deviceIdKey);
+    return appSettings!.get(deviceIdKey);
   }
 
   bool get isProviderEnabled {
-    return settings!.get(providerkey, defaultValue: false);
+    return userSettings!.get(providerkey, defaultValue: false);
   }
 
   bool get isTravellingSalesman {
-    return settings!.get(travellingSalesmanKey, defaultValue: false);
+    return userSettings!.get(travellingSalesmanKey, defaultValue: false);
   }
 
   Iterable<_.Notification> get notifications {
-    final data =
-        settings!.get(notificationsKey, defaultValue: <Map<dynamic, dynamic>>[])
-            as List<dynamic>;
+    final data = userSettings!.get(notificationsKey,
+        defaultValue: <Map<dynamic, dynamic>>[]) as List<dynamic>;
     return Iterable.generate(data.length, (i) {
       return _.Notification.fromJson(data[i]);
     });
   }
 
-  Stream<AppState> init(AppEvent event) async* {
+  Future<void> handleEvents(AppEvent event, Emitter<AppState> emit) async {
     if (event is AppStart) {
       //registerLocationListener();
     }
 
     if (firstLauch) {
-      await settings!.put(firstLaunchKey, false);
-      yield AppFirstStarted(
+      await appSettings!.put(firstLaunchKey, false);
+      emit(AppFirstStarted(
           isProviderMode: isProviderEnabled,
-          isTravellingSalesman: isTravellingSalesman);
+          isTravellingSalesman: isTravellingSalesman));
     } else if (event is AppAuth) {
-      await settings!.put(authkey, event.auth.toJson());
-      yield AppAuthenticated(
+      await userSettings!.put(userProfileKey, event.currentUser.toJson());
+      emit(AppAuthenticated(
           isProviderMode: isProviderEnabled,
-          isTravellingSalesman: isTravellingSalesman);
+          isTravellingSalesman: isTravellingSalesman));
     } else if (event is AppLogout) {
       await box?.clear();
-      await settings!.clear();
-      yield AppLoggedOut(
-          isProviderMode: isProviderEnabled,
-          isTravellingSalesman: isTravellingSalesman);
+      await userSettings!.clear();
+      emit(
+        AppLoggedOut(
+            isProviderMode: isProviderEnabled,
+            isTravellingSalesman: isTravellingSalesman),
+      );
     } else if (event is AppResseted) {
-      yield AppStateReset(
-          isProviderMode: isProviderEnabled,
-          isTravellingSalesman: isTravellingSalesman);
+      emit(
+        AppStateReset(
+            isProviderMode: isProviderEnabled,
+            isTravellingSalesman: isTravellingSalesman),
+      );
     } else if (event is AppModeChaged) {
       if (event.isProviderMode != null) {
-        await settings!.put(providerkey, event.isProviderMode);
+        await userSettings!.put(providerkey, event.isProviderMode);
       }
       if (event.isTravellingSalesman != null) {
-        await settings!.put(travellingSalesmanKey, event.isTravellingSalesman);
+        await userSettings!
+            .put(travellingSalesmanKey, event.isTravellingSalesman);
       }
-      yield AppModeChage(
-          isProviderMode: isProviderEnabled,
-          isTravellingSalesman: isTravellingSalesman);
+      emit(
+        AppModeChage(
+            isProviderMode: isProviderEnabled,
+            isTravellingSalesman: isTravellingSalesman),
+      );
     } else if (event is AppNotified) {
-      yield AppNewNotification(
-          isProviderMode: isProviderEnabled,
-          isTravellingSalesman: isTravellingSalesman);
+      emit(
+        AppNewNotification(
+            isProviderMode: isProviderEnabled,
+            isTravellingSalesman: isTravellingSalesman),
+      );
     } else if (token?.isNotEmpty == true) {
-      yield AppAuthenticated(
-          isProviderMode: isProviderEnabled,
-          isTravellingSalesman: isTravellingSalesman);
+      emit(
+        AppAuthenticated(
+            isProviderMode: isProviderEnabled,
+            isTravellingSalesman: isTravellingSalesman),
+      );
     } else {
       await box?.clear();
-      await settings!.clear();
-      yield AppLoggedOut(
-          isProviderMode: isProviderEnabled,
-          isTravellingSalesman: isTravellingSalesman);
+      await userSettings!.clear();
+      emit(
+        AppLoggedOut(
+            isProviderMode: isProviderEnabled,
+            isTravellingSalesman: isTravellingSalesman),
+      );
     }
   }
 
@@ -505,12 +527,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   Future<_.Notification> removeSeenNotification(
       _.Notification notification) async {
-    var oldData = settings!.get(notificationsKey, defaultValue: []) as List;
+    var oldData = userSettings!.get(notificationsKey, defaultValue: []) as List;
     var trancated = oldData
         .where((element) => !const DeepCollectionEquality()
             .equals(element, notification.toJson()))
         .toList();
-    await settings!.put(notificationsKey, trancated);
+    await userSettings!.put(notificationsKey, trancated);
     deeplinkBloc!
       ..add(const DeeplinkResetted())
       ..add(DeeplinkExcuted(data: notification));
@@ -629,6 +651,22 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             },
           );
         });
+  }
+
+  // reportLinkException(
+  //     Request, Stream<Response> Function(Request), LinkException) {}
+  // reportGraphQlException() {}
+  _initDeviceId() async {
+    if (deviceId == null) {
+      var uuid = const Uuid();
+      await appSettings!.put(deviceIdKey, uuid.v4());
+    }
+  }
+
+  static Future<void> initializePlugins() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    await Hive.initFlutter();
   }
 }
 

@@ -22,11 +22,11 @@ class AppLogout extends AppEvent {
 }
 
 class AppAuth extends AppEvent {
-  final AuthResult auth;
-  const AppAuth(this.auth);
+  final UserResponse currentUser;
+  const AppAuth(this.currentUser);
 
   @override
-  List<Object> get props => [auth];
+  List<Object> get props => [currentUser];
 }
 
 class AppResseted extends AppEvent {
