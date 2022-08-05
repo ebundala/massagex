@@ -22,13 +22,12 @@ import 'package:models/image_size.dart';
 import 'package:models/location_update_without_users_input.dart';
 import 'package:models/user_response.dart';
 import 'package:models/notification_type.dart';
-import 'package:models/notification.dart' as _;
+import 'package:models/notification.dart' as nt;
 import 'package:models/paybill_request.dart';
 import 'package:models/payment_method.dart';
 import 'package:models/register_device_input.dart';
 import 'package:models/review.dart';
 import 'package:models/scalars/phone_number.dart';
-import 'package:models/user.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:massagex/state/geolocation/geolocation_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -45,7 +44,7 @@ import 'package:uuid/uuid.dart';
 part 'app_event.dart';
 part 'app_state.dart';
 
-Future<_.Notification?> handleNotificationPayload(
+Future<nt.Notification?> handleNotificationPayload(
     Box box, RemoteMessage message) async {
   try {
     if (message.data['payload'] != null) {
@@ -57,8 +56,8 @@ Future<_.Notification?> handleNotificationPayload(
           jsonDecode(message.data["payload"]) as Map<dynamic, dynamic>;
       notifications.insertAll(0, [notification]);
       await box.put(AppBloc.notificationsKey, notifications);
-      print('Handling message $notification');
-      return _.Notification.fromJson(notification);
+      // print('Handling message $notification');
+      return nt.Notification.fromJson(notification);
     }
   } catch (e) {
     return null;
@@ -150,12 +149,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   int get getPagesize => pageSize;
+  clearStorage() async {
+    await box!.clear();
+    await userSettings!.clear();
+    await appSettings!.clear();
+  }
 
   bootstrap() async {
     box = await Hive.openBox(AppBloc.dataKey);
     userSettings = await Hive.openBox(AppBloc.userSettingsKey);
     appSettings = await Hive.openBox(AppBloc.appSettingsKey);
-
+    await clearStorage();
     _initDeviceId();
     final httplink = HttpLink(url);
     final tokenlink = AuthLink(getToken: () => token);
@@ -342,7 +346,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           ),
         ), onSelectNotification: (payload) async {
       final data = jsonDecode(payload ?? '{}');
-      final d = _.Notification.fromJson(data);
+      final d = nt.Notification.fromJson(data);
       await removeSeenNotification(d);
     });
     if (!kIsWeb) {
@@ -376,7 +380,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     if (details?.didNotificationLaunchApp ?? false) {
       try {
         final data =
-            _.Notification.fromJson(jsonDecode(details!.payload ?? '{}'));
+            nt.Notification.fromJson(jsonDecode(details!.payload ?? '{}'));
         deeplinkBloc!
           ..add(const DeeplinkResetted())
           ..add(DeeplinkExcuted(data: data));
@@ -398,9 +402,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            // TODO add a proper drawable resource to android, for now using
-            //      one that already exists in example app.
-            //  icon: 'launch_background',
+            icon: 'ic_launcher',
           ),
         ),
         payload: payload);
@@ -444,11 +446,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     return userSettings!.get(travellingSalesmanKey, defaultValue: false);
   }
 
-  Iterable<_.Notification> get notifications {
+  Iterable<nt.Notification> get notifications {
     final data = userSettings!.get(notificationsKey,
         defaultValue: <Map<dynamic, dynamic>>[]) as List<dynamic>;
     return Iterable.generate(data.length, (i) {
-      return _.Notification.fromJson(data[i]);
+      return nt.Notification.fromJson(data[i]);
     });
   }
 
@@ -525,8 +527,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     return picker.pickVideo(source: source);
   }
 
-  Future<_.Notification> removeSeenNotification(
-      _.Notification notification) async {
+  Future<nt.Notification> removeSeenNotification(
+      nt.Notification notification) async {
     var oldData = userSettings!.get(notificationsKey, defaultValue: []) as List;
     var trancated = oldData
         .where((element) => !const DeepCollectionEquality()

@@ -1,6 +1,6 @@
 import 'package:models/image_size.dart';
 import 'package:models/notification_type.dart';
-import 'package:models/notification.dart' as _;
+import 'package:models/notification.dart' as nt;
 import 'package:models/order.dart';
 import 'package:models/review.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -38,7 +38,7 @@ Future<void> launchUrl(
   }
 }
 
-parseNotification(_.Notification notification) {
+parseNotification(nt.Notification notification) {
   switch (notification.notificationType) {
     case NotificationType.ORDER$RECIEVED:
 

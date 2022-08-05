@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconly/iconly.dart';
-import 'package:massagex/widgets/components/avators.dart';
-import 'package:massagex/widgets/components/buttons.dart';
-import 'package:massagex/widgets/components/stars_rating.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart'
     show WidgetbookUseCase;
@@ -192,9 +188,6 @@ class _VerticalDividerPainter extends CustomPainter {
 Widget getMapNavigationDestinationInfo(BuildContext context) {
   double height = context.knobs
       .slider(label: "height", min: 50, max: 500, initialValue: 88)
-      .toDouble();
-  double width = context.knobs
-      .slider(label: "width", min: 50, max: 500, initialValue: 100)
       .toDouble();
   String startingPoint =
       context.knobs.text(label: "Starting ", initialValue: "123 kimara mwisho");

@@ -15,7 +15,8 @@ class SkipIntroActionContainer extends StatelessWidget {
       width: 60,
       decoration: BoxDecoration(
           color: color ?? Theme.of(context).colorScheme.primary,
-          borderRadius: const BorderRadius.only(topLeft: Radius.circular(120))),
+          borderRadius:
+              const BorderRadius.only(topLeft: Radius.elliptical(104, 110))),
       child: Center(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),

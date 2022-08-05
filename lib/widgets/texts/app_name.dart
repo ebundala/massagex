@@ -4,20 +4,23 @@ import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 
 class AppName extends StatelessWidget {
   final bool isPrimary;
-
-  const AppName({Key? key, this.isPrimary = true, this.fontSize = 24})
+  final Color? color;
+  const AppName(
+      {Key? key, this.isPrimary = true, this.fontSize = 24, this.color})
       : super(key: key);
   final double fontSize;
   @override
   Widget build(BuildContext context) {
-    final style = TextStyle(color: Theme.of(context).colorScheme.secondary);
+    final style =
+        TextStyle(color: color ?? Theme.of(context).colorScheme.secondary);
     return Text.rich(
       TextSpan(
         children: [
           TextSpan(text: 'Massage', style: isPrimary ? null : style),
           TextSpan(
               text: 'X',
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary))
+              style: TextStyle(
+                  color: color ?? Theme.of(context).colorScheme.secondary))
         ],
         style: GoogleFonts.playfairDisplay(
           fontWeight: FontWeight.w700,

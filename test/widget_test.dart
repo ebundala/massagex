@@ -7,19 +7,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:graphql/client.dart';
-
-import 'package:massagex/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    final client = GraphQLClient(
-        link: HttpLink("http://localhost:3000/graphql"),
-        cache: GraphQLCache(store: InMemoryStore()));
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MassageX(
-      client: client,
-    ));
+    // final client = GraphQLClient(
+    //     link: HttpLink("http://localhost:3000/graphql"),
+    //     cache: GraphQLCache(store: InMemoryStore()));
+    // // Build our app and trigger a frame.
+    // await tester.pumpWidget(MassageX(
+    //   client: client,
+    // ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

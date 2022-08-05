@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:massagex/utils.dart';
 
-import 'package:models/notification.dart' as _;
 import 'package:models/notification_type.dart';
 import 'package:models/order.dart';
 import 'package:models/review.dart';
@@ -28,7 +24,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await flutterLocalNotificationsPlugin.initialize(
       const InitializationSettings(
         android: AndroidInitializationSettings(
-          "logo",
+          "ic_launcher",
         ),
       ), onSelectNotification: (payload) {
     try {
@@ -84,9 +80,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            // TODO add a proper drawable resource to android, for now using
-            //      one that already exists in example app.
-            //  icon: 'launch_background',
+            icon: 'ic_launcher',
           ),
         ),
         payload: message.data["payload"]);

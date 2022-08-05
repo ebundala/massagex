@@ -1,9 +1,7 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:massagex/pages/onbording_page.dart';
 import 'package:massagex/pages/splash_page.dart';
 import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/utils.dart';
-import 'package:massagex/widgets/components/spinars.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
@@ -73,7 +71,7 @@ class MassageX extends StatelessWidget {
                   if (state is AppFirstStarted) {
                     if (_navigatorKey.currentState?.mounted == true) {
                       _navigatorKey.currentState
-                          ?.pushReplacementNamed('/onbording');
+                          ?.pushReplacementNamed('/onboarding');
                     }
                   }
                   if (state is AppAuth) {
@@ -97,16 +95,10 @@ class MassageX extends StatelessWidget {
                           fullscreenDialog: true,
                           builder: (context) => const SplashPage(),
                         );
-                      case '/onbording':
+                      case '/onboarding':
                         return MaterialPageRoute(
-                            builder: ((context) => const Scaffold(
-                                  body: Center(
-                                      child: PrimarySpinar(
-                                    child: AppName(
-                                      fontSize: 10,
-                                    ),
-                                  )),
-                                )));
+                          builder: ((context) => const OnboardingPage()),
+                        );
                       case '/login':
                       case '/register':
                       case '/recoverAccount':

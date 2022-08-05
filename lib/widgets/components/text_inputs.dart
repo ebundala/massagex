@@ -767,7 +767,7 @@ class LocationInput extends StatelessWidget {
       ),
     );
     // Handle the result in your way
-    print(result);
+    // print(result);
     return result;
   }
 

@@ -2,13 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:iconly/iconly.dart';
-import 'package:massagex/widgets/components/avators.dart';
-import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/map_location_name_card.dart';
-import 'package:massagex/widgets/components/map_markers.dart';
-import 'package:massagex/widgets/components/stars_rating.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart'
     show WidgetbookUseCase;
