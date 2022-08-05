@@ -1,9 +1,13 @@
+import 'package:massagex/pages/account_page_layout.dart';
+import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
 import 'package:massagex/pages/splash_page.dart';
 import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/utils.dart';
+import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
+import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 import 'package:flutter/material.dart';
@@ -101,7 +105,11 @@ class MassageX extends StatelessWidget {
                           builder: ((context) => const OnboardingPage()),
                         );
                       case AppRoutes.login:
-                      case AppRoutes.register:
+                        return MaterialPageRoute(
+                            builder: (context) => LoginPage(
+                                  register: settings.arguments as bool,
+                                ));
+
                       case AppRoutes.recoverAccount:
                       case AppRoutes.verifyPhoneOTP:
                       case AppRoutes.completeProfile:

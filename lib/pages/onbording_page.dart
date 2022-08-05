@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/components/page_indicator.dart';
 import 'package:massagex/widgets/icons/arrow_next.dart';
@@ -58,6 +59,14 @@ class _OnboardingPageState extends State<OnboardingPage>
     if (_controller!.index < _controller!.length) {
       _controller!.animateTo(_controller!.index + 1);
     }
+  }
+
+  void goToLogin(bool register) {
+    Navigator.of(context).pushNamed(AppRoutes.login, arguments: register);
+  }
+
+  void goToCreateBussinessProfile() {
+    Navigator.of(context).pushNamed(AppRoutes.createBussinessProfile);
   }
 
   @override
@@ -277,14 +286,6 @@ class _OnboardingPageState extends State<OnboardingPage>
                   ],
                 ),
                 appName: const AppName(),
-                skip: InkWell(
-                  onTap: () => skip(),
-                  child: const Nunito(
-                    text: "Skip",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
                 title: const PlayfairDisplay(
                   text:
                       "Best Massage Service near you and you can also provide service as provider",
@@ -306,7 +307,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                   child: Column(
                     children: [
                       PrimaryButton(
-                          onPressed: () {},
+                          onPressed: () => goToLogin(true),
                           width: double.infinity,
                           height: kMinInteractiveDimension,
                           child: const Nunito(
@@ -316,7 +317,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                         height: 8,
                       ),
                       SecondaryButton(
-                          onPressed: () {},
+                          onPressed: () => goToCreateBussinessProfile(),
                           width: double.infinity,
                           height: kMinInteractiveDimension,
                           child: const Nunito(
@@ -326,7 +327,7 @@ class _OnboardingPageState extends State<OnboardingPage>
                         height: 8,
                       ),
                       TextsButton(
-                          onPressed: () {},
+                          onPressed: () => goToLogin(false),
                           width: double.infinity,
                           height: kMinInteractiveDimension,
                           child: Row(
@@ -335,10 +336,17 @@ class _OnboardingPageState extends State<OnboardingPage>
                               const Nunito(
                                 text: "Already have an account?",
                                 color: Color.fromRGBO(146, 136, 153, 1),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              const SizedBox(
+                                width: 2,
                               ),
                               Nunito(
                                 text: "Sign In",
                                 color: Theme.of(context).colorScheme.primary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
                               ),
                             ],
                           ))
@@ -377,7 +385,7 @@ class IntroPageWidget extends StatelessWidget {
       {Key? key,
       required this.hero,
       required this.appName,
-      required this.skip,
+      this.skip,
       required this.title,
       required this.body,
       required this.bottom,
@@ -385,7 +393,7 @@ class IntroPageWidget extends StatelessWidget {
       : super(key: key);
   final Widget hero;
   final Widget appName;
-  final Widget skip;
+  final Widget? skip;
   final Widget title;
   final Widget body;
   final Widget bottom;
@@ -402,7 +410,7 @@ class IntroPageWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [appName, skip],
+                children: [appName, if (skip != null) skip!],
               ),
             ),
           ),
