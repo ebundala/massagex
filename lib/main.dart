@@ -1,6 +1,7 @@
 import 'package:massagex/pages/onbording_page.dart';
 import 'package:massagex/pages/splash_page.dart';
 import 'package:massagex/state/app/app_bloc.dart';
+import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/utils.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
@@ -87,35 +88,35 @@ class MassageX extends StatelessWidget {
                 },
                 child: Navigator(
                   key: _navigatorKey,
-                  initialRoute: '/splash',
+                  initialRoute: AppRoutes.splash,
                   onGenerateRoute: (settings) {
                     switch (settings.name) {
-                      case '/splash':
+                      case AppRoutes.splash:
                         return MaterialPageRoute(
                           fullscreenDialog: true,
                           builder: (context) => const SplashPage(),
                         );
-                      case '/onboarding':
+                      case AppRoutes.onboarding:
                         return MaterialPageRoute(
                           builder: ((context) => const OnboardingPage()),
                         );
-                      case '/login':
-                      case '/register':
-                      case '/recoverAccount':
-                      case '/verifyPhoneOTP':
-                      case '/completeProfile':
-                      case '/home':
-                      case '/providerHome':
-                      case '/profile':
-                      case '/orderSummary':
-                      case '/createOrder':
-                      case '/payment':
-                      case '/schedules':
-                      case '/createService':
-                      case '/changePassword':
-                      case '/createBussinessProfile':
-                      case '/tracking':
-                      case '/providerDetails':
+                      case AppRoutes.login:
+                      case AppRoutes.register:
+                      case AppRoutes.recoverAccount:
+                      case AppRoutes.verifyPhoneOTP:
+                      case AppRoutes.completeProfile:
+                      case AppRoutes.home:
+                      case AppRoutes.providerHome:
+                      case AppRoutes.profile:
+                      case AppRoutes.orderSummary:
+                      case AppRoutes.createOrder:
+                      case AppRoutes.payment:
+                      case AppRoutes.schedules:
+                      case AppRoutes.createService:
+                      case AppRoutes.changePassword:
+                      case AppRoutes.createBussinessProfile:
+                      case AppRoutes.tracking:
+                      case AppRoutes.providerDetails:
                       default:
                         return MaterialPageRoute(
                             builder: ((context) => Scaffold(
