@@ -17,6 +17,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool? isRegistering;
+  final emailRegex = RegExp(r"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$");
+  final emailCtr = TextEditingController();
+  final passwordCtr = TextEditingController();
+  final confirmPasswordCtr = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+  final double inputHeigt = 114;
+  bool registeringInProgress = false;
+  Exception? emailPasswordError;
+
   @override
   void initState() {
     isRegistering = widget.register;
@@ -34,61 +43,143 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(
           height: 8,
         ),
-        const SizedBox(
-          height: 94,
-          child: PrimaryTextInput(
-            keyboardType: TextInputType.emailAddress,
-            maxLines: 1,
-            label: Nunito(text: "Email Address"),
+        Form(
+          key: formKey,
+          child: AuthFlowBuilder<EmailFlowController>(
+            builder: (context, state, controller, _) {
+              final loading = state is SigningIn || registeringInProgress;
+              if (state is AuthFailed) {
+                emailPasswordError = state.exception;
+              }
+              return ListBody(children: [
+                SizedBox(
+                  height: inputHeigt,
+                  child: PrimaryTextInput(
+                    controller: emailCtr,
+                    keyboardType: TextInputType.emailAddress,
+                    enabled: !loading,
+                    maxLines: 1,
+                    label: const Nunito(text: "Email Address"),
+                    validator: validateEmail,
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                SizedBox(
+                  height: inputHeigt,
+                  child: PrimaryTextInput(
+                    controller: passwordCtr,
+                    obscureText: true,
+                    maxLines: 1,
+                    enabled: !loading,
+                    validator: validatePassword,
+                    label: const Nunito(text: "Password"),
+                  ),
+                ),
+                if (isRegistering!) ...[
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  SizedBox(
+                    height: inputHeigt,
+                    child: PrimaryTextInput(
+                      controller: confirmPasswordCtr,
+                      obscureText: true,
+                      maxLines: 1,
+                      enabled: !loading,
+                      validator: (v) {
+                        final e = validatePassword(v);
+                        if (e != null) {
+                          return e;
+                        }
+                        if (passwordCtr.text != confirmPasswordCtr.text) {
+                          return "Password mismatch";
+                        }
+                        return null;
+                      },
+                      label: const Nunito(text: "Confirm Password"),
+                    ),
+                  ),
+                ],
+                if (!isRegistering!) ...[
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextsButton(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        onPressed: () {},
+                        child: const Nunito(
+                          text: "Forgot password",
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        )),
+                  ),
+                ],
+                const SizedBox(
+                  height: 8,
+                ),
+                PrimaryButton(
+                  width: double.infinity,
+                  onPressed: !loading
+                      ? () async {
+                          formKey.currentState!.save();
+                          if (formKey.currentState!.validate() == true) {
+                            if (isRegistering == true) {
+                              try {
+                                if (mounted) {
+                                  setState(() {
+                                    registeringInProgress = true;
+                                    emailPasswordError = null;
+                                  });
+                                }
+                                await controller.auth
+                                    .createUserWithEmailAndPassword(
+                                        email: emailCtr.text,
+                                        password: passwordCtr.text)
+                                    .whenComplete(() {
+                                  if (mounted) {
+                                    setState(() {
+                                      registeringInProgress = false;
+                                    });
+                                  }
+                                });
+                              } catch (e) {
+                                if (e is Exception && mounted) {
+                                  setState(() {
+                                    emailPasswordError = e;
+                                    registeringInProgress = false;
+                                  });
+                                }
+                              }
+                            } else {
+                              controller.setEmailAndPassword(
+                                  emailCtr.text, passwordCtr.text);
+                            }
+                          }
+                        }
+                      : null,
+                  child: loading
+                      ? SizedBox(
+                          height: 30,
+                          width: 30,
+                          child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.onPrimary),
+                        )
+                      : Nunito(text: widget.register ? "Register" : "Login"),
+                ),
+                if (emailPasswordError != null) ...[
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  ErrorText(exception: emailPasswordError!)
+                ]
+              ]);
+            },
           ),
         ),
-        const SizedBox(
-          height: 8,
-        ),
-        const SizedBox(
-          height: 94,
-          child: PrimaryTextInput(
-            obscureText: true,
-            maxLines: 1,
-            label: Nunito(text: "Password"),
-          ),
-        ),
-        if (isRegistering!) ...[
-          const SizedBox(
-            height: 8,
-          ),
-          const SizedBox(
-            height: 94,
-            child: PrimaryTextInput(
-              obscureText: true,
-              maxLines: 1,
-              label: Nunito(text: "Confirm Password"),
-            ),
-          ),
-        ],
-        if (!isRegistering!) ...[
-          const SizedBox(
-            height: 8,
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextsButton(
-                color: Theme.of(context).colorScheme.onPrimary,
-                onPressed: () {},
-                child: const Nunito(
-                  text: "Forgot password",
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                )),
-          ),
-        ],
-        const SizedBox(
-          height: 8,
-        ),
-        PrimaryButton(
-            width: double.infinity,
-            onPressed: () {},
-            child: Nunito(text: widget.register ? "Register" : "Login")),
         const SizedBox(
           height: 8,
         ),
@@ -197,5 +288,25 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ],
     );
+  }
+
+  String? validatePassword(v) {
+    if (v?.isEmpty == true) {
+      return "Password is required";
+    }
+    if (v!.length < 6) {
+      return "Password need to be 6 or more charaters";
+    }
+    return null;
+  }
+
+  String? validateEmail(v) {
+    if (v?.isEmpty == true) {
+      return 'Email is required';
+    }
+    if (!emailRegex.hasMatch(v!)) {
+      return 'Email provided is Invalid';
+    }
+    return null;
   }
 }
