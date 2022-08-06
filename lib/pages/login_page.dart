@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:massagex/pages/account_page_layout.dart';
+import 'package:massagex/secrets/api_keys.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
@@ -64,20 +66,22 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ],
-        const SizedBox(
-          height: 8,
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: TextsButton(
-              color: Theme.of(context).colorScheme.onPrimary,
-              onPressed: () {},
-              child: const Nunito(
-                text: "Forgot password",
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              )),
-        ),
+        if (!isRegistering!) ...[
+          const SizedBox(
+            height: 8,
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextsButton(
+                color: Theme.of(context).colorScheme.onPrimary,
+                onPressed: () {},
+                child: const Nunito(
+                  text: "Forgot password",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                )),
+          ),
+        ],
         const SizedBox(
           height: 8,
         ),
@@ -110,20 +114,19 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(
           height: 8,
         ),
-        const GoogleSignInButton(
-            // size: kMinInteractiveDimension,
-            clientId: "clientId"),
+        const GoogleSignInButton(clientId: googleAuthClientId),
         const SizedBox(
           height: 8,
         ),
         const FacebookSignInButton(
-          // size: kMinInteractiveDimension,
-          clientId: "clientId",
+          clientId: fbAppId,
         ),
         const SizedBox(
           height: 8,
         ),
-        // const TwitterSignInButton(clientId: "clientId",),
+        const SignOutButton(
+          variant: ButtonVariant.text,
+        ),
         if (!isRegistering!) ...[
           const SizedBox(
             height: 8,

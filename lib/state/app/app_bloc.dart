@@ -231,7 +231,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       }
     });
     findUserBloc!.stream.asBroadcastStream().listen((event) {
-      userSettings!.put(userProfileKey, event.data);
+      userSettings!.put(userProfileKey, event.data?.toJson());
     });
 
     // if (currentUser?.data?.id != null) {

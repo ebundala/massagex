@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">453180566468006</string>
+    <string name="fb_login_protocol_scheme">fb453180566468006</string>
+    <string name="facebook_client_token">d3625697e7405eadf020b3bad1be07fe</string>
+    <string name="app_name">massagex</string>
+
+</resources>
