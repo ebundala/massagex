@@ -1,13 +1,10 @@
-import 'package:massagex/pages/account_page_layout.dart';
 import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
 import 'package:massagex/pages/splash_page.dart';
 import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/utils.dart';
-import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
-import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +66,7 @@ class MassageX extends StatelessWidget {
       child: Builder(builder: (context) {
         return MaterialApp(
           theme: mainTheme,
+          title: "massagex",
           home: SafeArea(
             child: BlocListener<AppBloc, AppState>(
                 listener: (context, state) {
@@ -90,51 +88,62 @@ class MassageX extends StatelessWidget {
                     }
                   }
                 },
-                child: Navigator(
-                  key: _navigatorKey,
-                  initialRoute: AppRoutes.splash,
-                  onGenerateRoute: (settings) {
-                    switch (settings.name) {
-                      case AppRoutes.splash:
-                        return MaterialPageRoute(
-                          fullscreenDialog: true,
-                          builder: (context) => const SplashPage(),
-                        );
-                      case AppRoutes.onboarding:
-                        return MaterialPageRoute(
-                          builder: ((context) => const OnboardingPage()),
-                        );
-                      case AppRoutes.login:
-                        return MaterialPageRoute(
-                            builder: (context) => LoginPage(
-                                  register: settings.arguments as bool,
-                                ));
-
-                      case AppRoutes.recoverAccount:
-                      case AppRoutes.verifyPhoneOTP:
-                      case AppRoutes.completeProfile:
-                      case AppRoutes.home:
-                      case AppRoutes.providerHome:
-                      case AppRoutes.profile:
-                      case AppRoutes.orderSummary:
-                      case AppRoutes.createOrder:
-                      case AppRoutes.payment:
-                      case AppRoutes.schedules:
-                      case AppRoutes.createService:
-                      case AppRoutes.changePassword:
-                      case AppRoutes.createBussinessProfile:
-                      case AppRoutes.tracking:
-                      case AppRoutes.providerDetails:
-                      default:
-                        return MaterialPageRoute(
-                            builder: ((context) => Scaffold(
-                                  appBar: AppBar(
-                                    title: const AppName(),
-                                  ),
-                                  body: const Text('app name'),
-                                )));
+                child: WillPopScope(
+                  onWillPop: () async {
+                    if (_navigatorKey.currentState?.canPop() == true) {
+                      _navigatorKey.currentState!.pop();
+                      return false;
                     }
+                    return true;
                   },
+                  child: Navigator(
+                    key: _navigatorKey,
+                    initialRoute: AppRoutes.splash,
+                    // TODO use on on generate initial route for deeplinks and app open on notifications
+                    // onGenerateInitialRoutes: ,
+                    onGenerateRoute: (settings) {
+                      switch (settings.name) {
+                        case AppRoutes.splash:
+                          return MaterialPageRoute(
+                            fullscreenDialog: true,
+                            builder: (context) => const SplashPage(),
+                          );
+                        case AppRoutes.onboarding:
+                          return MaterialPageRoute(
+                            builder: ((context) => const OnboardingPage()),
+                          );
+                        case AppRoutes.login:
+                          return MaterialPageRoute(
+                              builder: (context) => LoginPage(
+                                    register: settings.arguments as bool,
+                                  ));
+
+                        case AppRoutes.recoverAccount:
+                        case AppRoutes.verifyPhoneOTP:
+                        case AppRoutes.completeProfile:
+                        case AppRoutes.home:
+                        case AppRoutes.providerHome:
+                        case AppRoutes.profile:
+                        case AppRoutes.orderSummary:
+                        case AppRoutes.createOrder:
+                        case AppRoutes.payment:
+                        case AppRoutes.schedules:
+                        case AppRoutes.createService:
+                        case AppRoutes.changePassword:
+                        case AppRoutes.createBussinessProfile:
+                        case AppRoutes.tracking:
+                        case AppRoutes.providerDetails:
+                        default:
+                          return MaterialPageRoute(
+                              builder: ((context) => Scaffold(
+                                    appBar: AppBar(
+                                      title: const AppName(),
+                                    ),
+                                    body: const Text('app name'),
+                                  )));
+                      }
+                    },
+                  ),
                 )),
           ),
         );
