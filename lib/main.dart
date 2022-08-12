@@ -1,3 +1,4 @@
+import 'package:flutterfire_ui/auth.dart';
 import 'package:massagex/pages/create_business_profile.dart';
 import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
@@ -118,7 +119,8 @@ class MassageX extends StatelessWidget {
                         case AppRoutes.login:
                           return MaterialPageRoute(
                               builder: (context) => LoginPage(
-                                    register: settings.arguments as bool,
+                                    register:
+                                        (settings.arguments ?? false) as bool,
                                   ));
                         case AppRoutes.createBusinessProfile:
                           return MaterialPageRoute(
@@ -147,8 +149,11 @@ class MassageX extends StatelessWidget {
                                     appBar: AppBar(
                                       title: const AppName(),
                                     ),
-                                    body:
-                                        const Center(child: Text('Not found')),
+                                    body: const Center(
+                                      child: SignOutButton(
+                                        variant: ButtonVariant.text,
+                                      ),
+                                    ),
                                   )));
                       }
                     },

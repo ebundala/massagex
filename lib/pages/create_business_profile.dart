@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:massagex/pages/account_page_layout.dart';
 import 'package:massagex/secrets/api_keys.dart';
+import 'package:massagex/state/app/app_bloc.dart';
+import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
+import 'package:models/business_create_input.dart';
+import 'package:models/business_create_without_owner_input.dart';
 import 'package:models/business_mode.dart';
+import 'package:models/location_create_nested_one_without_businesses_input.dart';
+import 'package:models/location_create_without_businesses_input.dart';
 import 'package:place_picker/entities/location_result.dart';
 
 class CreateBusinessProfilePage extends StatefulWidget {
@@ -26,6 +32,7 @@ class _CreateBusinessProfilePageState extends State<CreateBusinessProfilePage> {
   LocationResult? address;
 
   final addressCtr = TextEditingController();
+  final aboutCtr = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final items = BusinessMode.values
@@ -96,6 +103,23 @@ class _CreateBusinessProfilePageState extends State<CreateBusinessProfilePage> {
                   },
                 ),
               ),
+              SizedBox(
+                height: inputHeigt,
+                child: PrimaryTextInput(
+                  controller: aboutCtr,
+                  keyboardType: TextInputType.name,
+                  // enabled: !loading,
+                  maxLines: 1,
+                  maxLength: 150,
+                  label: const Nunito(text: "Short description"),
+                  validator: (v) {
+                    if (v?.isEmpty == true) {
+                      return "Short description is required";
+                    }
+                    return null;
+                  },
+                ),
+              ),
               if (_mode != BusinessMode.MOBILE$MODE) ...[
                 const SizedBox(
                   height: 8,
@@ -124,7 +148,24 @@ class _CreateBusinessProfilePageState extends State<CreateBusinessProfilePage> {
               ),
               PrimaryButton(
                 width: double.infinity,
-                onPressed: () {},
+                onPressed: () async {
+                  if (formKey.currentState!.validate() == true) {
+                    formKey.currentState!.save();
+                    final profile = BusinessCreateWithoutOwnerInput(
+                        about: aboutCtr.text,
+                        businessName: nameCtr.text,
+                        mode: _mode,
+                        location: LocationCreateNestedOneWithoutBusinessesInput(
+                            create: LocationCreateWithoutBusinessesInput(
+                          name: addressCtr.text,
+                          lat: address!.latLng!.latitude,
+                          lon: address!.latLng!.longitude,
+                        )));
+                    await context.app.saveBusinessProfileData(profile);
+                    context.navigator
+                        .pushNamed(AppRoutes.login, arguments: true);
+                  }
+                },
                 child: const Nunito(
                   text: "Next",
                 ),

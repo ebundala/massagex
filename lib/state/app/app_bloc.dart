@@ -17,11 +17,22 @@ import 'package:massagex/state/app/fcm_background_handler.dart';
 import 'package:massagex/state/deeplink/deeplink_bloc.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
+import 'package:models/business.dart';
+import 'package:models/business_create_input.dart';
+import 'package:models/business_create_without_owner_input.dart';
+import 'package:models/business_mode.dart';
+import 'package:models/business_update_without_owner_input.dart';
+import 'package:models/business_upsert_without_owner_input.dart';
+import 'package:models/enum_business_mode_field_update_operations_input.dart';
 import 'package:models/float_field_update_operations_input.dart';
 import 'package:models/image_size.dart';
+import 'package:models/location_create_without_businesses_input.dart';
 import 'package:models/location_create_without_users_input.dart';
+import 'package:models/location_update_one_without_businesses_input.dart';
 import 'package:models/location_update_without_users_input.dart';
+import 'package:models/location_upsert_without_businesses_input.dart';
 import 'package:models/location_upsert_without_users_input.dart';
+import 'package:models/string_field_update_operations_input.dart';
 import 'package:models/user_response.dart';
 import 'package:models/notification_type.dart';
 import 'package:models/notification.dart' as nt;
@@ -161,7 +172,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     box = await Hive.openBox(AppBloc.dataKey);
     userSettings = await Hive.openBox(AppBloc.userSettingsKey);
     appSettings = await Hive.openBox(AppBloc.appSettingsKey);
-    await clearStorage();
+    // await clearStorage();
     _initDeviceId();
     final httplink = HttpLink(url);
     final tokenlink = AuthLink(getToken: () => token);
@@ -290,6 +301,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     // idTokenStream = userSettings!.watch(key: idTokenKey).listen((event) {
     //   if (event.value != null) {
     //     print("idToken changed ${event.value}");
+    //   } else {
+    //     add(const AppLogout());
     //   }
     // });
 
@@ -335,9 +348,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     fauth.idTokenChanges().listen((user) async {
       final token = await fauth.currentUser?.getIdToken();
-      userSettings!.put(idTokenKey, token);
+      await userSettings!.put(idTokenKey, token);
       if (user != null) {
+        // Todo register business profile if present and refresh idToken on success
+        await registerBusinessProfile(user.uid);
         print("firebase login ${user.uid}");
+
         findUserBloc!
           ..add(FindUserReseted())
           ..add(
@@ -350,6 +366,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               device: RegisterDeviceInput(userId: user.uid, id: deviceId!),
             ),
           );
+        if (state is AppFirstStarted ||
+            state is AppLoggedOut ||
+            state is AppStarted ||
+            state is AppInitial) {
+          add(const AppResseted());
+          add(const AppAuth());
+          return;
+        }
+      }
+      if (state is! AppFirstStarted) {
+        add(const AppResseted());
+        add(const AppIdTokenChanged());
       }
     });
 
@@ -406,8 +434,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         print(e);
       }
     }
-    //  Todo start geolocation when user login
-    // geolocationBloc!.add(GeolocationStart());
   }
 
   showNotification(int id, String title, String body, {String? payload}) {
@@ -435,6 +461,69 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     } catch (e) {
       return null;
     }
+  }
+
+  saveBusinessProfileData(BusinessCreateWithoutOwnerInput profile) async {
+    await box!.put(businessProfileKey, profile.toJson());
+  }
+
+  Future<UpdateMyProfileState?> registerBusinessProfile(String id) async {
+    final profile = box!.get(businessProfileKey, defaultValue: null);
+    if (profile == null) return Future.value();
+    final data = BusinessCreateWithoutOwnerInput.fromJson(profile);
+    final completer = Completer<UpdateMyProfileState>();
+    final name = data.businessName;
+    final about = data.about;
+    final mode = data.mode;
+    // final cover = data.cover;
+    final subscription =
+        updateMyProfileBloc!.stream.asBroadcastStream().listen((event) {
+      if (event is UpdateMyProfileSuccess) {
+        completer.complete(event);
+      }
+      if (event is UpdateMyProfileFailure || event is UpdateMyProfileError) {
+        completer.completeError(event);
+      }
+    });
+
+    updateMyProfileBloc!
+      ..add(UpdateMyProfileReseted())
+      ..add(
+        UpdateMyProfileExcuted(
+          id: id,
+          businessProfile: BusinessUpsertWithoutOwnerInput(
+            create: BusinessCreateWithoutOwnerInput(
+              about: about,
+              businessName: name,
+              mode: mode,
+              location: data.location?.create != null ? data.location : null,
+            ),
+            update: BusinessUpdateWithoutOwnerInput(
+              about: StringFieldUpdateOperationsInput(set$: about),
+              businessName: StringFieldUpdateOperationsInput(set$: name),
+              mode: EnumBusinessModeFieldUpdateOperationsInput(
+                set$: mode,
+              ),
+              location: data.location?.create != null
+                  ? LocationUpdateOneWithoutBusinessesInput(
+                      create: LocationCreateWithoutBusinessesInput(
+                        name: data.location!.create!.name!,
+                        lat: data.location!.create!.lat,
+                        lon: data.location!.create!.lon,
+                      ),
+                    )
+                  : null,
+            ),
+          ),
+        ),
+      );
+    UpdateMyProfileState? result;
+    await completer.future.then((value) async {
+      result = value;
+      await box!.delete(businessProfileKey);
+    }).whenComplete(() => subscription.cancel());
+
+    return Future.value(result);
   }
 
   String? get token {
@@ -473,32 +562,25 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   Future<void> handleEvents(AppEvent event, Emitter<AppState> emit) async {
-    if (event is AppStart) {
-      //registerLocationListener();
-    }
+    // if (event is AppStart) {
+    //   //registerLocationListener();
+    // }
 
     if (firstLauch) {
       await appSettings!.put(firstLaunchKey, false);
       emit(AppFirstStarted(
           isProviderMode: isProviderEnabled,
           isTravellingSalesman: isTravellingSalesman));
+    } else if (state is AppInitial) {
+      emit(AppStarted(
+          isProviderMode: isProviderEnabled,
+          isTravellingSalesman: isTravellingSalesman));
     } else if (event is AppAuth) {
-      await userSettings!.put(userProfileKey, event.currentUser.toJson());
       //Start geolocation service
       startGeolocation();
       emit(AppAuthenticated(
           isProviderMode: isProviderEnabled,
           isTravellingSalesman: isTravellingSalesman));
-    } else if (event is AppLogout) {
-      await box?.clear();
-      await userSettings!.clear();
-      //stop geolocation service
-      stopGeolocation();
-      emit(
-        AppLoggedOut(
-            isProviderMode: isProviderEnabled,
-            isTravellingSalesman: isTravellingSalesman),
-      );
     } else if (event is AppResseted) {
       emit(
         AppStateReset(
@@ -524,16 +606,15 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             isProviderMode: isProviderEnabled,
             isTravellingSalesman: isTravellingSalesman),
       );
-    } else if (token?.isNotEmpty == true) {
-      startGeolocation();
-      emit(
-        AppAuthenticated(
-            isProviderMode: isProviderEnabled,
-            isTravellingSalesman: isTravellingSalesman),
-      );
-    } else {
+    } else if (event is AppIdTokenChanged) {
+      if (token == null || token?.isEmpty == true) {
+        add(const AppResseted());
+        add(const AppLogout());
+      }
+    } else if (event is AppLogout) {
       await box?.clear();
       await userSettings!.clear();
+      //stop geolocation service
       stopGeolocation();
       emit(
         AppLoggedOut(

@@ -7,7 +7,7 @@ import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 
 class LoginPage extends StatefulWidget {
-  final bool register;
+  final bool? register;
   const LoginPage({Key? key, this.register = false}) : super(key: key);
 
   @override
@@ -167,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: CircularProgressIndicator(
                               color: Theme.of(context).colorScheme.onPrimary),
                         )
-                      : Nunito(text: widget.register ? "Register" : "Login"),
+                      : Nunito(text: widget.register! ? "Register" : "Login"),
                 ),
                 if (emailPasswordError != null) ...[
                   const SizedBox(
@@ -210,12 +210,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
         const FacebookSignInButton(
           clientId: fbAppId,
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        const SignOutButton(
-          variant: ButtonVariant.text,
         ),
         if (!isRegistering!) ...[
           const SizedBox(
