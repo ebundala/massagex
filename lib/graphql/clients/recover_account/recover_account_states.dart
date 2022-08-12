@@ -1,7 +1,7 @@
 part of 'recover_account_bloc.dart';
 
 abstract class RecoverAccountState extends Equatable {
-  final AuthResult? data;
+  final unknown? data;
   final String? message;
   RecoverAccountState({this.data, this.message});
   @override
@@ -14,7 +14,7 @@ class RecoverAccountInitial extends RecoverAccountState {
 }
 
 class RecoverAccountSuccess extends RecoverAccountState {
-  final AuthResult data;
+  final unknown data;
   final String? message;
   RecoverAccountSuccess({required this.data, this.message});
   @override
@@ -22,7 +22,7 @@ class RecoverAccountSuccess extends RecoverAccountState {
 }
 
 class RecoverAccountFailure extends RecoverAccountState {
-  final AuthResult data;
+  final unknown data;
   final String? message;
   RecoverAccountFailure({required this.data, this.message});
   @override
@@ -30,7 +30,7 @@ class RecoverAccountFailure extends RecoverAccountState {
 }
 
 class RecoverAccountInProgress extends RecoverAccountState {
-  final AuthResult data;
+  final unknown data;
   final String? message;
   RecoverAccountInProgress({required this.data, this.message});
   @override
@@ -38,7 +38,7 @@ class RecoverAccountInProgress extends RecoverAccountState {
 }
 
 class RecoverAccountOptimistic extends RecoverAccountState {
-  final AuthResult data;
+  final unknown data;
   final String? message;
   RecoverAccountOptimistic({required this.data, this.message});
   @override
@@ -46,7 +46,7 @@ class RecoverAccountOptimistic extends RecoverAccountState {
 }
 
 class RecoverAccountError extends RecoverAccountState {
-  final AuthResult data;
+  final unknown data;
   final String? message;
   RecoverAccountError({required this.data, this.message});
   @override

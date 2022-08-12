@@ -19,7 +19,9 @@ import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:models/float_field_update_operations_input.dart';
 import 'package:models/image_size.dart';
+import 'package:models/location_create_without_users_input.dart';
 import 'package:models/location_update_without_users_input.dart';
+import 'package:models/location_upsert_without_users_input.dart';
 import 'package:models/user_response.dart';
 import 'package:models/notification_type.dart';
 import 'package:models/notification.dart' as nt;
@@ -84,7 +86,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   static const providerkey = "isProvider";
   static const userSettingsKey = "temporary_app_setting_key";
   static const travellingSalesmanKey = "travelling_salesman_key";
-
+  static const businessProfileKey = "business_profile_key";
   Box? appSettings;
 
   /// hive box streams
@@ -216,18 +218,28 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       if (state is GeolocationPositionChanged &&
           currentUser?.data?.id != null) {
         // updateMyProfileBloc.add(UpdateMyProfileResseted());
-        updateMyProfileBloc!.add(
-          UpdateMyProfileExcuted(
-              id: currentUser!.data!.id!,
-              location: LocationUpdateWithoutUsersInput(
-                  lat: FloatFieldUpdateOperationsInput(
-                      set$: state.position.latitude),
-                  lon: FloatFieldUpdateOperationsInput(
-                      set$: state.position.longitude)
-                  // Todo add heading param on location data
-                  //  heading: FloatFieldUpdateOperationsInput(set$: state.position.heading)
-                  )),
-        );
+        print(state);
+        updateMyProfileBloc!
+          ..add(UpdateMyProfileReseted())
+          ..add(
+            UpdateMyProfileExcuted(
+                id: currentUser!.data!.id!,
+                location: LocationUpsertWithoutUsersInput(
+                  update: LocationUpdateWithoutUsersInput(
+                    lat: FloatFieldUpdateOperationsInput(
+                        set$: state.position.latitude),
+                    lon: FloatFieldUpdateOperationsInput(
+                        set$: state.position.longitude),
+                    heading: FloatFieldUpdateOperationsInput(
+                        set$: state.position.heading),
+                  ),
+                  create: LocationCreateWithoutUsersInput(
+                    lat: state.position.latitude!,
+                    lon: state.position.longitude!,
+                    heading: state.position.heading,
+                  ),
+                )),
+          );
       }
     });
     findUserBloc!.stream.asBroadcastStream().listen((event) {
@@ -265,11 +277,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     fcmIdStream = appSettings!.watch(key: fcmIdKey).listen((event) {
       if (event.value != null) {
         print("fcmid ${event.value}");
-        registerDeviceBloc!.add(
-          RegisterDeviceExcuted(
-            device: RegisterDeviceInput(fcm$id: event.value, id: deviceId!),
-          ),
-        );
+        registerDeviceBloc!
+          ..add(RegisterDeviceReseted())
+          ..add(
+            RegisterDeviceExcuted(
+              device: RegisterDeviceInput(fcm$id: event.value, id: deviceId!),
+            ),
+          );
       }
     });
 
@@ -324,14 +338,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       userSettings!.put(idTokenKey, token);
       if (user != null) {
         print("firebase login ${user.uid}");
-        findUserBloc!.add(
-          FindUserExcuted(id: user.uid),
-        );
-        registerDeviceBloc!.add(
-          RegisterDeviceExcuted(
-            device: RegisterDeviceInput(userId: user.uid, id: deviceId!),
-          ),
-        );
+        findUserBloc!
+          ..add(FindUserReseted())
+          ..add(
+            FindUserExcuted(id: user.uid),
+          );
+        registerDeviceBloc!
+          ..add(RegisterDeviceReseted())
+          ..add(
+            RegisterDeviceExcuted(
+              device: RegisterDeviceInput(userId: user.uid, id: deviceId!),
+            ),
+          );
       }
     });
 
@@ -466,12 +484,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           isTravellingSalesman: isTravellingSalesman));
     } else if (event is AppAuth) {
       await userSettings!.put(userProfileKey, event.currentUser.toJson());
+      //Start geolocation service
+      startGeolocation();
       emit(AppAuthenticated(
           isProviderMode: isProviderEnabled,
           isTravellingSalesman: isTravellingSalesman));
     } else if (event is AppLogout) {
       await box?.clear();
       await userSettings!.clear();
+      //stop geolocation service
+      stopGeolocation();
       emit(
         AppLoggedOut(
             isProviderMode: isProviderEnabled,
@@ -503,6 +525,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             isTravellingSalesman: isTravellingSalesman),
       );
     } else if (token?.isNotEmpty == true) {
+      startGeolocation();
       emit(
         AppAuthenticated(
             isProviderMode: isProviderEnabled,
@@ -511,12 +534,21 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     } else {
       await box?.clear();
       await userSettings!.clear();
+      stopGeolocation();
       emit(
         AppLoggedOut(
             isProviderMode: isProviderEnabled,
             isTravellingSalesman: isTravellingSalesman),
       );
     }
+  }
+
+  void stopGeolocation() {
+    geolocationBloc!.add(GeolocationStopListenForLocationChanged());
+  }
+
+  void startGeolocation() {
+    geolocationBloc!.add(GeolocationStart());
   }
 
   Future<XFile?> pickImage({ImageSource source = ImageSource.camera}) {

@@ -8,6 +8,7 @@ class LocationOrderByInput extends Equatable {
   final SortOrder? name;
   final SortOrder? lat;
   final SortOrder? lon;
+  final SortOrder? heading;
   final SortOrder? recordStatus;
   final SortOrder? createdAt;
   final SortOrder? updatedAt;
@@ -59,6 +60,12 @@ class LocationOrderByInput extends Equatable {
           name: ast.NameNode(value: 'lon'),
           value: ast.EnumValueNode(name: ast.NameNode(value: lon!.toJson())),
         ),
+      if (heading != null)
+        ast.ObjectFieldNode(
+          name: ast.NameNode(value: 'heading'),
+          value:
+              ast.EnumValueNode(name: ast.NameNode(value: heading!.toJson())),
+        ),
       if (recordStatus != null)
         ast.ObjectFieldNode(
           name: ast.NameNode(value: 'recordStatus'),
@@ -85,6 +92,7 @@ class LocationOrderByInput extends Equatable {
       this.name,
       this.lat,
       this.lon,
+      this.heading,
       this.recordStatus,
       this.createdAt,
       this.updatedAt});
@@ -95,6 +103,9 @@ class LocationOrderByInput extends Equatable {
       name: json['name'] != null ? SortOrderExt.fromJson(json['name']) : null,
       lat: json['lat'] != null ? SortOrderExt.fromJson(json['lat']) : null,
       lon: json['lon'] != null ? SortOrderExt.fromJson(json['lon']) : null,
+      heading: json['heading'] != null
+          ? SortOrderExt.fromJson(json['heading'])
+          : null,
       recordStatus: json['recordStatus'] != null
           ? SortOrderExt.fromJson(json['recordStatus'])
           : null,
@@ -113,6 +124,7 @@ class LocationOrderByInput extends Equatable {
     if (name != null) _data['name'] = name!.toJson();
     if (lat != null) _data['lat'] = lat!.toJson();
     if (lon != null) _data['lon'] = lon!.toJson();
+    if (heading != null) _data['heading'] = heading!.toJson();
     if (recordStatus != null) _data['recordStatus'] = recordStatus!.toJson();
     if (createdAt != null) _data['createdAt'] = createdAt!.toJson();
     if (updatedAt != null) _data['updatedAt'] = updatedAt!.toJson();
@@ -124,6 +136,7 @@ class LocationOrderByInput extends Equatable {
       SortOrder? name,
       SortOrder? lat,
       SortOrder? lon,
+      SortOrder? heading,
       SortOrder? recordStatus,
       SortOrder? createdAt,
       SortOrder? updatedAt}) {
@@ -132,11 +145,12 @@ class LocationOrderByInput extends Equatable {
         name: name ?? this.name,
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
+        heading: heading ?? this.heading,
         recordStatus: recordStatus ?? this.recordStatus,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt);
   }
 
   List<Object?> get props =>
-      [id, name, lat, lon, recordStatus, createdAt, updatedAt];
+      [id, name, lat, lon, heading, recordStatus, createdAt, updatedAt];
 }

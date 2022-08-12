@@ -1,0 +1,5 @@
+schema: "https://itahuduma.com/graphql"
+documents: "lib/graphql/clients/**/*.graphql"
+extensions:
+  languageService:
+    cacheSchemaFileForLookup: true

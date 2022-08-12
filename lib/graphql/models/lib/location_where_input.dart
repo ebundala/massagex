@@ -21,6 +21,7 @@ class LocationWhereInput extends Equatable {
   final StringFilter? name;
   final FloatFilter? lat;
   final FloatFilter? lon;
+  final FloatFilter? heading;
   final EnumRecordStatusFilter? recordStatus;
   final DateTimeFilter? createdAt;
   final DateTimeFilter? updatedAt;
@@ -79,6 +80,11 @@ class LocationWhereInput extends Equatable {
     if (lon != null) {
       lon!.getFilesVariables(
           field_name: '${field_name}_lon', variables: variables);
+    }
+
+    if (heading != null) {
+      heading!.getFilesVariables(
+          field_name: '${field_name}_heading', variables: variables);
     }
 
     if (recordStatus != null) {
@@ -215,6 +221,11 @@ class LocationWhereInput extends Equatable {
           name: ast.NameNode(value: 'lon'),
           value: lon!.toValueNode(field_name: '${field_name}_lon'),
         ),
+      if (heading != null)
+        ast.ObjectFieldNode(
+          name: ast.NameNode(value: 'heading'),
+          value: heading!.toValueNode(field_name: '${field_name}_heading'),
+        ),
       if (recordStatus != null)
         ast.ObjectFieldNode(
           name: ast.NameNode(value: 'recordStatus'),
@@ -257,6 +268,7 @@ class LocationWhereInput extends Equatable {
       this.name,
       this.lat,
       this.lon,
+      this.heading,
       this.recordStatus,
       this.createdAt,
       this.updatedAt,
@@ -285,6 +297,9 @@ class LocationWhereInput extends Equatable {
       name: json['name'] != null ? StringFilter.fromJson(json['name']) : null,
       lat: json['lat'] != null ? FloatFilter.fromJson(json['lat']) : null,
       lon: json['lon'] != null ? FloatFilter.fromJson(json['lon']) : null,
+      heading: json['heading'] != null
+          ? FloatFilter.fromJson(json['heading'])
+          : null,
       recordStatus: json['recordStatus'] != null
           ? EnumRecordStatusFilter.fromJson(json['recordStatus'])
           : null,
@@ -322,6 +337,7 @@ class LocationWhereInput extends Equatable {
     if (name != null) _data['name'] = name!.toJson();
     if (lat != null) _data['lat'] = lat!.toJson();
     if (lon != null) _data['lon'] = lon!.toJson();
+    if (heading != null) _data['heading'] = heading!.toJson();
     if (recordStatus != null) _data['recordStatus'] = recordStatus!.toJson();
     if (createdAt != null) _data['createdAt'] = createdAt!.toJson();
     if (updatedAt != null) _data['updatedAt'] = updatedAt!.toJson();
@@ -342,6 +358,7 @@ class LocationWhereInput extends Equatable {
       StringFilter? name,
       FloatFilter? lat,
       FloatFilter? lon,
+      FloatFilter? heading,
       EnumRecordStatusFilter? recordStatus,
       DateTimeFilter? createdAt,
       DateTimeFilter? updatedAt,
@@ -359,6 +376,7 @@ class LocationWhereInput extends Equatable {
         name: name ?? this.name,
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
+        heading: heading ?? this.heading,
         recordStatus: recordStatus ?? this.recordStatus,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -378,6 +396,7 @@ class LocationWhereInput extends Equatable {
         name,
         lat,
         lon,
+        heading,
         recordStatus,
         createdAt,
         updatedAt,

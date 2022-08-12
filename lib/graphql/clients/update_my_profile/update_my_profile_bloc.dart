@@ -3,13 +3,13 @@ import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
-import 'package:models/string_field_update_operations_input.dart';
 import 'package:models/nullable_string_field_update_operations_input.dart';
 import 'package:models/nullable_date_time_field_update_operations_input.dart';
 import 'package:models/enum_gender_field_update_operations_input.dart';
 import 'package:models/scalars/json_object.dart';
-import 'package:models/location_update_without_users_input.dart';
+import 'package:models/location_upsert_without_users_input.dart';
 import 'package:models/attachment_update_one_without_users_input.dart';
+import 'package:models/business_upsert_without_owner_input.dart';
 import 'package:models/user_response.dart';
 import 'update_my_profile_ast.dart' show document;
 
@@ -98,7 +98,8 @@ class UpdateMyProfileBloc
             gender: event.gender,
             metadata: event.metadata,
             location: event.location,
-            avator: event.avator);
+            avator: event.avator,
+            businessProfile: event.businessProfile);
         //listen for changes
         resultWrapper!.subscription = resultWrapper!.stream?.listen((result) {
           //reset events before starting to emit new ones

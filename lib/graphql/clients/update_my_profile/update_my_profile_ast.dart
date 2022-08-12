@@ -1,3 +1,4 @@
+// ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:gql/ast.dart' as _i1;
 
 const mutation = _i1.OperationDefinitionNode(
@@ -13,7 +14,8 @@ const mutation = _i1.OperationDefinitionNode(
       _i1.VariableDefinitionNode(
           variable: _i1.VariableNode(name: _i1.NameNode(value: 'displayName')),
           type: _i1.NamedTypeNode(
-              name: _i1.NameNode(value: 'StringFieldUpdateOperationsInput'),
+              name: _i1.NameNode(
+                  value: 'NullableStringFieldUpdateOperationsInput'),
               isNonNull: false),
           defaultValue: _i1.DefaultValueNode(value: null),
           directives: []),
@@ -49,7 +51,7 @@ const mutation = _i1.OperationDefinitionNode(
       _i1.VariableDefinitionNode(
           variable: _i1.VariableNode(name: _i1.NameNode(value: 'location')),
           type: _i1.NamedTypeNode(
-              name: _i1.NameNode(value: 'LocationUpdateWithoutUsersInput'),
+              name: _i1.NameNode(value: 'LocationUpsertWithoutUsersInput'),
               isNonNull: false),
           defaultValue: _i1.DefaultValueNode(value: null),
           directives: []),
@@ -57,6 +59,14 @@ const mutation = _i1.OperationDefinitionNode(
           variable: _i1.VariableNode(name: _i1.NameNode(value: 'avator')),
           type: _i1.NamedTypeNode(
               name: _i1.NameNode(value: 'AttachmentUpdateOneWithoutUsersInput'),
+              isNonNull: false),
+          defaultValue: _i1.DefaultValueNode(value: null),
+          directives: []),
+      _i1.VariableDefinitionNode(
+          variable:
+              _i1.VariableNode(name: _i1.NameNode(value: 'businessProfile')),
+          type: _i1.NamedTypeNode(
+              name: _i1.NameNode(value: 'BusinessUpsertWithoutOwnerInput'),
               isNonNull: false),
           defaultValue: _i1.DefaultValueNode(value: null),
           directives: [])
@@ -107,14 +117,22 @@ const mutation = _i1.OperationDefinitionNode(
                       name: _i1.NameNode(value: 'location'),
                       value: _i1.ObjectValueNode(fields: [
                         _i1.ObjectFieldNode(
-                            name: _i1.NameNode(value: 'update'),
+                            name: _i1.NameNode(value: 'upsert'),
                             value: _i1.VariableNode(
                                 name: _i1.NameNode(value: 'location')))
                       ])),
                   _i1.ObjectFieldNode(
                       name: _i1.NameNode(value: 'avator'),
-                      value:
-                          _i1.VariableNode(name: _i1.NameNode(value: 'avator')))
+                      value: _i1.VariableNode(
+                          name: _i1.NameNode(value: 'avator'))),
+                  _i1.ObjectFieldNode(
+                      name: _i1.NameNode(value: 'businessProfile'),
+                      value: _i1.ObjectValueNode(fields: [
+                        _i1.ObjectFieldNode(
+                            name: _i1.NameNode(value: 'upsert'),
+                            value: _i1.VariableNode(
+                                name: _i1.NameNode(value: 'businessProfile')))
+                      ]))
                 ]))
           ],
           directives: [],
@@ -246,6 +264,12 @@ const userInfo = _i1.FragmentDefinitionNode(
                 directives: [],
                 selectionSet: null),
             _i1.FieldNode(
+                name: _i1.NameNode(value: 'heading'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: null),
+            _i1.FieldNode(
                 name: _i1.NameNode(value: 'name'),
                 alias: null,
                 arguments: [],
@@ -358,6 +382,12 @@ const userInfo = _i1.FragmentDefinitionNode(
                       selectionSet: null),
                   _i1.FieldNode(
                       name: _i1.NameNode(value: 'lon'),
+                      alias: null,
+                      arguments: [],
+                      directives: [],
+                      selectionSet: null),
+                  _i1.FieldNode(
+                      name: _i1.NameNode(value: 'heading'),
                       alias: null,
                       arguments: [],
                       directives: [],

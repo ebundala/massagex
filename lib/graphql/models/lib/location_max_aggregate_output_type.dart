@@ -11,6 +11,7 @@ class LocationMaxAggregateOutputType extends Equatable {
   final String? name;
   final double? lat;
   final double? lon;
+  final double? heading;
   final RecordStatus? recordStatus;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -19,6 +20,7 @@ class LocationMaxAggregateOutputType extends Equatable {
       this.name,
       this.lat,
       this.lon,
+      this.heading,
       this.recordStatus,
       this.createdAt,
       this.updatedAt});
@@ -29,6 +31,7 @@ class LocationMaxAggregateOutputType extends Equatable {
       name: json['name'],
       lat: json['lat']?.toDouble(),
       lon: json['lon']?.toDouble(),
+      heading: json['heading']?.toDouble(),
       recordStatus: json['recordStatus'] != null
           ? RecordStatusExt.fromJson(json['recordStatus'])
           : null,
@@ -45,6 +48,7 @@ class LocationMaxAggregateOutputType extends Equatable {
     if (name != null) _data['name'] = name;
     if (lat != null) _data['lat'] = lat;
     if (lon != null) _data['lon'] = lon;
+    if (heading != null) _data['heading'] = heading;
     if (recordStatus != null) _data['recordStatus'] = recordStatus!.toJson();
     if (createdAt != null) _data['createdAt'] = createdAt!.toString();
     if (updatedAt != null) _data['updatedAt'] = updatedAt!.toString();
@@ -56,6 +60,7 @@ class LocationMaxAggregateOutputType extends Equatable {
       String? name,
       double? lat,
       double? lon,
+      double? heading,
       RecordStatus? recordStatus,
       DateTime? createdAt,
       DateTime? updatedAt}) {
@@ -64,13 +69,14 @@ class LocationMaxAggregateOutputType extends Equatable {
         name: name ?? this.name,
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
+        heading: heading ?? this.heading,
         recordStatus: recordStatus ?? this.recordStatus,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt);
   }
 
   List<Object?> get props =>
-      [id, name, lat, lon, recordStatus, createdAt, updatedAt];
+      [id, name, lat, lon, heading, recordStatus, createdAt, updatedAt];
 }
 
 extension LocationMaxAggregateOutputTypeExt on LocationMaxAggregateOutputType {
@@ -96,6 +102,8 @@ class LocationMaxAggregateOutputTypeController
   TextEditingController? latController;
 
   TextEditingController? lonController;
+
+  TextEditingController? headingController;
 
   void Function(RecordStatus value)? recordStatusChanged;
   TextEditingController? createdAtController;
@@ -137,6 +145,14 @@ class LocationMaxAggregateOutputTypeController
               value.copyWith(lon: double.tryParse(lonController?.text ?? ''));
         });
     }
+    if (isInSelectionSet('heading')) {
+      headingController =
+          TextEditingController(text: "${initialValue.heading ?? ''}")
+            ..addListener(() {
+              value = value.copyWith(
+                  heading: double.tryParse(headingController?.text ?? ''));
+            });
+    }
     if (isInSelectionSet('createdAt')) {
       createdAtController = TextEditingController(
           text: "${initialValue.createdAt ?? ''}")
@@ -167,6 +183,9 @@ class LocationMaxAggregateOutputTypeController
     }
     if (isInSelectionSet('lon')) {
       lonController?.dispose();
+    }
+    if (isInSelectionSet('heading')) {
+      headingController?.dispose();
     }
     if (isInSelectionSet('createdAt')) {
       createdAtController?.dispose();

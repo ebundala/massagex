@@ -26,8 +26,8 @@ class UserWhereInput extends Equatable {
   final List<UserWhereInput>? OR;
   final List<UserWhereInput>? NOT;
   final StringFilter? id;
-  final StringFilter? email;
-  final StringFilter? displayName;
+  final StringNullableFilter? email;
+  final StringNullableFilter? displayName;
   final StringNullableFilter? phoneNumber;
   final DateTimeNullableFilter? dateOfBirth;
   final BoolFilter? emailVerified;
@@ -492,10 +492,11 @@ class UserWhereInput extends Equatable {
               (index) => UserWhereInput.fromJson(json['NOT'][index]))
           : null,
       id: json['id'] != null ? StringFilter.fromJson(json['id']) : null,
-      email:
-          json['email'] != null ? StringFilter.fromJson(json['email']) : null,
+      email: json['email'] != null
+          ? StringNullableFilter.fromJson(json['email'])
+          : null,
       displayName: json['displayName'] != null
-          ? StringFilter.fromJson(json['displayName'])
+          ? StringNullableFilter.fromJson(json['displayName'])
           : null,
       phoneNumber: json['phoneNumber'] != null
           ? StringNullableFilter.fromJson(json['phoneNumber'])
@@ -621,8 +622,8 @@ class UserWhereInput extends Equatable {
       List<UserWhereInput>? OR,
       List<UserWhereInput>? NOT,
       StringFilter? id,
-      StringFilter? email,
-      StringFilter? displayName,
+      StringNullableFilter? email,
+      StringNullableFilter? displayName,
       StringNullableFilter? phoneNumber,
       DateTimeNullableFilter? dateOfBirth,
       BoolFilter? emailVerified,

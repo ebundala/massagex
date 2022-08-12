@@ -33,4 +33,4 @@ class GeolocationLocationChanged extends GeolocationEvent {
   List<Object> get props => [position];
 }
 
-class GeolocationResseted extends GeolocationEvent {}
+class GeolocationReseted extends GeolocationEvent {}

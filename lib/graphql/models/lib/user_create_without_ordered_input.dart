@@ -20,8 +20,8 @@ import "package:equatable/equatable.dart";
 
 class UserCreateWithoutOrderedInput extends Equatable {
   final String? id;
-  final String email;
-  final String displayName;
+  final String? email;
+  final String? displayName;
   final String? phoneNumber;
   final DateTime? dateOfBirth;
   final bool? emailVerified;
@@ -131,14 +131,16 @@ class UserCreateWithoutOrderedInput extends Equatable {
           name: ast.NameNode(value: 'id'),
           value: ast.StringValueNode(value: '${id!}', isBlock: false),
         ),
-      ast.ObjectFieldNode(
-        name: ast.NameNode(value: 'email'),
-        value: ast.StringValueNode(value: '${email}', isBlock: false),
-      ),
-      ast.ObjectFieldNode(
-        name: ast.NameNode(value: 'displayName'),
-        value: ast.StringValueNode(value: '${displayName}', isBlock: false),
-      ),
+      if (email != null)
+        ast.ObjectFieldNode(
+          name: ast.NameNode(value: 'email'),
+          value: ast.StringValueNode(value: '${email!}', isBlock: false),
+        ),
+      if (displayName != null)
+        ast.ObjectFieldNode(
+          name: ast.NameNode(value: 'displayName'),
+          value: ast.StringValueNode(value: '${displayName!}', isBlock: false),
+        ),
       if (phoneNumber != null)
         ast.ObjectFieldNode(
           name: ast.NameNode(value: 'phoneNumber'),
@@ -261,8 +263,8 @@ class UserCreateWithoutOrderedInput extends Equatable {
 
   UserCreateWithoutOrderedInput(
       {this.id,
-      required this.email,
-      required this.displayName,
+      this.email,
+      this.displayName,
       this.phoneNumber,
       this.dateOfBirth,
       this.emailVerified,
@@ -356,10 +358,8 @@ class UserCreateWithoutOrderedInput extends Equatable {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> _data = {};
     if (id != null) _data['id'] = id;
-
-    _data['email'] = email;
-
-    _data['displayName'] = displayName;
+    if (email != null) _data['email'] = email;
+    if (displayName != null) _data['displayName'] = displayName;
     if (phoneNumber != null) _data['phoneNumber'] = phoneNumber;
     if (dateOfBirth != null) _data['dateOfBirth'] = dateOfBirth!.toString();
     if (emailVerified != null) _data['emailVerified'] = emailVerified;

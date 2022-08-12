@@ -8,6 +8,7 @@ class LocationCreateManyInput extends Equatable {
   final String? name;
   final double lat;
   final double lon;
+  final double? heading;
   final RecordStatus? recordStatus;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -57,6 +58,11 @@ class LocationCreateManyInput extends Equatable {
         name: ast.NameNode(value: 'lon'),
         value: ast.FloatValueNode(value: '${lon}'),
       ),
+      if (heading != null)
+        ast.ObjectFieldNode(
+          name: ast.NameNode(value: 'heading'),
+          value: ast.FloatValueNode(value: '${heading!}'),
+        ),
       if (recordStatus != null)
         ast.ObjectFieldNode(
           name: ast.NameNode(value: 'recordStatus'),
@@ -83,6 +89,7 @@ class LocationCreateManyInput extends Equatable {
       this.name,
       required this.lat,
       required this.lon,
+      this.heading,
       this.recordStatus,
       this.createdAt,
       this.updatedAt});
@@ -93,6 +100,7 @@ class LocationCreateManyInput extends Equatable {
       name: json['name'],
       lat: json['lat'].toDouble(),
       lon: json['lon'].toDouble(),
+      heading: json['heading']?.toDouble(),
       recordStatus: json['recordStatus'] != null
           ? RecordStatusExt.fromJson(json['recordStatus'])
           : null,
@@ -111,6 +119,7 @@ class LocationCreateManyInput extends Equatable {
     _data['lat'] = lat;
 
     _data['lon'] = lon;
+    if (heading != null) _data['heading'] = heading;
     if (recordStatus != null) _data['recordStatus'] = recordStatus!.toJson();
     if (createdAt != null) _data['createdAt'] = createdAt!.toString();
     if (updatedAt != null) _data['updatedAt'] = updatedAt!.toString();
@@ -122,6 +131,7 @@ class LocationCreateManyInput extends Equatable {
       String? name,
       double? lat,
       double? lon,
+      double? heading,
       RecordStatus? recordStatus,
       DateTime? createdAt,
       DateTime? updatedAt}) {
@@ -130,11 +140,12 @@ class LocationCreateManyInput extends Equatable {
         name: name ?? this.name,
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
+        heading: heading ?? this.heading,
         recordStatus: recordStatus ?? this.recordStatus,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt);
   }
 
   List<Object?> get props =>
-      [id, name, lat, lon, recordStatus, createdAt, updatedAt];
+      [id, name, lat, lon, heading, recordStatus, createdAt, updatedAt];
 }

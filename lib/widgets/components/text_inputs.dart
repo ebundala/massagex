@@ -753,9 +753,22 @@ class SearchInput extends StatelessWidget {
 }
 
 class LocationInput extends StatelessWidget {
-  LocationInput({Key? key, required this.apiKey}) : super(key: key);
+  LocationInput(
+      {Key? key,
+      required this.apiKey,
+      this.label,
+      this.validator,
+      this.onChanged,
+      this.displayLocation,
+      this.inputController})
+      : super(key: key);
   final _inputController = TextEditingController();
+  final TextEditingController? inputController;
   final String apiKey;
+  final Widget? label;
+  final String? Function(String?)? validator;
+  final void Function(LocationResult? result)? onChanged;
+  final LatLng? displayLocation;
   Future<LocationResult?> showPlacePicker(BuildContext context,
       [LatLng? displayLocation]) async {
     LocationResult result = await Navigator.of(context).push(
@@ -774,13 +787,16 @@ class LocationInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PrimaryTextInput(
-      controller: _inputController,
-      label: const Text("Location"),
+      controller: inputController ?? _inputController,
+      label: label ?? const Text("Location"),
+      validator: validator,
       onTap: () async {
-        final result = await showPlacePicker(context);
+        final result = await showPlacePicker(context, displayLocation);
         if (result != null) {
-          _inputController.text = result.formattedAddress ?? "";
+          (inputController ?? _inputController).text =
+              result.formattedAddress ?? "";
         }
+        onChanged?.call(result);
       },
     );
   }

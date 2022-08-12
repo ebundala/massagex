@@ -3,13 +3,14 @@ part of 'update_my_profile_bloc.dart';
 extension on GraphQLClient {
   Future<OperationResult> updateMyProfile(
       {required String id,
-      StringFieldUpdateOperationsInput? displayName,
+      NullableStringFieldUpdateOperationsInput? displayName,
       NullableStringFieldUpdateOperationsInput? phoneNumber,
       NullableDateTimeFieldUpdateOperationsInput? dateOfBirth,
       EnumGenderFieldUpdateOperationsInput? gender,
       JSONObject? metadata,
-      LocationUpdateWithoutUsersInput? location,
-      AttachmentUpdateOneWithoutUsersInput? avator}) async {
+      LocationUpsertWithoutUsersInput? location,
+      AttachmentUpdateOneWithoutUsersInput? avator,
+      BusinessUpsertWithoutOwnerInput? businessProfile}) async {
     final Map<String, dynamic> vars = {};
     final List<ArgumentInfo> args = [];
     vars.addAll({'id': id});
@@ -41,6 +42,11 @@ extension on GraphQLClient {
     if (avator != null) {
       args.add(ArgumentInfo(name: 'avator', value: avator));
       vars.addAll(avator.getFilesVariables(field_name: 'avator'));
+    }
+    if (businessProfile != null) {
+      args.add(ArgumentInfo(name: 'businessProfile', value: businessProfile));
+      vars.addAll(
+          businessProfile.getFilesVariables(field_name: 'businessProfile'));
     }
     final doc = transform(document, [NormalizeArgumentsVisitor(args: args)]);
     final result = await runObservableOperation(this,

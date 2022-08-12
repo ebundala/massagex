@@ -26,8 +26,8 @@ import "package:equatable/equatable.dart";
 
 class UserUpdateInput extends Equatable {
   final StringFieldUpdateOperationsInput? id;
-  final StringFieldUpdateOperationsInput? email;
-  final StringFieldUpdateOperationsInput? displayName;
+  final NullableStringFieldUpdateOperationsInput? email;
+  final NullableStringFieldUpdateOperationsInput? displayName;
   final NullableStringFieldUpdateOperationsInput? phoneNumber;
   final NullableDateTimeFieldUpdateOperationsInput? dateOfBirth;
   final BoolFieldUpdateOperationsInput? emailVerified;
@@ -378,10 +378,11 @@ class UserUpdateInput extends Equatable {
           ? StringFieldUpdateOperationsInput.fromJson(json['id'])
           : null,
       email: json['email'] != null
-          ? StringFieldUpdateOperationsInput.fromJson(json['email'])
+          ? NullableStringFieldUpdateOperationsInput.fromJson(json['email'])
           : null,
       displayName: json['displayName'] != null
-          ? StringFieldUpdateOperationsInput.fromJson(json['displayName'])
+          ? NullableStringFieldUpdateOperationsInput.fromJson(
+              json['displayName'])
           : null,
       phoneNumber: json['phoneNumber'] != null
           ? NullableStringFieldUpdateOperationsInput.fromJson(
@@ -493,8 +494,8 @@ class UserUpdateInput extends Equatable {
 
   UserUpdateInput copyWith(
       {StringFieldUpdateOperationsInput? id,
-      StringFieldUpdateOperationsInput? email,
-      StringFieldUpdateOperationsInput? displayName,
+      NullableStringFieldUpdateOperationsInput? email,
+      NullableStringFieldUpdateOperationsInput? displayName,
       NullableStringFieldUpdateOperationsInput? phoneNumber,
       NullableDateTimeFieldUpdateOperationsInput? dateOfBirth,
       BoolFieldUpdateOperationsInput? emailVerified,

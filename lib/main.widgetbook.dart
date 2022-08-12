@@ -4,64 +4,56 @@
 // WidgetbookGenerator
 // **************************************************************************
 
-import 'package:massagex/widgets/themes/light_theme.dart';
+import 'dart:async';
 import 'dart:core';
+import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:massagex/main.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:massagex/graphql/clients/signup/signup_bloc.dart';
-import 'package:massagex/graphql/clients/update_my_profile/update_my_profile_bloc.dart';
-import 'package:models/attachment_create_without_businesses_input.dart';
-import 'package:models/string_field_update_operations_input.dart';
-import 'package:models/attachment_create_nested_one_without_businesses_input.dart';
-import 'package:models/scalars/json_object.dart';
-import 'package:flutter/foundation.dart';
-import 'package:massagex/graphql/clients/find_user/find_user_bloc.dart';
-import 'package:models/signup_input.dart';
-import 'package:models/business_create_without_owner_input.dart';
-import 'package:models/scalars/phone_number.dart';
-import 'package:models/scalars/email_address.dart';
-import 'package:models/attachment_update_one_without_users_input.dart';
-import 'dart:convert';
-import 'package:massagex/graphql/clients/recover_account/recover_account_bloc.dart';
-import 'package:models/gender.dart';
-import 'package:models/attachment_create_without_users_input.dart';
-import 'package:graphql/client.dart';
-import 'package:models/enum_gender_field_update_operations_input.dart';
-import 'package:http/http.dart';
-import 'package:massagex/graphql/clients/signin/signin_bloc.dart';
-import 'package:models/auth_input.dart';
-import 'package:models/business_mode.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:iconly/iconly.dart';
+import 'package:massagex/main.dart';
+import 'package:massagex/pages/login_page.dart';
+import 'package:massagex/pages/onbording_page.dart';
+import 'package:massagex/pages/splash_page.dart';
+import 'package:massagex/secrets/api_keys.dart';
+import 'package:massagex/state/app/app_bloc.dart';
+import 'package:massagex/state/routes/routes.dart';
+import 'package:massagex/utils.dart';
+import 'package:massagex/widgets/components/avators.dart';
+import 'package:massagex/widgets/components/badges.dart';
+import 'package:massagex/widgets/components/bottom_sheets.dart';
+import 'package:massagex/widgets/components/buttons.dart';
+import 'package:massagex/widgets/components/cards.dart';
+import 'package:massagex/widgets/components/chips.dart';
+import 'package:massagex/widgets/components/live_map.dart';
+import 'package:massagex/widgets/components/map_info_card.dart';
+import 'package:massagex/widgets/components/map_location_name_card.dart';
+import 'package:massagex/widgets/components/map_markers.dart';
 import 'package:massagex/widgets/components/page_indicator.dart';
+import 'package:massagex/widgets/components/photo_gallery.dart';
+import 'package:massagex/widgets/components/spinars.dart';
+import 'package:massagex/widgets/components/stars_rating.dart';
+import 'package:massagex/widgets/components/swipable_button/button_slider_thumb_shape.dart';
+import 'package:massagex/widgets/components/swipable_button/swipable_button.dart';
+import 'package:massagex/widgets/components/swipable_button/track.dart';
+import 'package:massagex/widgets/components/text_inputs.dart';
+import 'package:massagex/widgets/icons/arrow_next.dart';
 import 'package:massagex/widgets/shapes/active_page_indicator.dart';
 import 'package:massagex/widgets/shapes/inactive_page_indicator.dart';
-import 'package:widgetbook/widgetbook.dart';
-import 'package:massagex/widgets/icons/arrow_next.dart';
-import 'dart:math';
 import 'package:massagex/widgets/shapes/intro_large_shape.dart';
 import 'package:massagex/widgets/shapes/intro_small_shape.dart';
 import 'package:massagex/widgets/shapes/skip_intro_action_container.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:massagex/widgets/texts/intro_heading.dart';
-import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/widgets/texts/intro_paragraph.dart';
 import 'package:massagex/widgets/texts/intro_skip_text.dart';
-import 'dart:ui';
-import 'package:massagex/widgets/components/avators.dart';
-import 'package:massagex/widgets/components/badges.dart';
-import 'package:massagex/widgets/components/buttons.dart';
-import 'package:massagex/widgets/components/cards.dart';
-import 'package:massagex/widgets/components/chips.dart';
-import 'package:massagex/widgets/components/spinars.dart';
-import 'package:massagex/widgets/components/text_inputs.dart';
-import 'package:massagex/widgets/components/stars_rating.dart';
-import 'package:massagex/widgets/components/photo_gallery.dart';
-import 'package:massagex/widgets/components/map_markers.dart';
-import 'package:massagex/widgets/components/map_info_card.dart';
-import 'package:massagex/widgets/components/map_location_name_card.dart';
-import 'package:massagex/widgets/components/bottom_sheets.dart';
-import 'package:massagex/widgets/components/live_map.dart';
+import 'package:massagex/widgets/texts/styled_text.dart';
+import 'package:massagex/widgets/themes/light_theme.dart';
+import 'package:place_picker/place_picker.dart';
+import 'package:widgetbook/widgetbook.dart';
 
 void main() {
   runApp(HotReload());
@@ -74,7 +66,7 @@ class HotReload extends StatelessWidget {
   Widget build(BuildContext context) {
     return Widgetbook.material(
       appInfo: AppInfo(
-        name: 'massagex',
+        name: 'massageX',
       ),
       themes: [
         WidgetbookTheme(
@@ -87,7 +79,7 @@ class HotReload extends StatelessWidget {
         ),
       ],
       devices: [
-        Device.mobile(
+        Device(
           name: 'Galaxy A10',
           resolution: Resolution(
             nativeSize: DeviceSize(
@@ -98,7 +90,7 @@ class HotReload extends StatelessWidget {
           ),
           type: DeviceType.mobile,
         ),
-        Device.mobile(
+        Device(
           name: 'iPhone 12',
           resolution: Resolution(
             nativeSize: DeviceSize(
@@ -271,26 +263,6 @@ class HotReload extends StatelessWidget {
                   name: 'shapes',
                   widgets: [
                     WidgetbookComponent(
-                      name: 'UserLocationMarker',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'primary',
-                          builder: (context) => getUserLocationMarker(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'DestinationMarker',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'primary',
-                          builder: (context) => getDestinationMarker(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
                       name: 'ActivePageIndicator',
                       useCases: [
                         WidgetbookUseCase(
@@ -385,98 +357,6 @@ class HotReload extends StatelessWidget {
                   name: 'components',
                   widgets: [
                     WidgetbookComponent(
-                      name: 'LiveMap',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'primary',
-                          builder: (context) => getTravellerLivemap(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'RequestBottomSheet',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'primary',
-                          builder: (context) => getRequestBottomSheet(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'NotificationBottomSheet',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'primary',
-                          builder: (context) =>
-                              getNotificationBottomSheet(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'MapNavigationDestinationInfo',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'primary',
-                          builder: (context) =>
-                              getMapNavigationDestinationInfo(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'Waiting map info',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'Provider',
-                          builder: (context) => getWaitingMapInfoCard(context),
-                        ),
-                        WidgetbookUseCase(
-                          name: 'Customer',
-                          builder: (context) =>
-                              getCustomerWaitingMapInfoCard(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'Traveling map info',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'Provider',
-                          builder: (context) => getTravelerMapInfoCard(context),
-                        ),
-                        WidgetbookUseCase(
-                          name: 'Customer',
-                          builder: (context) =>
-                              getCustomerTravelerMapInfoCard(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'Photo gallery',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'PhotoGallery',
-                          builder: (context) => getPhotoGallery(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'Stars rating',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'StarsRating',
-                          builder: (context) => getStarsRating(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
                       name: 'DistanceChip',
                       useCases: [
                         WidgetbookUseCase(
@@ -497,16 +377,6 @@ class HotReload extends StatelessWidget {
                       isExpanded: true,
                     ),
                     WidgetbookComponent(
-                      name: 'TextButton',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'Text',
-                          builder: (context) => getButton4(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
                       name: 'PrimaryAvator',
                       useCases: [
                         WidgetbookUseCase(
@@ -517,11 +387,11 @@ class HotReload extends StatelessWidget {
                       isExpanded: true,
                     ),
                     WidgetbookComponent(
-                      name: 'SwipableButton',
+                      name: 'UserLocationMarker',
                       useCases: [
                         WidgetbookUseCase(
-                          name: 'swipable',
-                          builder: (context) => getButton3(context),
+                          name: 'primary',
+                          builder: (context) => getUserLocationMarker(context),
                         ),
                       ],
                       isExpanded: true,
@@ -532,16 +402,6 @@ class HotReload extends StatelessWidget {
                         WidgetbookUseCase(
                           name: 'datepicker',
                           builder: (context) => getTextField2(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
-                      name: 'DropdownInput',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'Dropdown',
-                          builder: (context) => getTextField1(context),
                         ),
                       ],
                       isExpanded: true,
@@ -587,6 +447,47 @@ class HotReload extends StatelessWidget {
                       isExpanded: true,
                     ),
                     WidgetbookComponent(
+                      name: 'NotificationBottomSheet',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'Request',
+                          builder: (context) =>
+                              getNotificationBottomSheet(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'TravelerMapInfoCard',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'provider',
+                          builder: (context) => getTravelerMapInfoCard(context),
+                        ),
+                        WidgetbookUseCase(
+                          name: 'customer',
+                          builder: (context) =>
+                              getCustomerTravelerMapInfoCard(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'WaitingMapInfoCard',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'provider',
+                          builder: (context) => getWaitingMapInfoCard(context),
+                        ),
+                        WidgetbookUseCase(
+                          name: 'customer',
+                          builder: (context) =>
+                              getCustomerWaitingMapInfoCard(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
                       name: 'PageIndicator',
                       useCases: [
                         WidgetbookUseCase(
@@ -605,16 +506,6 @@ class HotReload extends StatelessWidget {
                       isExpanded: true,
                     ),
                     WidgetbookComponent(
-                      name: 'PrimaryTextInput',
-                      useCases: [
-                        WidgetbookUseCase(
-                          name: 'primary',
-                          builder: (context) => getTextField(context),
-                        ),
-                      ],
-                      isExpanded: true,
-                    ),
-                    WidgetbookComponent(
                       name: 'OTPInput',
                       useCases: [
                         WidgetbookUseCase(
@@ -625,11 +516,31 @@ class HotReload extends StatelessWidget {
                       isExpanded: true,
                     ),
                     WidgetbookComponent(
-                      name: 'PhoneInput',
+                      name: 'PrimaryTextInput',
                       useCases: [
                         WidgetbookUseCase(
-                          name: 'Phone',
-                          builder: (context) => getTextField7(context),
+                          name: 'primary',
+                          builder: (context) => getTextField(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'RequestBottomSheet',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'Request',
+                          builder: (context) => getRequestBottomSheet(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'DestinationMarker',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) => getDestinationMarker(context),
                         ),
                       ],
                       isExpanded: true,
@@ -650,6 +561,16 @@ class HotReload extends StatelessWidget {
                         WidgetbookUseCase(
                           name: 'completed',
                           builder: (context) => getSpinar1(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'PhotoGallery',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) => getPhotoGallery(context),
                         ),
                       ],
                       isExpanded: true,
@@ -695,6 +616,36 @@ class HotReload extends StatelessWidget {
                       isExpanded: true,
                     ),
                     WidgetbookComponent(
+                      name: 'TextsButton',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'Text',
+                          builder: (context) => getButton4(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'OutlineButton',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'outlined',
+                          builder: (context) => getButton2(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'LiveMap',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) => getTravellerLivemap(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
                       name: 'SearchInput',
                       useCases: [
                         WidgetbookUseCase(
@@ -715,6 +666,27 @@ class HotReload extends StatelessWidget {
                       isExpanded: true,
                     ),
                     WidgetbookComponent(
+                      name: 'MapNavigationDestinationInfo',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) =>
+                              getMapNavigationDestinationInfo(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'StarsRating',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'primary',
+                          builder: (context) => getStarsRating(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
                       name: 'PrimaryCard',
                       useCases: [
                         WidgetbookUseCase(
@@ -725,17 +697,45 @@ class HotReload extends StatelessWidget {
                       isExpanded: true,
                     ),
                     WidgetbookComponent(
-                      name: 'PaymentMethodButton',
+                      name: 'PhoneInput<dynamic>',
                       useCases: [
                         WidgetbookUseCase(
-                          name: 'payment method',
-                          builder: (context) => getButton2(context),
+                          name: 'Phone',
+                          builder: (context) => getTextField7(context),
+                        ),
+                      ],
+                      isExpanded: true,
+                    ),
+                    WidgetbookComponent(
+                      name: 'DropdownInput<dynamic>',
+                      useCases: [
+                        WidgetbookUseCase(
+                          name: 'Dropdown',
+                          builder: (context) => getTextField1(context),
                         ),
                       ],
                       isExpanded: true,
                     ),
                   ],
-                  folders: [],
+                  folders: [
+                    WidgetbookFolder(
+                      name: 'swipable_button',
+                      widgets: [
+                        WidgetbookComponent(
+                          name: 'SwipableButton',
+                          useCases: [
+                            WidgetbookUseCase(
+                              name: 'swipable',
+                              builder: (context) => getButton3(context),
+                            ),
+                          ],
+                          isExpanded: true,
+                        ),
+                      ],
+                      folders: [],
+                      isExpanded: true,
+                    ),
+                  ],
                   isExpanded: true,
                 ),
                 WidgetbookFolder(
@@ -772,11 +772,7 @@ class HotReload extends StatelessWidget {
               name: 'MassageX',
               useCases: [
                 WidgetbookUseCase(
-                  name: 'light',
-                  builder: (context) => mainApp(context),
-                ),
-                WidgetbookUseCase(
-                  name: 'dark',
+                  name: 'Main app',
                   builder: (context) => mainApp(context),
                 ),
               ],

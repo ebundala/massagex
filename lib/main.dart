@@ -1,3 +1,4 @@
+import 'package:massagex/pages/create_business_profile.dart';
 import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
 import 'package:massagex/pages/splash_page.dart';
@@ -61,7 +62,7 @@ class MassageX extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AppBloc(
-        url: serverUrl(path: 'graphql', port: 3000),
+        url: serverUrl(path: 'graphql', port: 443),
       ),
       child: Builder(builder: (context) {
         return MaterialApp(
@@ -74,17 +75,19 @@ class MassageX extends StatelessWidget {
                   if (state is AppFirstStarted) {
                     if (_navigatorKey.currentState?.mounted == true) {
                       _navigatorKey.currentState
-                          ?.pushReplacementNamed('/onboarding');
+                          ?.pushReplacementNamed(AppRoutes.onboarding);
                     }
                   }
-                  if (state is AppAuth) {
+                  if (state is AppAuthenticated) {
                     if (_navigatorKey.currentState?.mounted == true) {
-                      _navigatorKey.currentState?.pushReplacementNamed('/home');
+                      _navigatorKey.currentState
+                          ?.pushReplacementNamed(AppRoutes.home);
                     }
                   }
                   if (state is AppLoggedOut) {
                     if (_navigatorKey.currentState?.mounted == true) {
-                      _navigatorKey.currentState?.pushReplacementNamed('/home');
+                      _navigatorKey.currentState
+                          ?.pushReplacementNamed(AppRoutes.login);
                     }
                   }
                 },
@@ -117,11 +120,16 @@ class MassageX extends StatelessWidget {
                               builder: (context) => LoginPage(
                                     register: settings.arguments as bool,
                                   ));
+                        case AppRoutes.createBusinessProfile:
+                          return MaterialPageRoute(
+                              builder: (context) =>
+                                  const CreateBusinessProfilePage());
+                        case AppRoutes.completeProfile:
+                        case AppRoutes.home:
 
                         case AppRoutes.recoverAccount:
                         case AppRoutes.verifyPhoneOTP:
-                        case AppRoutes.completeProfile:
-                        case AppRoutes.home:
+
                         case AppRoutes.providerHome:
                         case AppRoutes.profile:
                         case AppRoutes.orderSummary:
@@ -130,7 +138,7 @@ class MassageX extends StatelessWidget {
                         case AppRoutes.schedules:
                         case AppRoutes.createService:
                         case AppRoutes.changePassword:
-                        case AppRoutes.createBussinessProfile:
+
                         case AppRoutes.tracking:
                         case AppRoutes.providerDetails:
                         default:
@@ -139,7 +147,8 @@ class MassageX extends StatelessWidget {
                                     appBar: AppBar(
                                       title: const AppName(),
                                     ),
-                                    body: const Text('app name'),
+                                    body:
+                                        const Center(child: Text('Not found')),
                                   )));
                       }
                     },

@@ -12,13 +12,14 @@ class UpdateMyProfileStarted extends UpdateMyProfileEvent {
 
 class UpdateMyProfileExcuted extends UpdateMyProfileEvent {
   final String id;
-  final StringFieldUpdateOperationsInput? displayName;
+  final NullableStringFieldUpdateOperationsInput? displayName;
   final NullableStringFieldUpdateOperationsInput? phoneNumber;
   final NullableDateTimeFieldUpdateOperationsInput? dateOfBirth;
   final EnumGenderFieldUpdateOperationsInput? gender;
   final JSONObject? metadata;
-  final LocationUpdateWithoutUsersInput? location;
+  final LocationUpsertWithoutUsersInput? location;
   final AttachmentUpdateOneWithoutUsersInput? avator;
+  final BusinessUpsertWithoutOwnerInput? businessProfile;
   UpdateMyProfileExcuted(
       {required this.id,
       this.displayName,
@@ -27,7 +28,8 @@ class UpdateMyProfileExcuted extends UpdateMyProfileEvent {
       this.gender,
       this.metadata,
       this.location,
-      this.avator});
+      this.avator,
+      this.businessProfile});
   @override
   List<Object?> get props => [
         id,
@@ -37,7 +39,8 @@ class UpdateMyProfileExcuted extends UpdateMyProfileEvent {
         gender,
         metadata,
         location,
-        avator
+        avator,
+        businessProfile
       ];
 }
 

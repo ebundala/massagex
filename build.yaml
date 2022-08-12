@@ -8,8 +8,8 @@ targets:
           graphql_custom_type_base_filename: scalars/graphql_custom_type_base.dart
           models_import_path: /
           models_package: models
-          package_name: massagex          
-          graphql_endpoint: http://localhost:3000/graphql
+          package_name: massagex
+          graphql_endpoint: https://itahuduma.com/graphql
           models_directory_path: lib/graphql/models/
           to_json_exclude_null_field: true
           use_equatable: true
@@ -20,6 +20,6 @@ targets:
             # EmailAddress: String
             # PhoneNumber: String
           custom_scalar_implementation_paths:
-            JSONObject: 'scalars/json_object.dart'
-            EmailAddress: 'scalars/email_address.dart'
-            PhoneNumber: 'scalars/phone_number.dart'
+            JSONObject: "scalars/json_object.dart"
+            EmailAddress: "scalars/email_address.dart"
+            PhoneNumber: "scalars/phone_number.dart"

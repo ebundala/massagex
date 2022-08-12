@@ -17,8 +17,8 @@ class UserScalarWhereWithAggregatesInput extends Equatable {
   final List<UserScalarWhereWithAggregatesInput>? OR;
   final List<UserScalarWhereWithAggregatesInput>? NOT;
   final StringWithAggregatesFilter? id;
-  final StringWithAggregatesFilter? email;
-  final StringWithAggregatesFilter? displayName;
+  final StringNullableWithAggregatesFilter? email;
+  final StringNullableWithAggregatesFilter? displayName;
   final StringNullableWithAggregatesFilter? phoneNumber;
   final DateTimeNullableWithAggregatesFilter? dateOfBirth;
   final BoolWithAggregatesFilter? emailVerified;
@@ -346,10 +346,10 @@ class UserScalarWhereWithAggregatesInput extends Equatable {
           ? StringWithAggregatesFilter.fromJson(json['id'])
           : null,
       email: json['email'] != null
-          ? StringWithAggregatesFilter.fromJson(json['email'])
+          ? StringNullableWithAggregatesFilter.fromJson(json['email'])
           : null,
       displayName: json['displayName'] != null
-          ? StringWithAggregatesFilter.fromJson(json['displayName'])
+          ? StringNullableWithAggregatesFilter.fromJson(json['displayName'])
           : null,
       phoneNumber: json['phoneNumber'] != null
           ? StringNullableWithAggregatesFilter.fromJson(json['phoneNumber'])
@@ -428,8 +428,8 @@ class UserScalarWhereWithAggregatesInput extends Equatable {
       List<UserScalarWhereWithAggregatesInput>? OR,
       List<UserScalarWhereWithAggregatesInput>? NOT,
       StringWithAggregatesFilter? id,
-      StringWithAggregatesFilter? email,
-      StringWithAggregatesFilter? displayName,
+      StringNullableWithAggregatesFilter? email,
+      StringNullableWithAggregatesFilter? displayName,
       StringNullableWithAggregatesFilter? phoneNumber,
       DateTimeNullableWithAggregatesFilter? dateOfBirth,
       BoolWithAggregatesFilter? emailVerified,

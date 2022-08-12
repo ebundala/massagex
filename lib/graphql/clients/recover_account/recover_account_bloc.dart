@@ -3,7 +3,7 @@ import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
-import 'package:models/auth_result.dart';
+import 'package:models/unknown.dart';
 import 'recover_account_ast.dart' show document;
 
 part "recover_account_extensions.dart";
@@ -120,14 +120,14 @@ class RecoverAccountBloc
             errors['message'] = message;
           }
           // convert result to data type expected by listeners
-          var data = AuthResult();
+          var data = unknown();
           if (result.data != null) {
             //add errors encountered to result
             result.data!.addAll(errors);
-            data = AuthResult.fromJson(result.data!);
+            data = unknown.fromJson(result.data!);
           } else if (errors.isNotEmpty) {
             var cachedData = loadFromCache()..addAll(errors);
-            data = AuthResult.fromJson(cachedData);
+            data = unknown.fromJson(cachedData);
           }
           if (result.hasException) {
             if (result.exception?.linkException != null) {
@@ -178,7 +178,7 @@ class RecoverAccountBloc
     // }
   }
 
-  AuthResult get getData {
+  unknown get getData {
     return (state is RecoverAccountInitial) || (state is RecoverAccountError)
         ? null
         : (state as dynamic)?.data;

@@ -25,6 +25,14 @@ class GeolocationBloc extends Bloc<GeolocationEvent, GeolocationState> {
     on<GeolocationListenForLocationChanged>((event, emit) => bootStrap(emit));
     on<GeolocationStopListenForLocationChanged>(
         (event, emit) => unregisterLocationListener(emit));
+    on<GeolocationLocationChanged>(
+      (event, emit) {
+        emit(GeolocationPositionChanged(
+            enabled: _serviceEnabled,
+            listening: true,
+            position: event.position));
+      },
+    );
   }
 
   bootStrap(Emitter<GeolocationState> emit) async {
@@ -34,21 +42,18 @@ class GeolocationBloc extends Bloc<GeolocationEvent, GeolocationState> {
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
-        // ignore: invalid_use_of_visible_for_testing_member
         emit(GeolocationCantPerformQuery(state: state));
         return;
       }
     }
 
     _permissionGranted = await location.hasPermission();
-    if (_permissionGranted != PermissionStatus.deniedForever) {
-      // ignore: invalid_use_of_visible_for_testing_member
+    if (_permissionGranted == PermissionStatus.deniedForever) {
       emit(GeolocationPermissionDeniedForever(enabled: _serviceEnabled));
       return;
     } else if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
-        // ignore: invalid_use_of_visible_for_testing_member
         emit(GeolocationPermissionDenied(enabled: _serviceEnabled));
         return;
       } else {
@@ -61,26 +66,32 @@ class GeolocationBloc extends Bloc<GeolocationEvent, GeolocationState> {
     }
   }
 
-  updateLocation(LocationData location, Emitter<GeolocationState> emit) {
+  updateLocation(LocationData location) {
     _locationData = location;
     if (_locationData != null) {
-      // ignore: invalid_use_of_visible_for_testing_member
-      emit(GeolocationPositionChanged(
-          enabled: true, position: _locationData!, listening: true));
+      add(GeolocationLocationChanged(position: _locationData!));
     }
   }
 
   Future<StreamSubscription<LocationData>?> registerLocationListener(
       Emitter<GeolocationState> emit) async {
     if (serviceAvailable()) {
+      location.changeSettings(interval: 30000);
       _locationData = await location.getLocation();
+      if (!await location.isBackgroundModeEnabled()) {
+        location.enableBackgroundMode(enable: true);
+      }
       return location.onLocationChanged
-          .listen((locationData) => updateLocation(locationData, emit));
+          .listen((locationData) => updateLocation(locationData));
     }
     return null;
   }
 
   unregisterLocationListener(Emitter<GeolocationState> emit) async {
+    if (await location.isBackgroundModeEnabled()) {
+      location.enableBackgroundMode(enable: false);
+    }
+
     await subscription?.cancel();
     emit(GeolocationListenerUnregistered(state: state));
   }

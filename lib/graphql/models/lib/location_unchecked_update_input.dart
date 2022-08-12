@@ -13,6 +13,7 @@ class LocationUncheckedUpdateInput extends Equatable {
   final StringFieldUpdateOperationsInput? name;
   final FloatFieldUpdateOperationsInput? lat;
   final FloatFieldUpdateOperationsInput? lon;
+  final FloatFieldUpdateOperationsInput? heading;
   final EnumRecordStatusFieldUpdateOperationsInput? recordStatus;
   final DateTimeFieldUpdateOperationsInput? createdAt;
   final DateTimeFieldUpdateOperationsInput? updatedAt;
@@ -42,6 +43,11 @@ class LocationUncheckedUpdateInput extends Equatable {
     if (lon != null) {
       lon!.getFilesVariables(
           field_name: '${field_name}_lon', variables: variables);
+    }
+
+    if (heading != null) {
+      heading!.getFilesVariables(
+          field_name: '${field_name}_heading', variables: variables);
     }
 
     if (recordStatus != null) {
@@ -110,6 +116,11 @@ class LocationUncheckedUpdateInput extends Equatable {
           name: ast.NameNode(value: 'lon'),
           value: lon!.toValueNode(field_name: '${field_name}_lon'),
         ),
+      if (heading != null)
+        ast.ObjectFieldNode(
+          name: ast.NameNode(value: 'heading'),
+          value: heading!.toValueNode(field_name: '${field_name}_heading'),
+        ),
       if (recordStatus != null)
         ast.ObjectFieldNode(
           name: ast.NameNode(value: 'recordStatus'),
@@ -145,6 +156,7 @@ class LocationUncheckedUpdateInput extends Equatable {
       this.name,
       this.lat,
       this.lon,
+      this.heading,
       this.recordStatus,
       this.createdAt,
       this.updatedAt,
@@ -164,6 +176,9 @@ class LocationUncheckedUpdateInput extends Equatable {
           : null,
       lon: json['lon'] != null
           ? FloatFieldUpdateOperationsInput.fromJson(json['lon'])
+          : null,
+      heading: json['heading'] != null
+          ? FloatFieldUpdateOperationsInput.fromJson(json['heading'])
           : null,
       recordStatus: json['recordStatus'] != null
           ? EnumRecordStatusFieldUpdateOperationsInput.fromJson(
@@ -191,6 +206,7 @@ class LocationUncheckedUpdateInput extends Equatable {
     if (name != null) _data['name'] = name!.toJson();
     if (lat != null) _data['lat'] = lat!.toJson();
     if (lon != null) _data['lon'] = lon!.toJson();
+    if (heading != null) _data['heading'] = heading!.toJson();
     if (recordStatus != null) _data['recordStatus'] = recordStatus!.toJson();
     if (createdAt != null) _data['createdAt'] = createdAt!.toJson();
     if (updatedAt != null) _data['updatedAt'] = updatedAt!.toJson();
@@ -204,6 +220,7 @@ class LocationUncheckedUpdateInput extends Equatable {
       StringFieldUpdateOperationsInput? name,
       FloatFieldUpdateOperationsInput? lat,
       FloatFieldUpdateOperationsInput? lon,
+      FloatFieldUpdateOperationsInput? heading,
       EnumRecordStatusFieldUpdateOperationsInput? recordStatus,
       DateTimeFieldUpdateOperationsInput? createdAt,
       DateTimeFieldUpdateOperationsInput? updatedAt,
@@ -214,6 +231,7 @@ class LocationUncheckedUpdateInput extends Equatable {
         name: name ?? this.name,
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
+        heading: heading ?? this.heading,
         recordStatus: recordStatus ?? this.recordStatus,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -226,6 +244,7 @@ class LocationUncheckedUpdateInput extends Equatable {
         name,
         lat,
         lon,
+        heading,
         recordStatus,
         createdAt,
         updatedAt,

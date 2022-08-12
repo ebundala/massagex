@@ -14,6 +14,7 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
   final StringWithAggregatesFilter? name;
   final FloatWithAggregatesFilter? lat;
   final FloatWithAggregatesFilter? lon;
+  final FloatWithAggregatesFilter? heading;
   final EnumRecordStatusWithAggregatesFilter? recordStatus;
   final DateTimeWithAggregatesFilter? createdAt;
   final DateTimeWithAggregatesFilter? updatedAt;
@@ -65,6 +66,11 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
     if (lon != null) {
       lon!.getFilesVariables(
           field_name: '${field_name}_lon', variables: variables);
+    }
+
+    if (heading != null) {
+      heading!.getFilesVariables(
+          field_name: '${field_name}_heading', variables: variables);
     }
 
     if (recordStatus != null) {
@@ -171,6 +177,11 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
           name: ast.NameNode(value: 'lon'),
           value: lon!.toValueNode(field_name: '${field_name}_lon'),
         ),
+      if (heading != null)
+        ast.ObjectFieldNode(
+          name: ast.NameNode(value: 'heading'),
+          value: heading!.toValueNode(field_name: '${field_name}_heading'),
+        ),
       if (recordStatus != null)
         ast.ObjectFieldNode(
           name: ast.NameNode(value: 'recordStatus'),
@@ -198,6 +209,7 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
       this.name,
       this.lat,
       this.lon,
+      this.heading,
       this.recordStatus,
       this.createdAt,
       this.updatedAt});
@@ -235,6 +247,9 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
       lon: json['lon'] != null
           ? FloatWithAggregatesFilter.fromJson(json['lon'])
           : null,
+      heading: json['heading'] != null
+          ? FloatWithAggregatesFilter.fromJson(json['heading'])
+          : null,
       recordStatus: json['recordStatus'] != null
           ? EnumRecordStatusWithAggregatesFilter.fromJson(json['recordStatus'])
           : null,
@@ -262,6 +277,7 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
     if (name != null) _data['name'] = name!.toJson();
     if (lat != null) _data['lat'] = lat!.toJson();
     if (lon != null) _data['lon'] = lon!.toJson();
+    if (heading != null) _data['heading'] = heading!.toJson();
     if (recordStatus != null) _data['recordStatus'] = recordStatus!.toJson();
     if (createdAt != null) _data['createdAt'] = createdAt!.toJson();
     if (updatedAt != null) _data['updatedAt'] = updatedAt!.toJson();
@@ -276,6 +292,7 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
       StringWithAggregatesFilter? name,
       FloatWithAggregatesFilter? lat,
       FloatWithAggregatesFilter? lon,
+      FloatWithAggregatesFilter? heading,
       EnumRecordStatusWithAggregatesFilter? recordStatus,
       DateTimeWithAggregatesFilter? createdAt,
       DateTimeWithAggregatesFilter? updatedAt}) {
@@ -287,6 +304,7 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
         name: name ?? this.name,
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
+        heading: heading ?? this.heading,
         recordStatus: recordStatus ?? this.recordStatus,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt);
@@ -300,6 +318,7 @@ class LocationScalarWhereWithAggregatesInput extends Equatable {
         name,
         lat,
         lon,
+        heading,
         recordStatus,
         createdAt,
         updatedAt

@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/widgets/components/buttons.dart';
@@ -66,7 +65,7 @@ class _OnboardingPageState extends State<OnboardingPage>
   }
 
   void goToCreateBussinessProfile() {
-    Navigator.of(context).pushNamed(AppRoutes.createBussinessProfile);
+    Navigator.of(context).pushNamed(AppRoutes.createBusinessProfile);
   }
 
   @override

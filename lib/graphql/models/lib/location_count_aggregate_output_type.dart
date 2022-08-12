@@ -5,6 +5,7 @@ class LocationCountAggregateOutputType extends Equatable {
   final int? name;
   final int? lat;
   final int? lon;
+  final int? heading;
   final int? recordStatus;
   final int? createdAt;
   final int? updatedAt;
@@ -14,6 +15,7 @@ class LocationCountAggregateOutputType extends Equatable {
       this.name,
       this.lat,
       this.lon,
+      this.heading,
       this.recordStatus,
       this.createdAt,
       this.updatedAt,
@@ -25,6 +27,7 @@ class LocationCountAggregateOutputType extends Equatable {
       name: json['name'],
       lat: json['lat'],
       lon: json['lon'],
+      heading: json['heading'],
       recordStatus: json['recordStatus'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
@@ -38,6 +41,7 @@ class LocationCountAggregateOutputType extends Equatable {
     if (name != null) _data['name'] = name;
     if (lat != null) _data['lat'] = lat;
     if (lon != null) _data['lon'] = lon;
+    if (heading != null) _data['heading'] = heading;
     if (recordStatus != null) _data['recordStatus'] = recordStatus;
     if (createdAt != null) _data['createdAt'] = createdAt;
     if (updatedAt != null) _data['updatedAt'] = updatedAt;
@@ -50,6 +54,7 @@ class LocationCountAggregateOutputType extends Equatable {
       int? name,
       int? lat,
       int? lon,
+      int? heading,
       int? recordStatus,
       int? createdAt,
       int? updatedAt,
@@ -59,6 +64,7 @@ class LocationCountAggregateOutputType extends Equatable {
         name: name ?? this.name,
         lat: lat ?? this.lat,
         lon: lon ?? this.lon,
+        heading: heading ?? this.heading,
         recordStatus: recordStatus ?? this.recordStatus,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -66,5 +72,5 @@ class LocationCountAggregateOutputType extends Equatable {
   }
 
   List<Object?> get props =>
-      [id, name, lat, lon, recordStatus, createdAt, updatedAt, $all];
+      [id, name, lat, lon, heading, recordStatus, createdAt, updatedAt, $all];
 }

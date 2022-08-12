@@ -3,6 +3,7 @@ enum LocationScalarFieldEnum {
   name,
   lat,
   lon,
+  heading,
   recordStatus,
   createdAt,
   updatedAt
@@ -20,6 +21,8 @@ extension LocationScalarFieldEnumExt on LocationScalarFieldEnum {
         return "lat";
       case LocationScalarFieldEnum.lon:
         return "lon";
+      case LocationScalarFieldEnum.heading:
+        return "heading";
       case LocationScalarFieldEnum.recordStatus:
         return "recordStatus";
       case LocationScalarFieldEnum.createdAt:
@@ -42,6 +45,8 @@ extension LocationScalarFieldEnumExt on LocationScalarFieldEnum {
         return LocationScalarFieldEnum.lat;
       case "lon":
         return LocationScalarFieldEnum.lon;
+      case "heading":
+        return LocationScalarFieldEnum.heading;
       case "recordStatus":
         return LocationScalarFieldEnum.recordStatus;
       case "createdAt":

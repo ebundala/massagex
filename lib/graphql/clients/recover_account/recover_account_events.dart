@@ -18,28 +18,28 @@ class RecoverAccountExcuted extends RecoverAccountEvent {
 }
 
 class RecoverAccountIsLoading extends RecoverAccountEvent {
-  final AuthResult data;
+  final unknown data;
   RecoverAccountIsLoading({required this.data});
   @override
   List<Object?> get props => [data];
 }
 
 class RecoverAccountIsOptimistic extends RecoverAccountEvent {
-  final AuthResult data;
+  final unknown data;
   RecoverAccountIsOptimistic({required this.data});
   @override
   List<Object?> get props => [data];
 }
 
 class RecoverAccountIsConcrete extends RecoverAccountEvent {
-  final AuthResult data;
+  final unknown data;
   RecoverAccountIsConcrete({required this.data});
   @override
   List<Object?> get props => [data];
 }
 
 class RecoverAccountErrored extends RecoverAccountEvent {
-  final AuthResult data;
+  final unknown data;
   final String message;
   RecoverAccountErrored({required this.data, required this.message});
   @override
@@ -47,7 +47,7 @@ class RecoverAccountErrored extends RecoverAccountEvent {
 }
 
 class RecoverAccountFailed extends RecoverAccountEvent {
-  final AuthResult data;
+  final unknown data;
   final String message;
   RecoverAccountFailed({required this.data, required this.message});
   @override
