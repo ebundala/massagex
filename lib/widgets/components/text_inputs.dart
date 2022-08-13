@@ -335,7 +335,8 @@ class DatePickerInput extends StatefulWidget {
       this.selectedDate,
       required this.onChanged,
       this.label,
-      this.fontSize = 18})
+      this.fontSize = 18,
+      this.validator})
       : super(key: key);
   final double fontSize;
   final DateTime firstDate;
@@ -344,7 +345,7 @@ class DatePickerInput extends StatefulWidget {
   final DateTime lastDate;
   final void Function(DateTime) onChanged;
   final DateTime? selectedDate;
-
+  final String? Function(String?)? validator;
   @override
   State<DatePickerInput> createState() => _DatePickerInputState();
 }
@@ -393,6 +394,7 @@ class _DatePickerInputState extends State<DatePickerInput> {
       label: widget.label,
       focusNode: _focusNode,
       controller: _textController,
+      validator: widget.validator,
       decoration: InputDecoration(
         // suffixIconConstraints: ,
         suffixIcon: Icon(
@@ -825,13 +827,14 @@ class ScheduleInput extends StatelessWidget {
 class PhoneInput<T> extends StatefulWidget {
   const PhoneInput(
       {Key? key,
+      this.label,
       required this.prefixes,
       required this.itemBuilder,
       this.fontSize = 18})
       : super(key: key);
   final List<T> prefixes;
   final double fontSize;
-
+  final Widget? label;
   final Widget Function(BuildContext context, T value, int index) itemBuilder;
   @override
   State<PhoneInput<T>> createState() => _PhoneInputState<T>();
@@ -887,80 +890,98 @@ class _PhoneInputState<T> extends State<PhoneInput<T>> {
       ),
     );
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final size = widget.fontSize > 32.0 ? widget.fontSize : 32.0;
-      final height = constraints.minHeight;
-      final availableSpace = (height - size);
-      final space = availableSpace > 0 ? availableSpace / 2 : 8.0;
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (widget.label != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: DefaultTextStyle(
+                style: GoogleFonts.nunito(
+                    fontSize: 14,
+                    //height: 19,
+                    fontWeight: FontWeight.w400,
+                    color: const Color.fromRGBO(128, 128, 128, 1)),
+                child: widget.label!),
+          ),
+        LayoutBuilder(builder: (context, constraints) {
+          final size = widget.fontSize > 32.0 ? widget.fontSize : 32.0;
+          final height = constraints.minHeight;
+          final availableSpace = (height - size);
+          final space = availableSpace > 0 ? availableSpace / 2 : 14.0;
 
-      return InputDecorator(
-        isFocused: _focused,
-        decoration: InputDecoration(
-          border: Theme.of(context).inputDecorationTheme.border,
-          contentPadding: EdgeInsets.fromLTRB(12, space, 12, space),
-          // isCollapsed: true,
-        ),
-        child: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //mainAxisSize: MainAxisSize.min,
+          return InputDecorator(
+            isFocused: _focused,
+            decoration: InputDecoration(
+              border: Theme.of(context).inputDecorationTheme.border,
+              contentPadding: EdgeInsets.fromLTRB(12, space, 12, space),
+              // isCollapsed: true,
+            ),
+            child: Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //mainAxisSize: MainAxisSize.min,
 
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              flex: 1,
-              child: DropdownInput<T>(
-                focusNode: _prefixNode,
-                value: prefix,
-                decoration: decoration,
-                alignment: AlignmentDirectional.bottomEnd,
-                iconSize: styled.fontSize!,
-                style: styled,
-                onChanged: (v) {
-                  setState(() {
-                    prefix = v;
-                  });
-                },
-                items: items,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
-              child: SizedBox(
-                width: 1,
-                height: size,
-                child: Divider(
-                  thickness: size - 4,
-                  height: size - 4,
-                  color: borderColor,
-                  indent: 0,
-                  endIndent: 0,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: DropdownInput<T>(
+                    focusNode: _prefixNode,
+                    value: prefix,
+                    decoration: decoration,
+                    alignment: AlignmentDirectional.bottomEnd,
+                    iconSize: styled.fontSize! / 2,
+                    style: styled,
+                    onChanged: (v) {
+                      setState(() {
+                        prefix = v;
+                      });
+                    },
+                    items: items,
+                  ),
                 ),
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: PrimaryTextInput(
-                focusNode: _contentNode,
-                textAlign: TextAlign.start,
-                // textAlignVertical: TextAlignVertical.center,
-                style: styled,
-                decoration: decoration,
-              ),
-            ),
-            SizedBox(
-              height: size,
-              width: size,
-              child: Center(
-                child: Icon(
-                  IconlyLight.danger,
-                  size: widget.fontSize,
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0),
+                  child: SizedBox(
+                    width: 1,
+                    height: size,
+                    child: Divider(
+                      thickness: size - 4,
+                      height: size - 4,
+                      color: borderColor,
+                      indent: 0,
+                      endIndent: 0,
+                    ),
+                  ),
                 ),
-              ),
-            )
-          ],
-        ),
-      );
-    });
+                Expanded(
+                  flex: 3,
+                  child: PrimaryTextInput(
+                    focusNode: _contentNode,
+                    textAlign: TextAlign.start,
+                    // textAlignVertical: TextAlignVertical.center,
+                    style: styled,
+                    decoration: decoration,
+                  ),
+                ),
+                SizedBox(
+                  height: size,
+                  width: size,
+                  child: Center(
+                    child: Icon(
+                      IconlyLight.danger,
+                      size: widget.fontSize,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        }),
+      ],
+    );
   }
 }
 

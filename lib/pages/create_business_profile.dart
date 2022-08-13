@@ -33,23 +33,20 @@ class _CreateBusinessProfilePageState extends State<CreateBusinessProfilePage> {
 
   final addressCtr = TextEditingController();
   final aboutCtr = TextEditingController();
+  final items = BusinessMode.values
+      .map(
+        (e) => DropdownMenuItem<BusinessMode>(
+          value: e,
+          child: Gordita(
+            text: e.toJson().replaceAll("_", " "),
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      )
+      .toList();
   @override
   Widget build(BuildContext context) {
-    final items = BusinessMode.values
-        .map(
-          (e) => DropdownMenuItem<BusinessMode>(
-            value: e,
-            // onTap: () {
-
-            // },
-            child: Gordita(
-              text: e.toJson().replaceAll("_", " "),
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        )
-        .toList();
     return AcountPageLayoutWidget(
       title: "Create Business profile",
       subTitle: "Kindly select your mode to specify your account",

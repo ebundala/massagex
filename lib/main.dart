@@ -1,12 +1,16 @@
 import 'package:flutterfire_ui/auth.dart';
+import 'package:massagex/pages/complete_profile_page.dart';
 import 'package:massagex/pages/create_business_profile.dart';
 import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
 import 'package:massagex/pages/splash_page.dart';
+import 'package:massagex/pages/verify_phone_page.dart';
 import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/utils.dart';
+import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
+import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 import 'package:flutter/material.dart';
@@ -124,13 +128,20 @@ class MassageX extends StatelessWidget {
                                   ));
                         case AppRoutes.createBusinessProfile:
                           return MaterialPageRoute(
-                              builder: (context) =>
-                                  const CreateBusinessProfilePage());
+                            builder: (context) =>
+                                const CreateBusinessProfilePage(),
+                          );
                         case AppRoutes.completeProfile:
+                          return MaterialPageRoute(
+                            builder: (context) => const CompleteProfilePage(),
+                          );
+                        case AppRoutes.verifyPhoneOTP:
+                          return MaterialPageRoute(
+                            builder: (context) => const VerifyPhonePage(),
+                          );
                         case AppRoutes.home:
 
                         case AppRoutes.recoverAccount:
-                        case AppRoutes.verifyPhoneOTP:
 
                         case AppRoutes.providerHome:
                         case AppRoutes.profile:
@@ -140,7 +151,6 @@ class MassageX extends StatelessWidget {
                         case AppRoutes.schedules:
                         case AppRoutes.createService:
                         case AppRoutes.changePassword:
-
                         case AppRoutes.tracking:
                         case AppRoutes.providerDetails:
                         default:
@@ -149,9 +159,21 @@ class MassageX extends StatelessWidget {
                                     appBar: AppBar(
                                       title: const AppName(),
                                     ),
-                                    body: const Center(
-                                      child: SignOutButton(
-                                        variant: ButtonVariant.text,
+                                    body: Center(
+                                      child: Column(
+                                        children: [
+                                          PrimaryButton(
+                                            onPressed: () {
+                                              context.navigator.pushNamed(
+                                                  AppRoutes.completeProfile);
+                                            },
+                                            child: const Nunito(
+                                                text: "Complete profile"),
+                                          ),
+                                          const SignOutButton(
+                                            variant: ButtonVariant.text,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   )));
