@@ -45,48 +45,45 @@ class _LoginPageState extends State<LoginPage> {
             height: 8,
           ),
           if (context.app.fauth.currentUser?.uid != null)
-            AuthFlowBuilder<EmailFlowController>(
-                builder: (context, state, ctr, _) {
-              return ListBody(
-                children: [
-                  const SizedBox(
-                    height: 80,
-                  ),
-                  Nunito(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      text:
-                          "You are already loged in as \n ${context.app.currentUser?.data?.displayName ?? "Guest"}"),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  PrimaryButton(
-                      onPressed: () => context.navigator
-                          .pushReplacementNamed(AppRoutes.home),
-                      child: const Nunito(text: "Go to Home")),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Row(
-                    children: const [
-                      Expanded(child: Divider()),
-                      Nunito(text: "OR"),
-                      Expanded(child: Divider()),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  SecondaryButton(
-                    onPressed: () async {
-                      await context.app.fauth.signOut();
-                      context.app.add(const AppResseted());
-                    },
-                    child: const Nunito(text: "Sign Out"),
-                  )
-                ],
-              );
-            }),
+            ListBody(
+              children: [
+                const SizedBox(
+                  height: 80,
+                ),
+                Nunito(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    text:
+                        "You are already loged in as \n ${context.app.currentUser?.data?.displayName ?? "Guest"}"),
+                const SizedBox(
+                  height: 40,
+                ),
+                PrimaryButton(
+                    onPressed: () =>
+                        context.navigator.pushReplacementNamed(AppRoutes.home),
+                    child: const Nunito(text: "Go to Home")),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  children: const [
+                    Expanded(child: Divider()),
+                    Nunito(text: "OR"),
+                    Expanded(child: Divider()),
+                  ],
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                SecondaryButton(
+                  onPressed: () async {
+                    await context.app.fauth.signOut();
+                    context.app.add(const AppResseted());
+                  },
+                  child: const Nunito(text: "Sign Out"),
+                )
+              ],
+            ),
           if (context.app.fauth.currentUser?.uid == null) ...[
             Form(
               key: formKey,
