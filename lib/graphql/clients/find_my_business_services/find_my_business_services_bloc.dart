@@ -3,26 +3,27 @@ import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
+import 'package:models/service_where_input.dart';
 import 'package:models/user_response.dart';
-import 'find_business_orders_ast.dart' show document;
+import 'find_my_business_services_ast.dart' show document;
 
-part "find_business_orders_extensions.dart";
-part "find_business_orders_events.dart";
-part "find_business_orders_states.dart";
+part "find_my_business_services_extensions.dart";
+part "find_my_business_services_events.dart";
+part "find_my_business_services_states.dart";
 
-enum FindBusinessOrdersBlocHookStage { before, after }
+enum FindMyBusinessServicesBlocHookStage { before, after }
 
-class FindBusinessOrdersBloc
-    extends Bloc<FindBusinessOrdersEvent, FindBusinessOrdersState> {
+class FindMyBusinessServicesBloc
+    extends Bloc<FindMyBusinessServicesEvent, FindMyBusinessServicesState> {
   final GraphQLClient client;
-  final Stream<FindBusinessOrdersState> Function(
-      FindBusinessOrdersBloc context,
-      FindBusinessOrdersEvent event,
-      FindBusinessOrdersBlocHookStage stage)? hook;
+  final Stream<FindMyBusinessServicesState> Function(
+      FindMyBusinessServicesBloc context,
+      FindMyBusinessServicesEvent event,
+      FindMyBusinessServicesBlocHookStage stage)? hook;
   OperationResult? resultWrapper;
-  FindBusinessOrdersBloc({required this.client, this.hook})
-      : super(FindBusinessOrdersInitial()) {
-    on<FindBusinessOrdersEvent>((event, emit) async {
+  FindMyBusinessServicesBloc({required this.client, this.hook})
+      : super(FindMyBusinessServicesInitial()) {
+    on<FindMyBusinessServicesEvent>((event, emit) async {
       final st = await mapEventToState(event);
       if (st != null) {
         emit(st);
@@ -30,67 +31,72 @@ class FindBusinessOrdersBloc
     });
   }
 
-  Future<FindBusinessOrdersState?> mapEventToState(
-      FindBusinessOrdersEvent event) async {
+  Future<FindMyBusinessServicesState?> mapEventToState(
+      FindMyBusinessServicesEvent event) async {
     //   if (hook != null) {
-    //     return hook(this, event, FindBusinessOrdersBlocHookStage.before);
+    //     return hook(this, event, FindMyBusinessServicesBlocHookStage.before);
     //   }
     //  else
-    if (event is FindBusinessOrdersStarted) {
-      return FindBusinessOrdersInitial();
-    } else if (event is FindBusinessOrdersExcuted) {
+    if (event is FindMyBusinessServicesStarted) {
+      return FindMyBusinessServicesInitial();
+    } else if (event is FindMyBusinessServicesExcuted) {
       //start main excution
-      return await findBusinessOrders(event);
-    } else if (event is FindBusinessOrdersIsLoading) {
+      return await findMyBusinessServices(event);
+    } else if (event is FindMyBusinessServicesIsLoading) {
       // emit loading state
       {
-        return FindBusinessOrdersInProgress(data: event.data);
+        return FindMyBusinessServicesInProgress(data: event.data);
       }
-    } else if (event is FindBusinessOrdersIsOptimistic) {
+    } else if (event is FindMyBusinessServicesIsOptimistic) {
       // emit optimistic result state
-      return FindBusinessOrdersOptimistic(data: event.data);
-    } else if (event is FindBusinessOrdersIsConcrete) {
+      return FindMyBusinessServicesOptimistic(data: event.data);
+    } else if (event is FindMyBusinessServicesIsConcrete) {
       // emit completed result
-      return FindBusinessOrdersSuccess(data: event.data);
-    } else if (event is FindBusinessOrdersRefreshed) {
+      return FindMyBusinessServicesSuccess(data: event.data);
+    } else if (event is FindMyBusinessServicesRefreshed) {
       //emit dataset changed
       return event.data;
-    } else if (event is FindBusinessOrdersFailed) {
+    } else if (event is FindMyBusinessServicesFailed) {
       // emit failure state
-      return FindBusinessOrdersFailure(
+      return FindMyBusinessServicesFailure(
           data: event.data, message: event.message);
-    } else if (event is FindBusinessOrdersErrored) {
+    } else if (event is FindMyBusinessServicesErrored) {
       //emit error case
-      return FindBusinessOrdersError(data: event.data, message: event.message);
-    } else if (event is FindBusinessOrdersRetried) {
-      findBusinessOrdersRetry();
+      return FindMyBusinessServicesError(
+          data: event.data, message: event.message);
+    } else if (event is FindMyBusinessServicesRetried) {
+      findMyBusinessServicesRetry();
     }
 
     // else
     // if (hook != null) {
-    //   return hook(this, event, FindBusinessOrdersBlocHookStage.after);
+    //   return hook(this, event, FindMyBusinessServicesBlocHookStage.after);
     // }
     return null;
   }
 
-  void findBusinessOrdersRetry() {
+  void findMyBusinessServicesRetry() {
     if (resultWrapper?.observableQuery != null) {
-      client.findBusinessOrdersRetry(resultWrapper!.observableQuery!);
+      client.findMyBusinessServicesRetry(resultWrapper!.observableQuery!);
     }
   }
 
-  Future<FindBusinessOrdersState?> findBusinessOrders(
-      FindBusinessOrdersExcuted event) async {
+  Future<FindMyBusinessServicesState?> findMyBusinessServices(
+      FindMyBusinessServicesExcuted event) async {
     //validate all required fields of required args and emit relevant events
 
     {
       try {
         await closeResultWrapper();
-        resultWrapper = await client.findBusinessOrders();
+        resultWrapper = await client.findMyBusinessServices(
+            uid: event.uid,
+            where: event.where,
+            skip: event.skip,
+            take: event.take);
         //listen for changes
         resultWrapper!.subscription = resultWrapper!.stream?.listen((result) {
           //reset events before starting to emit new ones
-          add(FindBusinessOrdersReseted());
+          add(FindMyBusinessServicesReseted());
           Map<String, dynamic> errors = {};
           //collect errors/exceptions
           if (result.hasException) {
@@ -135,24 +141,25 @@ class FindBusinessOrdersBloc
           if (result.hasException) {
             if (result.exception?.linkException != null) {
               //emit error event
-              add(FindBusinessOrdersErrored(
+              add(FindMyBusinessServicesErrored(
                   data: data, message: data.message!));
             } else if (result.exception?.graphqlErrors.isNotEmpty == true) {
               //emit failure event
-              add(FindBusinessOrdersFailed(data: data, message: data.message!));
+              add(FindMyBusinessServicesFailed(
+                  data: data, message: data.message!));
             }
           } else if (result.isLoading) {
             //emit loading event
-            add(FindBusinessOrdersIsLoading(data: data));
+            add(FindMyBusinessServicesIsLoading(data: data));
           } else if (result.isOptimistic) {
             //emit optimistic event
-            add(FindBusinessOrdersIsOptimistic(data: data));
+            add(FindMyBusinessServicesIsOptimistic(data: data));
           } else if (result.isConcrete) {
             //emit completed event
             if (data.status == true) {
-              add(FindBusinessOrdersIsConcrete(data: data));
+              add(FindMyBusinessServicesIsConcrete(data: data));
             } else {
-              add(FindBusinessOrdersErrored(
+              add(FindMyBusinessServicesErrored(
                   data: data, message: data.message!));
             }
           }
@@ -163,7 +170,7 @@ class FindBusinessOrdersBloc
         }
       } catch (e) {
         //emit complete failure state;
-        return FindBusinessOrdersError(
+        return FindMyBusinessServicesError(
             data: state.data!, message: e.toString());
       }
     }
@@ -185,8 +192,8 @@ class FindBusinessOrdersBloc
   }
 
   UserResponse get getData {
-    return (state is FindBusinessOrdersInitial) ||
-            (state is FindBusinessOrdersError)
+    return (state is FindMyBusinessServicesInitial) ||
+            (state is FindMyBusinessServicesError)
         ? null
         : (state as dynamic)?.data;
   }

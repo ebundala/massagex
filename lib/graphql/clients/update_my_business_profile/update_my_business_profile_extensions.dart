@@ -9,7 +9,7 @@ extension on GraphQLClient {
       EnumBusinessStatusFieldUpdateOperationsInput? status,
       LocationUpdateWithoutBusinessesInput? location,
       EnumBusinessModeFieldUpdateOperationsInput? mode,
-      AttachmentCreateWithoutBusinessesInput? cover,
+      AttachmentUpdateOneWithoutBusinessesInput? cover,
       List<AttachmentCreateWithoutBusinessInput>? gallery,
       List<AttachmentWhereUniqueInput>? deletedAttachments}) async {
     final Map<String, dynamic> vars = {};

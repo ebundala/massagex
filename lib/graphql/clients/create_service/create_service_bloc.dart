@@ -3,7 +3,8 @@ import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
-import 'package:models/attachment_create_without_services_input.dart';
+import 'package:models/scalars/json_object.dart';
+import 'package:models/attachment_create_nested_one_without_services_input.dart';
 import 'package:models/user_response.dart';
 import 'create_service_ast.dart' show document;
 
@@ -81,7 +82,14 @@ class CreateServiceBloc extends Bloc<CreateServiceEvent, CreateServiceState> {
     {
       try {
         await closeResultWrapper();
-        resultWrapper = await client.createService(image: event.image);
+        resultWrapper = await client.createService(
+            uid: event.uid,
+            name: event.name,
+            price: event.price,
+            metadata: event.metadata,
+            currency: event.currency,
+            description: event.description,
+            image: event.image);
         //listen for changes
         resultWrapper!.subscription = resultWrapper!.stream?.listen((result) {
           //reset events before starting to emit new ones

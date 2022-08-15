@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:massagex/pages/account_page_layout.dart';
 import 'package:massagex/widgets/components/buttons.dart';
-import 'package:massagex/widgets/components/text_inputs.dart' hide PhoneInput;
 import 'package:massagex/widgets/texts/styled_text.dart';
 
 class VerifyPhonePage extends StatefulWidget {

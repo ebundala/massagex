@@ -3,6 +3,7 @@ import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
+import 'package:models/order_where_input.dart';
 import 'package:models/user_response.dart';
 import 'find_my_orders_ast.dart' show document;
 
@@ -80,7 +81,11 @@ class FindMyOrdersBloc extends Bloc<FindMyOrdersEvent, FindMyOrdersState> {
     {
       try {
         await closeResultWrapper();
-        resultWrapper = await client.findMyOrders();
+        resultWrapper = await client.findMyOrders(
+            uid: event.uid,
+            where: event.where,
+            skip: event.skip,
+            take: event.take);
         //listen for changes
         resultWrapper!.subscription = resultWrapper!.stream?.listen((result) {
           //reset events before starting to emit new ones

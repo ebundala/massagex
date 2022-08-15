@@ -80,7 +80,7 @@ class FindBusinessBloc extends Bloc<FindBusinessEvent, FindBusinessState> {
     {
       try {
         await closeResultWrapper();
-        resultWrapper = await client.findBusiness();
+        resultWrapper = await client.findBusiness(id: event.id);
         //listen for changes
         resultWrapper!.subscription = resultWrapper!.stream?.listen((result) {
           //reset events before starting to emit new ones

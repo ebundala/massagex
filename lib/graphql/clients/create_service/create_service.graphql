@@ -1,147 +1,56 @@
-mutation createService($image: AttachmentCreateWithoutServicesInput){
-  updateOneUser(where: {
-    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
-  }, data: {
-    businessProfile: {
-      update:{        
-        services:{
-          create: {
-            name: "Service name new"
-            price: 200
-            currency: "usd"
-            image:{
-              create:$image
-            }
-          }
-        }
-      }
-    }
-    
-  }){
-    status    
-    message
-    data{
-      ...userInfo
-    }
-  }
+mutation createService($uid: String, 
+$name: String!, $price: Float!, $metadata: JSONObject $currency: String, $description: String, 
+$image: AttachmentCreateNestedOneWithoutServicesInput) {
+	updateOneUser(where: {
+		id: $uid
+	}, 
+	data: {
+		businessProfile: {
+			update: {
+				services: {
+					create: {
+						name: $name
+						price: $price
+						currency: $currency
+						image: $image
+						metadata: $metadata
+						description: $description
+					}
+				}
+			}
+		}
+	}) {
+		status    
+		message
+		data {
+			...userInfo
+		}
+	}
 }
 
 fragment userInfo on User {
-  id
-  disabled
-  emailVerified
-  displayName
-  phoneNumber
-  email
-  role  
-  createdAt
-  updatedAt
-  location{
-      lat
-      lon
-      name
-    }
-  avator {
-    id
-    path
-    mimetype
-  }
-  businessProfile{
-    id
-    owner{
-      id
-    }
-    businessName
-    about
-    mode
-    location{
-      lat
-      lon
-      name
-    }
-    cover{
-    id
-    path
-    mimetype
-  }
-    attachments{
-      id
-      path
-      mimetype
-      
-    }
-    services {
-      id
-      name
-      currency
-      price
-      image{
-        id
-        path
-        mimetype
-      }
-    }
-  }
-  reviewed{
-    id
-    value
-    content
-    attachments {
-    id
-    path
-    mimetype
-  }
-    comments{
-    id
-    content
-    review{
-      id
-    }
-      attachments{
-         id
-    path
-    mimetype
-  }
-      }
-  }
-  comments{
-    id
-    content
-    review{
-      id
-    }
-  }
-  favorited{
-    id
-    type{
-    name
-   }
-    business{
-      id
-      businessName
-    }
-  }
-  ordered{
-  id
-    quantity
-    service{
-      name
-    }
-    business{
-      id
-      businessName
-    }
-}
-  abuseReported{
-    id
-    type {
-      name
-    }
-    service{
-      id 
-      name
-    }
-  }
-}
+	id
+	businessProfile {
+		id		
+		services(take: 1 , orderBy: [
+		 {
+			createdAt: desc
+		}
+		]) {
+			id
+			name
+			currency
+			price
+			description
+			metadata
+			image {
+				id
+				path
+				mimetype
+			}
+			createdAt
+			updatedAt
+		}
+	}
 
-
+}

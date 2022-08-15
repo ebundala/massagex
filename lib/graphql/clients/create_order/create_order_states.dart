@@ -52,3 +52,27 @@ class CreateOrderError extends CreateOrderState {
   @override
   List<Object?> get props => [data, message];
 }
+
+class CreateOrderOrdersQuantityValidationError extends CreateOrderState {
+  final String $uid;
+  final int $count;
+  final List<OrderCreateWithoutOwnerInput> $orders;
+  final UserResponse? data;
+  final String? message;
+  CreateOrderOrdersQuantityValidationError(this.message, this.data,
+      {required this.$uid, required this.$count, required this.$orders});
+  @override
+  List<Object?> get props => [$uid, $count, $orders, message, data];
+}
+
+class CreateOrderOrdersServiceValidationError extends CreateOrderState {
+  final String $uid;
+  final int $count;
+  final List<OrderCreateWithoutOwnerInput> $orders;
+  final UserResponse? data;
+  final String? message;
+  CreateOrderOrdersServiceValidationError(this.message, this.data,
+      {required this.$uid, required this.$count, required this.$orders});
+  @override
+  List<Object?> get props => [$uid, $count, $orders, message, data];
+}

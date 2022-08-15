@@ -1,49 +1,49 @@
-query findManyBusinesses{
-  findManyBusiness{
-    status
-  
-    message
-      data{
-        ...businessProfile
-      }
-  }
+query findManyBusinesses($where: BusinessWhereInput, $take: Int, $skip: Int) {
+	findManyBusiness(where: $where, take: $take, skip: $skip) {
+		status
+		message
+		data {
+			...businessProfile
+		}
+	}
 }
 
 
 fragment businessProfile on Business {
-  id
-    owner{
-      id
-    }
-    businessName
-    about
-    mode
-    location{
-      lat
-      lon
-      name
-    }
-    cover{
-    id
-    path
-    mimetype
-  }
-    attachments{
-      id
-      path
-      mimetype
-      
-    }
-    services {
-      id
-      name
-      currency
-      price
-      image{
-        id
-        path
-        mimetype
-      }
-    }
-  metadata 
+	id
+	owner {
+		id
+	}
+	businessName
+	about
+	mode
+	location {
+		lat
+		lon
+		name
+	}
+	cover {
+		id
+		path
+		mimetype
+	}
+	attachments {
+		id
+		path
+		mimetype
+	}
+	# services {
+	# id
+	# name
+	# currency
+	# price
+	# image {
+	# id
+	# path
+	# mimetype
+	# }
+	# }
+	metadata 
+	createdAt
+	updatedAt
 }

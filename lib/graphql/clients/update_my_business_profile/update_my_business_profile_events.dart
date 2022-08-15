@@ -18,7 +18,7 @@ class UpdateMyBusinessProfileExcuted extends UpdateMyBusinessProfileEvent {
   final EnumBusinessStatusFieldUpdateOperationsInput? status;
   final LocationUpdateWithoutBusinessesInput? location;
   final EnumBusinessModeFieldUpdateOperationsInput? mode;
-  final AttachmentCreateWithoutBusinessesInput? cover;
+  final AttachmentUpdateOneWithoutBusinessesInput? cover;
   final List<AttachmentCreateWithoutBusinessInput>? gallery;
   final List<AttachmentWhereUniqueInput>? deletedAttachments;
   UpdateMyBusinessProfileExcuted(

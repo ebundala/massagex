@@ -88,7 +88,6 @@ class _LoginPageState extends State<LoginPage> {
             Form(
               key: formKey,
               child: AuthFlowBuilder<EmailFlowController>(
-                auth: context.app.fauth,
                 builder: (context, state, controller, _) {
                   final loading = state is SigningIn || registeringInProgress;
                   if (state is AuthFailed) {

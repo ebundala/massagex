@@ -11,9 +11,12 @@ class UpdateOrderStarted extends UpdateOrderEvent {
 }
 
 class UpdateOrderExcuted extends UpdateOrderEvent {
-  UpdateOrderExcuted();
+  final String uid;
+  final int? count;
+  final List<OrderUpdateWithWhereUniqueWithoutOwnerInput> orders;
+  UpdateOrderExcuted({required this.uid, this.count, required this.orders});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [uid, count, orders];
 }
 
 class UpdateOrderIsLoading extends UpdateOrderEvent {

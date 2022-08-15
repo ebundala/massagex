@@ -57,8 +57,8 @@ const mutation = _i1.OperationDefinitionNode(
       _i1.VariableDefinitionNode(
           variable: _i1.VariableNode(name: _i1.NameNode(value: 'cover')),
           type: _i1.NamedTypeNode(
-              name:
-                  _i1.NameNode(value: 'AttachmentCreateWithoutBusinessesInput'),
+              name: _i1.NameNode(
+                  value: 'AttachmentUpdateOneWithoutBusinessesInput'),
               isNonNull: false),
           defaultValue: _i1.DefaultValueNode(value: null),
           directives: []),

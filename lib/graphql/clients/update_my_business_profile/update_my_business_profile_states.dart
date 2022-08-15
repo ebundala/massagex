@@ -53,48 +53,6 @@ class UpdateMyBusinessProfileError extends UpdateMyBusinessProfileState {
   List<Object?> get props => [data, message];
 }
 
-class UpdateMyBusinessProfileCoverPathValidationError
-    extends UpdateMyBusinessProfileState {
-  final String $id;
-  final StringFieldUpdateOperationsInput? $about;
-  final StringFieldUpdateOperationsInput? $businessName;
-  final JSONObject? $metadata;
-  final EnumBusinessStatusFieldUpdateOperationsInput? $status;
-  final LocationUpdateWithoutBusinessesInput? $location;
-  final EnumBusinessModeFieldUpdateOperationsInput? $mode;
-  final AttachmentCreateWithoutBusinessesInput? $cover;
-  final List<AttachmentCreateWithoutBusinessInput>? $gallery;
-  final List<AttachmentWhereUniqueInput>? $deletedAttachments;
-  final UserResponse? data;
-  final String? message;
-  UpdateMyBusinessProfileCoverPathValidationError(this.message, this.data,
-      {required this.$id,
-      this.$about,
-      this.$businessName,
-      this.$metadata,
-      this.$status,
-      this.$location,
-      this.$mode,
-      this.$cover,
-      this.$gallery,
-      this.$deletedAttachments});
-  @override
-  List<Object?> get props => [
-        $id,
-        $about,
-        $businessName,
-        $metadata,
-        $status,
-        $location,
-        $mode,
-        $cover,
-        $gallery,
-        $deletedAttachments,
-        message,
-        data
-      ];
-}
-
 class UpdateMyBusinessProfileGalleryPathValidationError
     extends UpdateMyBusinessProfileState {
   final String $id;
@@ -104,7 +62,7 @@ class UpdateMyBusinessProfileGalleryPathValidationError
   final EnumBusinessStatusFieldUpdateOperationsInput? $status;
   final LocationUpdateWithoutBusinessesInput? $location;
   final EnumBusinessModeFieldUpdateOperationsInput? $mode;
-  final AttachmentCreateWithoutBusinessesInput? $cover;
+  final AttachmentUpdateOneWithoutBusinessesInput? $cover;
   final List<AttachmentCreateWithoutBusinessInput>? $gallery;
   final List<AttachmentWhereUniqueInput>? $deletedAttachments;
   final UserResponse? data;

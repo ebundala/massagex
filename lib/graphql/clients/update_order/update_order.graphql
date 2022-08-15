@@ -1,42 +1,37 @@
-mutation updateOrder{
-  updateOneUser(where: {
-    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
-  }, data: {
-      ordered:{
-#         delete:[
-#           {
-#             id:"cl2nayomr0214g7r3qoclrgtf"
-#           }
-#         ]
-        update:[
-          {
-            where:{
-              id:"cl2nayomr0214g7r3qoclrgtf"
-            }
-            data:{          
-          quantity: {set:14}
-         
-            }
-        },
-          {
-            where:{
-              id:"cl2ncf6k80007zpr30n3g1ymu"
-            }
-            data:{          
-            quantity: {set:20}
-         
-            }
-        }
-        
-        ]
-      }
-  }
-    
-  ){
-    status    
-    message
-    data{
-      ...userInfo
-    }
-  }
+mutation updateOrder($uid: String!, $count: Int, $orders: [OrderUpdateWithWhereUniqueWithoutOwnerInput!]!) {
+	updateOneUser(where: {
+		id: $uid
+	}, data: {
+		ordered: {
+			update: $orders
+		}
+	}
+	) {
+		status    
+		message
+		data {
+			...userInfo
+		}
+	}
+}
+
+fragment userInfo on User {
+	id	
+	ordered (take: $count, orderBy: [ { updatedAt: desc}]) {
+		id
+		quantity
+		createdAt
+		updatedAt
+		orderStatus
+		notes
+		service {
+			id
+			name
+			price
+		}
+		business {
+			id
+			businessName
+		}
+	}
 }

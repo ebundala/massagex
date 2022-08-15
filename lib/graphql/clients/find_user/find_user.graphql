@@ -6,27 +6,54 @@ query findUser($id: String!) {
 		status
 		data {
 			id
+			disabled
+			emailVerified
 			displayName
-			email
 			phoneNumber
 			gender
 			dateOfBirth
-			role
+			email
+			role  
 			metadata
+			createdAt
+			updatedAt
+			location {
+				id
+				lat
+				lon
+				heading
+				name
+			}
 			avator {
 				id
 				path
+				mimetype
 			}
 			businessProfile {
 				id
-				mode
-				about
+				owner {
+					id
+				}
 				businessName
+				about
+				mode
 				status
-				metadata
+				location {
+					id
+					lat
+					lon
+					heading
+					name
+				}
 				cover {
 					id
 					path
+					mimetype
+				}
+				attachments {
+					id
+					path
+					mimetype
 				}
 			}
 		}

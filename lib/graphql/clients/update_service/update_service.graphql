@@ -1,153 +1,151 @@
-mutation updateService($image:AttachmentCreateWithoutServicesInput){
-  updateOneUser(where: {
-    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
-  }, data: {
-    businessProfile: {
-      update:{        
-        services:{
-          update: {
-            where:{
-              id: "cl2lgml7e000733p5uaizhjf4"
-            }
-            data:{
-            name: {set: "Service name updated"}
-            price: {set:9000}
-            currency: {set:"usd"}
-            image:{ 
-              create:$image
-            }
-            
-            
-          }
-        }
-      }
-      }
-    }
-    
-  }){
-    status    
-    message
-    data{
-      ...userInfo
-    }
-  }
+mutation updateService($uid: String, 
+$name: String!, $serviceId: String!, $metadata: JSONObject, $price: Float!, $currency: String, $description: String, 
+$image: AttachmentUpdateOneWithoutServicesInput) {
+	updateOneUser(where: {
+		id: $uid
+	}, data: {
+		businessProfile: {
+			update: {
+				services: {
+					update: {
+						where: {
+							id: $serviceId
+						}
+						data: {
+							name: { set: $name}
+							price: { set: $price}
+							currency: { set: $currency}
+							description: { set: $description}
+							metadata: $metadata
+							image: $image
+						}
+					}
+				}
+			}
+		}
+	}) {
+		status    
+		message
+		data {
+			...userInfo
+		}
+	}
 }
 
 fragment userInfo on User {
-  id
-  disabled
-  emailVerified
-  displayName
-  phoneNumber
-  email
-  role  
-  createdAt
-  updatedAt
-  location{
-      lat
-      lon
-      name
-    }
-  avator {
-    id
-    path
-    mimetype
-  }
-  businessProfile{
-    id
-    owner{
-      id
-    }
-    businessName
-    about
-    mode
-    location{
-      lat
-      lon
-      name
-    }
-    cover{
-    id
-    path
-    mimetype
-  }
-    attachments{
-      id
-      path
-      mimetype
-      
-    }
-    services {
-      id
-      name
-      currency
-      price
-      image{
-        id
-        path
-        mimetype
-      }
-    }
-  }
-  reviewed{
-    id
-    value
-    content
-    attachments {
-    id
-    path
-    mimetype
-  }
-    comments{
-    id
-    content
-    review{
-      id
-    }
-      attachments{
-         id
-    path
-    mimetype
-  }
-      }
-  }
-  comments{
-    id
-    content
-    review{
-      id
-    }
-  }
-  favorited{
-    id
-    type{
-    name
-   }
-    business{
-      id
-      businessName
-    }
-  }
-  ordered{
-  id
-    quantity
-    service{
-      name
-    }
-    business{
-      id
-      businessName
-    }
+	id
+	disabled
+	emailVerified
+	displayName
+	phoneNumber
+	email
+	role  
+	createdAt
+	updatedAt
+	location {
+		lat
+		lon
+		name
+	}
+	avator {
+		id
+		path
+		mimetype
+	}
+	businessProfile {
+		id
+		owner {
+			id
+		}
+		businessName
+		about
+		mode
+		location {
+			lat
+			lon
+			name
+		}
+		cover {
+			id
+			path
+			mimetype
+		}
+		attachments {
+			id
+			path
+			mimetype
+		}
+		services (take: 1, orderBy: [ { updatedAt: desc}]) {
+			id
+			name
+			currency
+			price
+			description
+			image {
+				id
+				path
+				mimetype
+			}
+		}
+	}
+	reviewed {
+		id
+		value
+		content
+		attachments {
+			id
+			path
+			mimetype
+		}
+		comments {
+			id
+			content
+			review {
+				id
+			}
+			attachments {
+				id
+				path
+				mimetype
+			}
+		}
+	}
+	comments {
+		id
+		content
+		review {
+			id
+		}
+	}
+	favorited {
+		id
+		type {
+			name
+		}
+		business {
+			id
+			businessName
+		}
+	}
+	ordered {
+		id
+		quantity
+		service {
+			name
+		}
+		business {
+			id
+			businessName
+		}
+	}
+	abuseReported {
+		id
+		type {
+			name
+		}
+		service {
+			id 
+			name
+		}
+	}
 }
-  abuseReported{
-    id
-    type {
-      name
-    }
-    service{
-      id 
-      name
-    }
-  }
-}
-

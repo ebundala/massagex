@@ -3,7 +3,7 @@ import 'package:gql/ast.dart' as _i1;
 
 const query = _i1.OperationDefinitionNode(
     type: _i1.OperationType.query,
-    name: _i1.NameNode(value: 'findMyOrders'),
+    name: _i1.NameNode(value: 'findMyBusinessOrders'),
     variableDefinitions: [
       _i1.VariableDefinitionNode(
           variable: _i1.VariableNode(name: _i1.NameNode(value: 'uid')),
@@ -18,13 +18,13 @@ const query = _i1.OperationDefinitionNode(
           defaultValue: _i1.DefaultValueNode(value: null),
           directives: []),
       _i1.VariableDefinitionNode(
-          variable: _i1.VariableNode(name: _i1.NameNode(value: 'skip')),
+          variable: _i1.VariableNode(name: _i1.NameNode(value: 'take')),
           type: _i1.NamedTypeNode(
               name: _i1.NameNode(value: 'Int'), isNonNull: false),
           defaultValue: _i1.DefaultValueNode(value: null),
           directives: []),
       _i1.VariableDefinitionNode(
-          variable: _i1.VariableNode(name: _i1.NameNode(value: 'take')),
+          variable: _i1.VariableNode(name: _i1.NameNode(value: 'skip')),
           type: _i1.NamedTypeNode(
               name: _i1.NameNode(value: 'Int'), isNonNull: false),
           defaultValue: _i1.DefaultValueNode(value: null),
@@ -89,22 +89,9 @@ const query = _i1.OperationDefinitionNode(
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'ordered'),
+                      name: _i1.NameNode(value: 'businessProfile'),
                       alias: null,
-                      arguments: [
-                        _i1.ArgumentNode(
-                            name: _i1.NameNode(value: 'where'),
-                            value: _i1.VariableNode(
-                                name: _i1.NameNode(value: 'where'))),
-                        _i1.ArgumentNode(
-                            name: _i1.NameNode(value: 'skip'),
-                            value: _i1.VariableNode(
-                                name: _i1.NameNode(value: 'skip'))),
-                        _i1.ArgumentNode(
-                            name: _i1.NameNode(value: 'take'),
-                            value: _i1.VariableNode(
-                                name: _i1.NameNode(value: 'take')))
-                      ],
+                      arguments: [],
                       directives: [],
                       selectionSet: _i1.SelectionSetNode(selections: [
                         _i1.FieldNode(
@@ -120,15 +107,22 @@ const query = _i1.OperationDefinitionNode(
                             directives: [],
                             selectionSet: null),
                         _i1.FieldNode(
-                            name: _i1.NameNode(value: 'orderStatus'),
+                            name: _i1.NameNode(value: 'orders'),
                             alias: null,
-                            arguments: [],
-                            directives: [],
-                            selectionSet: null),
-                        _i1.FieldNode(
-                            name: _i1.NameNode(value: 'transactions'),
-                            alias: null,
-                            arguments: [],
+                            arguments: [
+                              _i1.ArgumentNode(
+                                  name: _i1.NameNode(value: 'where'),
+                                  value: _i1.VariableNode(
+                                      name: _i1.NameNode(value: 'where'))),
+                              _i1.ArgumentNode(
+                                  name: _i1.NameNode(value: 'take'),
+                                  value: _i1.VariableNode(
+                                      name: _i1.NameNode(value: 'take'))),
+                              _i1.ArgumentNode(
+                                  name: _i1.NameNode(value: 'skip'),
+                                  value: _i1.VariableNode(
+                                      name: _i1.NameNode(value: 'skip')))
+                            ],
                             directives: [],
                             selectionSet: _i1.SelectionSetNode(selections: [
                               _i1.FieldNode(
@@ -144,13 +138,67 @@ const query = _i1.OperationDefinitionNode(
                                   directives: [],
                                   selectionSet: null),
                               _i1.FieldNode(
-                                  name: _i1.NameNode(value: 'status'),
+                                  name: _i1.NameNode(value: 'orderStatus'),
                                   alias: null,
                                   arguments: [],
                                   directives: [],
                                   selectionSet: null),
                               _i1.FieldNode(
-                                  name: _i1.NameNode(value: 'paymentMethod'),
+                                  name: _i1.NameNode(value: 'transactions'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet:
+                                      _i1.SelectionSetNode(selections: [
+                                    _i1.FieldNode(
+                                        name: _i1.NameNode(value: '__typename'),
+                                        alias: null,
+                                        arguments: [],
+                                        directives: [],
+                                        selectionSet: null),
+                                    _i1.FieldNode(
+                                        name: _i1.NameNode(value: 'id'),
+                                        alias: null,
+                                        arguments: [],
+                                        directives: [],
+                                        selectionSet: null),
+                                    _i1.FieldNode(
+                                        name: _i1.NameNode(value: 'status'),
+                                        alias: null,
+                                        arguments: [],
+                                        directives: [],
+                                        selectionSet: null),
+                                    _i1.FieldNode(
+                                        name: _i1.NameNode(
+                                            value: 'paymentMethod'),
+                                        alias: null,
+                                        arguments: [],
+                                        directives: [],
+                                        selectionSet:
+                                            _i1.SelectionSetNode(selections: [
+                                          _i1.FieldNode(
+                                              name: _i1.NameNode(
+                                                  value: '__typename'),
+                                              alias: null,
+                                              arguments: [],
+                                              directives: [],
+                                              selectionSet: null),
+                                          _i1.FieldNode(
+                                              name: _i1.NameNode(value: 'id'),
+                                              alias: null,
+                                              arguments: [],
+                                              directives: [],
+                                              selectionSet: null),
+                                          _i1.FieldNode(
+                                              name: _i1.NameNode(value: 'name'),
+                                              alias: null,
+                                              arguments: [],
+                                              directives: [],
+                                              selectionSet: null)
+                                        ]))
+                                  ])),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'service'),
                                   alias: null,
                                   arguments: [],
                                   directives: [],
@@ -173,45 +221,20 @@ const query = _i1.OperationDefinitionNode(
                                         alias: null,
                                         arguments: [],
                                         directives: [],
+                                        selectionSet: null),
+                                    _i1.FieldNode(
+                                        name: _i1.NameNode(value: 'price'),
+                                        alias: null,
+                                        arguments: [],
+                                        directives: [],
+                                        selectionSet: null),
+                                    _i1.FieldNode(
+                                        name: _i1.NameNode(value: 'metadata'),
+                                        alias: null,
+                                        arguments: [],
+                                        directives: [],
                                         selectionSet: null)
                                   ]))
-                            ])),
-                        _i1.FieldNode(
-                            name: _i1.NameNode(value: 'service'),
-                            alias: null,
-                            arguments: [],
-                            directives: [],
-                            selectionSet: _i1.SelectionSetNode(selections: [
-                              _i1.FieldNode(
-                                  name: _i1.NameNode(value: '__typename'),
-                                  alias: null,
-                                  arguments: [],
-                                  directives: [],
-                                  selectionSet: null),
-                              _i1.FieldNode(
-                                  name: _i1.NameNode(value: 'id'),
-                                  alias: null,
-                                  arguments: [],
-                                  directives: [],
-                                  selectionSet: null),
-                              _i1.FieldNode(
-                                  name: _i1.NameNode(value: 'name'),
-                                  alias: null,
-                                  arguments: [],
-                                  directives: [],
-                                  selectionSet: null),
-                              _i1.FieldNode(
-                                  name: _i1.NameNode(value: 'price'),
-                                  alias: null,
-                                  arguments: [],
-                                  directives: [],
-                                  selectionSet: null),
-                              _i1.FieldNode(
-                                  name: _i1.NameNode(value: 'metadata'),
-                                  alias: null,
-                                  arguments: [],
-                                  directives: [],
-                                  selectionSet: null)
                             ]))
                       ]))
                 ]))

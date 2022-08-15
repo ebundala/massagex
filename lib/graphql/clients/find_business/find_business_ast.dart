@@ -4,7 +4,14 @@ import 'package:gql/ast.dart' as _i1;
 const query = _i1.OperationDefinitionNode(
     type: _i1.OperationType.query,
     name: _i1.NameNode(value: 'findBusiness'),
-    variableDefinitions: [],
+    variableDefinitions: [
+      _i1.VariableDefinitionNode(
+          variable: _i1.VariableNode(name: _i1.NameNode(value: 'id')),
+          type: _i1.NamedTypeNode(
+              name: _i1.NameNode(value: 'String'), isNonNull: true),
+          defaultValue: _i1.DefaultValueNode(value: null),
+          directives: [])
+    ],
     directives: [],
     selectionSet: _i1.SelectionSetNode(selections: [
       _i1.FieldNode(
@@ -22,8 +29,7 @@ const query = _i1.OperationDefinitionNode(
                 value: _i1.ObjectValueNode(fields: [
                   _i1.ObjectFieldNode(
                       name: _i1.NameNode(value: 'id'),
-                      value: _i1.StringValueNode(
-                          value: 'cl2le9cib0042app5mgqjdlsp', isBlock: false))
+                      value: _i1.VariableNode(name: _i1.NameNode(value: 'id')))
                 ]))
           ],
           directives: [],
@@ -145,6 +151,12 @@ const businessProfile = _i1.FragmentDefinitionNode(
                 directives: [],
                 selectionSet: null),
             _i1.FieldNode(
+                name: _i1.NameNode(value: 'heading'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: null),
+            _i1.FieldNode(
                 name: _i1.NameNode(value: 'name'),
                 alias: null,
                 arguments: [],
@@ -250,6 +262,18 @@ const businessProfile = _i1.FragmentDefinitionNode(
                 directives: [],
                 selectionSet: null),
             _i1.FieldNode(
+                name: _i1.NameNode(value: 'description'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: null),
+            _i1.FieldNode(
+                name: _i1.NameNode(value: 'metadata'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: null),
+            _i1.FieldNode(
                 name: _i1.NameNode(value: 'image'),
                 alias: null,
                 arguments: [],
@@ -283,6 +307,18 @@ const businessProfile = _i1.FragmentDefinitionNode(
           ])),
       _i1.FieldNode(
           name: _i1.NameNode(value: 'metadata'),
+          alias: null,
+          arguments: [],
+          directives: [],
+          selectionSet: null),
+      _i1.FieldNode(
+          name: _i1.NameNode(value: 'createdAt'),
+          alias: null,
+          arguments: [],
+          directives: [],
+          selectionSet: null),
+      _i1.FieldNode(
+          name: _i1.NameNode(value: 'updatedAt'),
           alias: null,
           arguments: [],
           directives: [],

@@ -11,10 +11,24 @@ class CreateServiceStarted extends CreateServiceEvent {
 }
 
 class CreateServiceExcuted extends CreateServiceEvent {
-  final AttachmentCreateWithoutServicesInput? image;
-  CreateServiceExcuted({this.image});
+  final String? uid;
+  final String name;
+  final double price;
+  final JSONObject? metadata;
+  final String? currency;
+  final String? description;
+  final AttachmentCreateNestedOneWithoutServicesInput? image;
+  CreateServiceExcuted(
+      {this.uid,
+      required this.name,
+      required this.price,
+      this.metadata,
+      this.currency,
+      this.description,
+      this.image});
   @override
-  List<Object?> get props => [image];
+  List<Object?> get props =>
+      [uid, name, price, metadata, currency, description, image];
 }
 
 class CreateServiceIsLoading extends CreateServiceEvent {

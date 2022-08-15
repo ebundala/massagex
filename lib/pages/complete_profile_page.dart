@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterfire_ui/auth.dart' hide PhoneInput;
-import 'package:massagex/graphql/clients/find_user/find_user_bloc.dart';
 import 'package:massagex/graphql/clients/update_my_profile/update_my_profile_bloc.dart';
 import "package:massagex/pages/account_page_layout.dart";
 import 'package:massagex/state/app/app_bloc.dart';
@@ -40,6 +38,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         ),
       )
       .toList();
+
   final DateTime firstDate = DateTime(
       DateTime.now().year - 100, DateTime.now().month, DateTime.now().day);
   final DateTime lastDate = DateTime(
@@ -84,17 +83,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         ),
         Form(
           key: formKey,
-          child: BlocConsumer<UpdateMyProfileBloc, UpdateMyProfileState>(
+          child: BlocBuilder<UpdateMyProfileBloc, UpdateMyProfileState>(
               bloc: context.app.updateMyProfileBloc,
-              listener: (context, state) {
-                if (state is UpdateMyProfileSuccess) {
-                  // refresh user profile after update
-                  context.app.findUserBloc!
-                    ..add(FindUserReseted())
-                    ..add(FindUserExcuted(
-                        id: context.app.fauth.currentUser!.uid));
-                }
-              },
               builder: (context, state) {
                 final loading = state is UpdateMyProfileInProgress && submited;
                 final success = state is UpdateMyProfileSuccess && submited;
@@ -126,6 +116,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                       height: inputHeigt + 7,
                       child: DropdownInput<Gender>(
                         items: genderItems,
+                        value: gender,
+                        alignment: AlignmentDirectional.centerStart,
                         onChanged: (v) {
                           setState(() {
                             gender = v;
@@ -205,24 +197,6 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                         ),
                       ),
                     ),
-                    if (success) ...[
-                      Nunito(
-                        text: state.data.message!,
-                        color: Colors.green,
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                    ],
-                    if (errored) ...[
-                      Nunito(
-                        text: state.message ?? state.data?.message ?? "",
-                        color: Colors.red,
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                    ],
                     const SizedBox(
                       height: 8,
                     ),
@@ -272,6 +246,26 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                               ),
                             ),
                     ),
+                    if (success) ...[
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      const Nunito(
+                        text: "Success",
+                        fontSize: 18,
+                        color: Colors.green,
+                      ),
+                    ],
+                    if (errored) ...[
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Nunito(
+                        text: state.message ?? state.data?.message ?? "Error",
+                        fontSize: 18,
+                        color: Colors.red,
+                      ),
+                    ],
                   ],
                 );
               }),

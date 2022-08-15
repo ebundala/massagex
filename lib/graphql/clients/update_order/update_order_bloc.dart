@@ -3,6 +3,7 @@ import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
+import 'package:models/order_update_with_where_unique_without_owner_input.dart';
 import 'package:models/user_response.dart';
 import 'update_order_ast.dart' show document;
 
@@ -80,7 +81,8 @@ class UpdateOrderBloc extends Bloc<UpdateOrderEvent, UpdateOrderState> {
     {
       try {
         await closeResultWrapper();
-        resultWrapper = await client.updateOrder();
+        resultWrapper = await client.updateOrder(
+            uid: event.uid, count: event.count, orders: event.orders);
         //listen for changes
         resultWrapper!.subscription = resultWrapper!.stream?.listen((result) {
           //reset events before starting to emit new ones

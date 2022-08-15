@@ -1,33 +1,29 @@
-query findMyOrders{
-  findUniqueUser(where: {
-    id:"TuyoLCVuK1VTMIXwFHxWrniFRLn1"
-  }){
-    status
-    message
-    data{
-      id
-      ordered{
-        id
-        orderStatus
-        transactions{
-          id
-          status
-          paymentMethod{
-            id
-            name
-          }
-        }
-        service{
-          id
-          name
-          price
-          metadata
-        }
-      }
-    }
-    
-  }
-  
-  
+query findMyOrders($uid: String!, $where: OrderWhereInput, $skip: Int, $take: Int) {
+	findUniqueUser(where: {
+		id: $uid
+	}) {
+		status
+		message
+		data {
+			id
+			ordered(where: $where, skip: $skip, take: $take) {
+				id
+				orderStatus
+				transactions {
+					id
+					status
+					paymentMethod {
+						id
+						name
+					}
+				}
+				service {
+					id
+					name
+					price
+					metadata
+				}
+			}
+		}
+	}
 }
-

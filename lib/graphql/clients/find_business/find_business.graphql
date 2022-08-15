@@ -1,49 +1,53 @@
-query findBusiness{
-  findUniqueBusiness(where: {
-    id:"cl2le9cib0042app5mgqjdlsp"
-  }){
-    status    
-    message
-    data{
-      ...businessProfile
-    }
-  }
+query findBusiness($id: String!) {
+	findUniqueBusiness(where: {
+		id: $id
+	}) {
+		status    
+		message
+		data {
+			...businessProfile
+		}
+	}
 }
 
 fragment businessProfile on Business {
-  id
-    owner{
-      id
-    }
-    businessName
-    about
-    mode
-    location{
-      lat
-      lon
-      name
-    }
-    cover{
-    id
-    path
-    mimetype
-  }
-    attachments{
-      id
-      path
-      mimetype
-      
-    }
-    services {
-      id
-      name
-      currency
-      price
-      image{
-        id
-        path
-        mimetype
-      }
-    }
-  metadata 
+	id
+	owner {
+		id
+	}
+	businessName
+	about
+	mode
+	location {
+		lat
+		lon
+		heading
+		name
+	}
+	cover {
+		id
+		path
+		mimetype
+	}
+	attachments {
+		id
+		path
+		mimetype
+	}
+	services {
+		id
+		name
+		currency
+		price
+		description
+		metadata
+		image {
+			id
+			path
+			mimetype
+		}
+	}
+	metadata 
+	createdAt
+	updatedAt
 }

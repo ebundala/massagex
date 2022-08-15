@@ -17,10 +17,7 @@ import 'package:massagex/state/app/fcm_background_handler.dart';
 import 'package:massagex/state/deeplink/deeplink_bloc.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
-import 'package:models/business.dart';
-import 'package:models/business_create_input.dart';
 import 'package:models/business_create_without_owner_input.dart';
-import 'package:models/business_mode.dart';
 import 'package:models/business_update_without_owner_input.dart';
 import 'package:models/business_upsert_without_owner_input.dart';
 import 'package:models/enum_business_mode_field_update_operations_input.dart';
@@ -30,7 +27,6 @@ import 'package:models/location_create_without_businesses_input.dart';
 import 'package:models/location_create_without_users_input.dart';
 import 'package:models/location_update_one_without_businesses_input.dart';
 import 'package:models/location_update_without_users_input.dart';
-import 'package:models/location_upsert_without_businesses_input.dart';
 import 'package:models/location_upsert_without_users_input.dart';
 import 'package:models/string_field_update_operations_input.dart';
 import 'package:models/user_response.dart';
@@ -138,6 +134,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   UpdateMyBusinessProfileBloc? updateMyBusinessProfileBloc;
   UpdateMyProfileBloc? updateMyProfileBloc;
   final String url;
+
+  bool get isLogedIn => token?.isNotEmpty == true;
+
+  bool get isBusiness =>
+      currentUser?.data?.businessProfile?.id?.isNotEmpty == true;
 
   @override
   Future<void> close() async {
@@ -256,6 +257,22 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     findUserBloc!.stream.asBroadcastStream().listen((event) {
       userSettings!.put(userProfileKey, event.data?.toJson());
     });
+    updateMyProfileBloc!.stream.asBroadcastStream().listen((event) {
+      if (event is UpdateMyProfileSuccess) {
+        // refresh user profile after every update
+        findUserBloc!
+          ..add(FindUserReseted())
+          ..add(FindUserExcuted(id: fauth.currentUser!.uid));
+      }
+    });
+    updateMyBusinessProfileBloc!.stream.asBroadcastStream().listen((event) {
+      if (event is UpdateMyBusinessProfileSuccess) {
+        // refresh user profile after every update
+        findUserBloc!
+          ..add(FindUserReseted())
+          ..add(FindUserExcuted(id: fauth.currentUser!.uid));
+      }
+    });
 
     // if (currentUser?.data?.id != null) {
     //   findUserBloc!.add(
@@ -350,7 +367,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       final token = await fauth.currentUser?.getIdToken();
       await userSettings!.put(idTokenKey, token);
       if (user != null) {
-        await registerBusinessProfile(user.uid);
+        await upsertBusinessProfile(user.uid);
         print("firebase login ${user.uid}");
 
         findUserBloc!
@@ -466,7 +483,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     await box!.put(businessProfileKey, profile.toJson());
   }
 
-  Future<UpdateMyProfileState?> registerBusinessProfile(String id) async {
+  Future<UpdateMyProfileState?> upsertBusinessProfile(String uid) async {
     final profile = box!.get(businessProfileKey, defaultValue: null);
     if (profile == null) return Future.value();
     final data = BusinessCreateWithoutOwnerInput.fromJson(profile);
@@ -489,7 +506,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       ..add(UpdateMyProfileReseted())
       ..add(
         UpdateMyProfileExcuted(
-          id: id,
+          id: uid,
           businessProfile: BusinessUpsertWithoutOwnerInput(
             create: BusinessCreateWithoutOwnerInput(
               about: about,

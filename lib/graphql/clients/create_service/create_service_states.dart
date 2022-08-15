@@ -52,12 +52,3 @@ class CreateServiceError extends CreateServiceState {
   @override
   List<Object?> get props => [data, message];
 }
-
-class CreateServiceImagePathValidationError extends CreateServiceState {
-  final AttachmentCreateWithoutServicesInput? $image;
-  final UserResponse? data;
-  final String? message;
-  CreateServiceImagePathValidationError(this.message, this.data, {this.$image});
-  @override
-  List<Object?> get props => [$image, message, data];
-}

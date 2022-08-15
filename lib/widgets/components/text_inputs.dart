@@ -778,7 +778,7 @@ class LocationInput extends StatelessWidget {
   final LatLng? displayLocation;
   Future<LocationResult?> showPlacePicker(BuildContext context,
       [LatLng? displayLocation]) async {
-    LocationResult result = await Navigator.of(context).push(
+    LocationResult? result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => PlacePicker(
           apiKey,

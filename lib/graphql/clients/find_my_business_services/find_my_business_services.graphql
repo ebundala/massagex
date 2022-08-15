@@ -1,0 +1,27 @@
+query findMyBusinessServices($uid: String!, $where: ServiceWhereInput, $skip: Int, $take: Int) {
+	findUniqueUser(where: {
+		id: $uid
+	}) {
+		status
+		message
+		data {
+			id
+			businessProfile {
+				id
+				services(where: $where, take: $take, skip: $skip) {
+					id
+					name
+					price
+					description
+					metadata
+					image {
+						id
+						path
+					}
+					createdAt
+					updatedAt
+				}
+			}
+		}
+	}
+}

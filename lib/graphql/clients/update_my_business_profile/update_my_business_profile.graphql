@@ -6,7 +6,7 @@ $metadata: JSONObject
 $status: EnumBusinessStatusFieldUpdateOperationsInput
 $location: LocationUpdateWithoutBusinessesInput
 $mode: EnumBusinessModeFieldUpdateOperationsInput
-$cover: AttachmentCreateWithoutBusinessesInput
+$cover: AttachmentUpdateOneWithoutBusinessesInput
 $gallery: [AttachmentCreateWithoutBusinessInput!]
 $deletedAttachments: [AttachmentWhereUniqueInput!]
 ) {
@@ -106,64 +106,4 @@ fragment userInfo on User {
 			}
 		}
 	}
-	# reviewed {
-	# id
-	# value
-	# content
-	# attachments {
-	# id
-	# path
-	# mimetype
-	# }
-	# comments {
-	# id
-	# content
-	# review {
-	# id
-	# }
-	# attachments {
-	# id
-	# path
-	# mimetype
-	# }
-	# }
-	# }
-	# comments {
-	# id
-	# content
-	# review {
-	# id
-	# }
-	# }
-	# favorited {
-	# id
-	# type {
-	# name
-	# }
-	# business {
-	# id
-	# businessName
-	# }
-	# }
-	# ordered {
-	# id
-	# quantity
-	# service {
-	# name
-	# }
-	# business {
-	# id
-	# businessName
-	# }
-	# }
-	# abuseReported {
-	# id
-	# type {
-	# name
-	# }
-	# service {
-	# id 
-	# name
-	# }
-	# }
 }

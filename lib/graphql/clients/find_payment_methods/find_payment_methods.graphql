@@ -1,12 +1,17 @@
-query findPaymentMethods{
-  findManyPaymentMethod{
-    status
-   
-    message
-     data{
-      id
-      name
-      code
-    }
-  }
+query findPaymentMethods {
+	findManyPaymentMethod {
+		status
+		message
+		data {
+			id
+			name
+			code
+			logo {
+				id
+				path
+			}
+			createdAt
+			updatedAt
+		}
+	}
 }

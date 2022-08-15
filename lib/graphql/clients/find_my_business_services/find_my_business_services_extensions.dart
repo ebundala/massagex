@@ -1,9 +1,9 @@
-part of 'find_my_orders_bloc.dart';
+part of 'find_my_business_services_bloc.dart';
 
 extension on GraphQLClient {
-  Future<OperationResult> findMyOrders(
+  Future<OperationResult> findMyBusinessServices(
       {required String uid,
-      OrderWhereInput? where,
+      ServiceWhereInput? where,
       int? skip,
       int? take}) async {
     final Map<String, dynamic> vars = {};
@@ -27,7 +27,7 @@ extension on GraphQLClient {
   }
 
   //refetch fn
-  void findMyOrdersRetry(ObservableQuery observableQuery) {
+  void findMyBusinessServicesRetry(ObservableQuery observableQuery) {
     if (observableQuery.isRefetchSafe == true) {
       observableQuery.refetch();
     }

@@ -52,12 +52,3 @@ class UpdateServiceError extends UpdateServiceState {
   @override
   List<Object?> get props => [data, message];
 }
-
-class UpdateServiceImagePathValidationError extends UpdateServiceState {
-  final AttachmentCreateWithoutServicesInput? $image;
-  final UserResponse? data;
-  final String? message;
-  UpdateServiceImagePathValidationError(this.message, this.data, {this.$image});
-  @override
-  List<Object?> get props => [$image, message, data];
-}

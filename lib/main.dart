@@ -161,6 +161,8 @@ class MassageX extends StatelessWidget {
                                     ),
                                     body: Center(
                                       child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
                                           PrimaryButton(
                                             onPressed: () {
@@ -169,6 +171,16 @@ class MassageX extends StatelessWidget {
                                             },
                                             child: const Nunito(
                                                 text: "Complete profile"),
+                                          ),
+                                          PrimaryButton(
+                                            onPressed: () {
+                                              context.navigator.pushNamed(
+                                                  AppRoutes
+                                                      .createBusinessProfile);
+                                            },
+                                            child: const Nunito(
+                                                text:
+                                                    "create business profile"),
                                           ),
                                           const SignOutButton(
                                             variant: ButtonVariant.text,

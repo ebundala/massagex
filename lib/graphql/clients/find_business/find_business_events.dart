@@ -11,9 +11,10 @@ class FindBusinessStarted extends FindBusinessEvent {
 }
 
 class FindBusinessExcuted extends FindBusinessEvent {
-  FindBusinessExcuted();
+  final String id;
+  FindBusinessExcuted({required this.id});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [id];
 }
 
 class FindBusinessIsLoading extends FindBusinessEvent {

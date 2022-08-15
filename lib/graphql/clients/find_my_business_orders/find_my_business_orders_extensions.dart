@@ -1,11 +1,11 @@
-part of 'find_my_orders_bloc.dart';
+part of 'find_my_business_orders_bloc.dart';
 
 extension on GraphQLClient {
-  Future<OperationResult> findMyOrders(
+  Future<OperationResult> findMyBusinessOrders(
       {required String uid,
       OrderWhereInput? where,
-      int? skip,
-      int? take}) async {
+      int? take,
+      int? skip}) async {
     final Map<String, dynamic> vars = {};
     final List<ArgumentInfo> args = [];
     vars.addAll({'uid': uid});
@@ -14,11 +14,11 @@ extension on GraphQLClient {
       args.add(ArgumentInfo(name: 'where', value: where));
       vars.addAll(where.getFilesVariables(field_name: 'where'));
     }
-    if (skip != null) {
-      vars.addAll({'skip': skip});
-    }
     if (take != null) {
       vars.addAll({'take': take});
+    }
+    if (skip != null) {
+      vars.addAll({'skip': skip});
     }
     final doc = transform(document, [NormalizeArgumentsVisitor(args: args)]);
     final result = await runObservableOperation(this,
@@ -27,7 +27,7 @@ extension on GraphQLClient {
   }
 
   //refetch fn
-  void findMyOrdersRetry(ObservableQuery observableQuery) {
+  void findMyBusinessOrdersRetry(ObservableQuery observableQuery) {
     if (observableQuery.isRefetchSafe == true) {
       observableQuery.refetch();
     }

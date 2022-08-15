@@ -1,10 +1,20 @@
 part of 'find_many_businesses_bloc.dart';
 
 extension on GraphQLClient {
-  Future<OperationResult> findManyBusinesses() async {
+  Future<OperationResult> findManyBusinesses(
+      {BusinessWhereInput? where, int? take, int? skip}) async {
     final Map<String, dynamic> vars = {};
     final List<ArgumentInfo> args = [];
-
+    if (where != null) {
+      args.add(ArgumentInfo(name: 'where', value: where));
+      vars.addAll(where.getFilesVariables(field_name: 'where'));
+    }
+    if (take != null) {
+      vars.addAll({'take': take});
+    }
+    if (skip != null) {
+      vars.addAll({'skip': skip});
+    }
     final doc = transform(document, [NormalizeArgumentsVisitor(args: args)]);
     final result = await runObservableOperation(this,
         document: doc, variables: vars, operationName: 'findManyBusiness');
@@ -19,12 +29,20 @@ extension on GraphQLClient {
   }
 
   //load more fn
-  void findManyBusinessesLoadMore(
-    ObservableQuery observableQuery,
-  ) {
+  void findManyBusinessesLoadMore(ObservableQuery observableQuery,
+      {BusinessWhereInput? where, int? take, int? skip}) {
     final Map<String, dynamic> vars = {};
     final List<ArgumentInfo> args = [];
-
+    if (where != null) {
+      args.add(ArgumentInfo(name: 'where', value: where));
+      vars.addAll(where.getFilesVariables(field_name: 'where'));
+    }
+    if (take != null) {
+      vars.addAll({'take': take});
+    }
+    if (skip != null) {
+      vars.addAll({'skip': skip});
+    }
     final doc = transform(document, [NormalizeArgumentsVisitor(args: args)]);
     observableQuery.fetchMore(
       FetchMoreOptions(

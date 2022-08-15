@@ -8,7 +8,7 @@ import 'package:models/scalars/json_object.dart';
 import 'package:models/enum_business_status_field_update_operations_input.dart';
 import 'package:models/location_update_without_businesses_input.dart';
 import 'package:models/enum_business_mode_field_update_operations_input.dart';
-import 'package:models/attachment_create_without_businesses_input.dart';
+import 'package:models/attachment_update_one_without_businesses_input.dart';
 import 'package:models/attachment_create_without_business_input.dart';
 import 'package:models/attachment_where_unique_input.dart';
 import 'package:models/user_response.dart';

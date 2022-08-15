@@ -11,9 +11,13 @@ class CreateOrderStarted extends CreateOrderEvent {
 }
 
 class CreateOrderExcuted extends CreateOrderEvent {
-  CreateOrderExcuted();
+  final String uid;
+  final int count;
+  final List<OrderCreateWithoutOwnerInput> orders;
+  CreateOrderExcuted(
+      {required this.uid, required this.count, required this.orders});
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [uid, count, orders];
 }
 
 class CreateOrderIsLoading extends CreateOrderEvent {

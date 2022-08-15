@@ -3,7 +3,8 @@ import 'package:gql/ast.dart';
 import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
-import 'package:models/attachment_create_without_services_input.dart';
+import 'package:models/scalars/json_object.dart';
+import 'package:models/attachment_update_one_without_services_input.dart';
 import 'package:models/user_response.dart';
 import 'update_service_ast.dart' show document;
 
@@ -81,7 +82,15 @@ class UpdateServiceBloc extends Bloc<UpdateServiceEvent, UpdateServiceState> {
     {
       try {
         await closeResultWrapper();
-        resultWrapper = await client.updateService(image: event.image);
+        resultWrapper = await client.updateService(
+            uid: event.uid,
+            name: event.name,
+            serviceId: event.serviceId,
+            metadata: event.metadata,
+            price: event.price,
+            currency: event.currency,
+            description: event.description,
+            image: event.image);
         //listen for changes
         resultWrapper!.subscription = resultWrapper!.stream?.listen((result) {
           //reset events before starting to emit new ones

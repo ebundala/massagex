@@ -11,10 +11,26 @@ class UpdateServiceStarted extends UpdateServiceEvent {
 }
 
 class UpdateServiceExcuted extends UpdateServiceEvent {
-  final AttachmentCreateWithoutServicesInput? image;
-  UpdateServiceExcuted({this.image});
+  final String? uid;
+  final String name;
+  final String serviceId;
+  final JSONObject? metadata;
+  final double price;
+  final String? currency;
+  final String? description;
+  final AttachmentUpdateOneWithoutServicesInput? image;
+  UpdateServiceExcuted(
+      {this.uid,
+      required this.name,
+      required this.serviceId,
+      this.metadata,
+      required this.price,
+      this.currency,
+      this.description,
+      this.image});
   @override
-  List<Object?> get props => [image];
+  List<Object?> get props =>
+      [uid, name, serviceId, metadata, price, currency, description, image];
 }
 
 class UpdateServiceIsLoading extends UpdateServiceEvent {
