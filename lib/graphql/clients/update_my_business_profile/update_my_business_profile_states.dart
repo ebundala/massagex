@@ -59,6 +59,7 @@ class UpdateMyBusinessProfileCoverPathValidationError
   final StringFieldUpdateOperationsInput? $about;
   final StringFieldUpdateOperationsInput? $businessName;
   final JSONObject? $metadata;
+  final EnumBusinessStatusFieldUpdateOperationsInput? $status;
   final LocationUpdateWithoutBusinessesInput? $location;
   final EnumBusinessModeFieldUpdateOperationsInput? $mode;
   final AttachmentCreateWithoutBusinessesInput? $cover;
@@ -71,6 +72,7 @@ class UpdateMyBusinessProfileCoverPathValidationError
       this.$about,
       this.$businessName,
       this.$metadata,
+      this.$status,
       this.$location,
       this.$mode,
       this.$cover,
@@ -82,6 +84,7 @@ class UpdateMyBusinessProfileCoverPathValidationError
         $about,
         $businessName,
         $metadata,
+        $status,
         $location,
         $mode,
         $cover,
@@ -98,6 +101,7 @@ class UpdateMyBusinessProfileGalleryPathValidationError
   final StringFieldUpdateOperationsInput? $about;
   final StringFieldUpdateOperationsInput? $businessName;
   final JSONObject? $metadata;
+  final EnumBusinessStatusFieldUpdateOperationsInput? $status;
   final LocationUpdateWithoutBusinessesInput? $location;
   final EnumBusinessModeFieldUpdateOperationsInput? $mode;
   final AttachmentCreateWithoutBusinessesInput? $cover;
@@ -110,6 +114,7 @@ class UpdateMyBusinessProfileGalleryPathValidationError
       this.$about,
       this.$businessName,
       this.$metadata,
+      this.$status,
       this.$location,
       this.$mode,
       this.$cover,
@@ -121,6 +126,7 @@ class UpdateMyBusinessProfileGalleryPathValidationError
         $about,
         $businessName,
         $metadata,
+        $status,
         $location,
         $mode,
         $cover,

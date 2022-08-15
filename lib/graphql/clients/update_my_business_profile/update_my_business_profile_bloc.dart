@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
 import 'package:models/string_field_update_operations_input.dart';
 import 'package:models/scalars/json_object.dart';
+import 'package:models/enum_business_status_field_update_operations_input.dart';
 import 'package:models/location_update_without_businesses_input.dart';
 import 'package:models/enum_business_mode_field_update_operations_input.dart';
 import 'package:models/attachment_create_without_businesses_input.dart';
@@ -99,6 +100,7 @@ class UpdateMyBusinessProfileBloc
             about: event.about,
             businessName: event.businessName,
             metadata: event.metadata,
+            status: event.status,
             location: event.location,
             mode: event.mode,
             cover: event.cover,

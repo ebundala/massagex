@@ -33,8 +33,11 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
 
   @override
   Widget build(BuildContext context) {
-    return AuthFlowBuilder<PhoneAuthController>(onComplete: (credential) {
-      Navigator.of(context).pop(credential);
+    return AuthFlowBuilder<PhoneAuthController>(
+        listener: (oldState, newState, ctr) {
+      if (newState is CredentialLinked || newState is SignedIn) {
+        Navigator.of(context).pop<AuthState>(newState);
+      }
     }, builder: (context, state, authController, _) {
       final loading = state is SMSCodeRequested;
       print(state);
@@ -55,8 +58,17 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
               ),
             if (state is AuthFailed) ...[
               if (state.exception is! AutoresolutionFailedException) ...[
-                ErrorText(exception: state.exception)
-                //Todo retry to send code here here
+                ErrorText(exception: state.exception),
+                const SizedBox(
+                  height: 8,
+                ),
+                SecondaryButton(
+                    onPressed: () => authController.reset(),
+                    child: const Nunito(
+                      text: "Try again",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ))
               ],
               if (state.exception is AutoresolutionFailedException) ...[
                 SMSCodeInput(

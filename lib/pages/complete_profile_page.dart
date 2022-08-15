@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterfire_ui/auth.dart' hide PhoneInput;
+import 'package:massagex/graphql/clients/find_user/find_user_bloc.dart';
 import 'package:massagex/graphql/clients/update_my_profile/update_my_profile_bloc.dart';
 import "package:massagex/pages/account_page_layout.dart";
 import 'package:massagex/state/app/app_bloc.dart';
@@ -48,6 +49,17 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   DateTime? dateOfBirth;
 
   bool submited = false;
+
+  final phoneFocus = FocusNode(
+      canRequestFocus: false,
+      skipTraversal: true,
+      descendantsAreFocusable: false,
+      descendantsAreTraversable: false);
+  final dateFocus = FocusNode(
+      canRequestFocus: false,
+      skipTraversal: true,
+      descendantsAreFocusable: false,
+      descendantsAreTraversable: false);
   @override
   void initState() {
     super.initState();
@@ -72,8 +84,17 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         ),
         Form(
           key: formKey,
-          child: BlocBuilder<UpdateMyProfileBloc, UpdateMyProfileState>(
+          child: BlocConsumer<UpdateMyProfileBloc, UpdateMyProfileState>(
               bloc: context.app.updateMyProfileBloc,
+              listener: (context, state) {
+                if (state is UpdateMyProfileSuccess) {
+                  // refresh user profile after update
+                  context.app.findUserBloc!
+                    ..add(FindUserReseted())
+                    ..add(FindUserExcuted(
+                        id: context.app.fauth.currentUser!.uid));
+                }
+              },
               builder: (context, state) {
                 final loading = state is UpdateMyProfileInProgress && submited;
                 final success = state is UpdateMyProfileSuccess && submited;
@@ -126,6 +147,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     SizedBox(
                       height: inputHeigt,
                       child: DatePickerInput(
+                        focusNode: dateFocus,
                         firstDate: firstDate,
                         initialDate: initialDate,
                         lastDate: lastDate,
@@ -163,6 +185,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                         },
                         child: AbsorbPointer(
                           child: PrimaryTextInput(
+                            focusNode: phoneFocus,
                             controller: phoneCtr,
                             keyboardType: TextInputType.phone,
                             enabled: !loading,

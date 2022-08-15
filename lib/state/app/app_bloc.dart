@@ -172,7 +172,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     box = await Hive.openBox(AppBloc.dataKey);
     userSettings = await Hive.openBox(AppBloc.userSettingsKey);
     appSettings = await Hive.openBox(AppBloc.appSettingsKey);
-    // await clearStorage();
+    await clearStorage();
     _initDeviceId();
     final httplink = HttpLink(url);
     final tokenlink = AuthLink(getToken: () => token);
@@ -229,7 +229,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       if (state is GeolocationPositionChanged &&
           currentUser?.data?.id != null) {
         // updateMyProfileBloc.add(UpdateMyProfileResseted());
-        print(state);
+        print(state.position);
         updateMyProfileBloc!
           ..add(UpdateMyProfileReseted())
           ..add(
@@ -350,7 +350,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       final token = await fauth.currentUser?.getIdToken();
       await userSettings!.put(idTokenKey, token);
       if (user != null) {
-        // Todo register business profile if present and refresh idToken on success
         await registerBusinessProfile(user.uid);
         print("firebase login ${user.uid}");
 

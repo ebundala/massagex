@@ -1,21 +1,34 @@
-query findUser($id: String!){
-  findUniqueUser(where:{
-      id:$id
-  }){
-    message
-    status
-    data{
-      id
-      displayName
-      email
-      phoneNumber
-      role
-      metadata
-      avator{
-        id
-        path
-      }
-      
-    }
-  }
+query findUser($id: String!) {
+	findUniqueUser(where: {
+		id: $id
+	}) {
+		message
+		status
+		data {
+			id
+			displayName
+			email
+			phoneNumber
+			gender
+			dateOfBirth
+			role
+			metadata
+			avator {
+				id
+				path
+			}
+			businessProfile {
+				id
+				mode
+				about
+				businessName
+				status
+				metadata
+				cover {
+					id
+					path
+				}
+			}
+		}
+	}
 }

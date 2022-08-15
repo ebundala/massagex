@@ -15,6 +15,7 @@ class UpdateMyBusinessProfileExcuted extends UpdateMyBusinessProfileEvent {
   final StringFieldUpdateOperationsInput? about;
   final StringFieldUpdateOperationsInput? businessName;
   final JSONObject? metadata;
+  final EnumBusinessStatusFieldUpdateOperationsInput? status;
   final LocationUpdateWithoutBusinessesInput? location;
   final EnumBusinessModeFieldUpdateOperationsInput? mode;
   final AttachmentCreateWithoutBusinessesInput? cover;
@@ -25,6 +26,7 @@ class UpdateMyBusinessProfileExcuted extends UpdateMyBusinessProfileEvent {
       this.about,
       this.businessName,
       this.metadata,
+      this.status,
       this.location,
       this.mode,
       this.cover,
@@ -36,6 +38,7 @@ class UpdateMyBusinessProfileExcuted extends UpdateMyBusinessProfileEvent {
         about,
         businessName,
         metadata,
+        status,
         location,
         mode,
         cover,

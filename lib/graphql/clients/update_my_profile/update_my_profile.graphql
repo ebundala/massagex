@@ -41,11 +41,15 @@ fragment userInfo on User {
 	emailVerified
 	displayName
 	phoneNumber
+	gender
+	dateOfBirth
 	email
 	role  
+	metadata
 	createdAt
 	updatedAt
 	location {
+		id
 		lat
 		lon
 		heading
@@ -64,7 +68,9 @@ fragment userInfo on User {
 		businessName
 		about
 		mode
+		status
 		location {
+			id
 			lat
 			lon
 			heading
@@ -85,6 +91,7 @@ fragment userInfo on User {
 			name
 			currency
 			price
+			description
 			image {
 				id
 				path
@@ -92,64 +99,64 @@ fragment userInfo on User {
 			}
 		}
 	}
-	reviewed {
-		id
-		value
-		content
-		attachments {
-			id
-			path
-			mimetype
-		}
-		comments {
-			id
-			content
-			review {
-				id
-			}
-			attachments {
-				id
-				path
-				mimetype
-			}
-		}
-	}
-	comments {
-		id
-		content
-		review {
-			id
-		}
-	}
-	favorited {
-		id
-		type {
-			name
-		}
-		business {
-			id
-			businessName
-		}
-	}
-	ordered {
-		id
-		quantity
-		service {
-			name
-		}
-		business {
-			id
-			businessName
-		}
-	}
-	abuseReported {
-		id
-		type {
-			name
-		}
-		service {
-			id 
-			name
-		}
-	}
+	# reviewed {
+	# id
+	# value
+	# content
+	# attachments {
+	# id
+	# path
+	# mimetype
+	# }
+	# comments {
+	# id
+	# content
+	# review {
+	# id
+	# }
+	# attachments {
+	# id
+	# path
+	# mimetype
+	# }
+	# }
+	# }
+	# comments {
+	# id
+	# content
+	# review {
+	# id
+	# }
+	# }
+	# favorited {
+	# id
+	# type {
+	# name
+	# }
+	# business {
+	# id
+	# businessName
+	# }
+	# }
+	# ordered {
+	# id
+	# quantity
+	# service {
+	# name
+	# }
+	# business {
+	# id
+	# businessName
+	# }
+	# }
+	# abuseReported {
+	# id
+	# type {
+	# name
+	# }
+	# service {
+	# id 
+	# name
+	# }
+	# }
 }

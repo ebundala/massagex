@@ -1,160 +1,169 @@
 mutation updateMyBusinessProfile(
-    $id: String!,
-    $about: StringFieldUpdateOperationsInput
-    $businessName: StringFieldUpdateOperationsInput
-    $metadata: JSONObject
-    $location:LocationUpdateWithoutBusinessesInput
-    $mode: EnumBusinessModeFieldUpdateOperationsInput
-    $cover: AttachmentCreateWithoutBusinessesInput
-    $gallery:[AttachmentCreateWithoutBusinessInput!]
-    $deletedAttachments:[AttachmentWhereUniqueInput!]
-){
-  updateOneUser(where: {
-    id:$id
-  }, data: {
-    businessProfile: {
-      update:{
-        about:$about
-        mode: $mode
-        businessName: $businessName
-        metadata: $metadata
-        cover:$cover
-        location:{
-          update:$location
-        }
-        attachments:{
-          create:$gallery
-          delete:$deletedAttachments
-        }
-      }
-    }
-    
-  }){
-    status    
-    message
-    data{
-      ...userInfo
-    }
-  }
+$id: String!, 
+$about: StringFieldUpdateOperationsInput
+$businessName: StringFieldUpdateOperationsInput
+$metadata: JSONObject
+$status: EnumBusinessStatusFieldUpdateOperationsInput
+$location: LocationUpdateWithoutBusinessesInput
+$mode: EnumBusinessModeFieldUpdateOperationsInput
+$cover: AttachmentCreateWithoutBusinessesInput
+$gallery: [AttachmentCreateWithoutBusinessInput!]
+$deletedAttachments: [AttachmentWhereUniqueInput!]
+) {
+	updateOneUser(where: {
+		id: $id
+	}, data: {
+		businessProfile: {
+			update: {
+				about: $about
+				mode: $mode
+				businessName: $businessName
+				metadata: $metadata
+				status: $status
+				cover: $cover
+				location: {
+					update: $location
+				}
+				attachments: {
+					create: $gallery
+					delete: $deletedAttachments
+				}
+			}
+		}
+	}) {
+		status    
+		message
+		data {
+			...userInfo
+		}
+	}
 }
 
 
 
 
 fragment userInfo on User {
-  id
-  disabled
-  emailVerified
-  displayName
-  phoneNumber
-  email
-  role  
-  createdAt
-  updatedAt
-  location{
-      lat
-      lon
-      name
-    }
-  avator {
-    id
-    path
-    mimetype
-  }
-  businessProfile{
-    id
-    owner{
-      id
-    }
-    businessName
-    about
-    mode
-    location{
-      lat
-      lon
-      name
-    }
-    cover{
-    id
-    path
-    mimetype
-  }
-    attachments{
-      id
-      path
-      mimetype
-      
-    }
-    services {
-      id
-      name
-      currency
-      price
-      image{
-        id
-        path
-        mimetype
-      }
-    }
-  }
-  reviewed{
-    id
-    value
-    content
-    attachments {
-    id
-    path
-    mimetype
-  }
-    comments{
-    id
-    content
-    review{
-      id
-    }
-      attachments{
-         id
-    path
-    mimetype
-  }
-      }
-  }
-  comments{
-    id
-    content
-    review{
-      id
-    }
-  }
-  favorited{
-    id
-    type{
-    name
-   }
-    business{
-      id
-      businessName
-    }
-  }
-  ordered{
-  id
-    quantity
-    service{
-      name
-    }
-    business{
-      id
-      businessName
-    }
-}
-  abuseReported{
-    id
-    type {
-      name
-    }
-    service{
-      id 
-      name
-    }
-  }
+	id
+	disabled
+	emailVerified
+	displayName
+	phoneNumber
+	gender
+	dateOfBirth
+	email
+	role  
+	metadata
+	createdAt
+	updatedAt
+	location {
+		id
+		lat
+		lon
+		heading
+		name
+	}
+	avator {
+		id
+		path
+		mimetype
+	}
+	businessProfile {
+		id
+		owner {
+			id
+		}
+		businessName
+		about
+		mode
+		status
+		location {
+			id
+			lat
+			lon
+			heading
+			name
+		}
+		cover {
+			id
+			path
+			mimetype
+		}
+		attachments {
+			id
+			path
+			mimetype
+		}
+		services {
+			id
+			name
+			currency
+			price
+			description
+			image {
+				id
+				path
+				mimetype
+			}
+		}
+	}
+	# reviewed {
+	# id
+	# value
+	# content
+	# attachments {
+	# id
+	# path
+	# mimetype
+	# }
+	# comments {
+	# id
+	# content
+	# review {
+	# id
+	# }
+	# attachments {
+	# id
+	# path
+	# mimetype
+	# }
+	# }
+	# }
+	# comments {
+	# id
+	# content
+	# review {
+	# id
+	# }
+	# }
+	# favorited {
+	# id
+	# type {
+	# name
+	# }
+	# business {
+	# id
+	# businessName
+	# }
+	# }
+	# ordered {
+	# id
+	# quantity
+	# service {
+	# name
+	# }
+	# business {
+	# id
+	# businessName
+	# }
+	# }
+	# abuseReported {
+	# id
+	# type {
+	# name
+	# }
+	# service {
+	# id 
+	# name
+	# }
+	# }
 }

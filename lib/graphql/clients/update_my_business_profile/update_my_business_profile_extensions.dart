@@ -6,6 +6,7 @@ extension on GraphQLClient {
       StringFieldUpdateOperationsInput? about,
       StringFieldUpdateOperationsInput? businessName,
       JSONObject? metadata,
+      EnumBusinessStatusFieldUpdateOperationsInput? status,
       LocationUpdateWithoutBusinessesInput? location,
       EnumBusinessModeFieldUpdateOperationsInput? mode,
       AttachmentCreateWithoutBusinessesInput? cover,
@@ -26,6 +27,10 @@ extension on GraphQLClient {
     if (metadata != null) {
       args.add(ArgumentInfo(name: 'metadata', value: metadata));
       vars.addAll(metadata.getFilesVariables(field_name: 'metadata'));
+    }
+    if (status != null) {
+      args.add(ArgumentInfo(name: 'status', value: status));
+      vars.addAll(status.getFilesVariables(field_name: 'status'));
     }
     if (location != null) {
       args.add(ArgumentInfo(name: 'location', value: location));

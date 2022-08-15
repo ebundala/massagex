@@ -336,7 +336,8 @@ class DatePickerInput extends StatefulWidget {
       required this.onChanged,
       this.label,
       this.fontSize = 18,
-      this.validator})
+      this.validator,
+      this.focusNode})
       : super(key: key);
   final double fontSize;
   final DateTime firstDate;
@@ -346,12 +347,12 @@ class DatePickerInput extends StatefulWidget {
   final void Function(DateTime) onChanged;
   final DateTime? selectedDate;
   final String? Function(String?)? validator;
+  final FocusNode? focusNode;
   @override
   State<DatePickerInput> createState() => _DatePickerInputState();
 }
 
 class _DatePickerInputState extends State<DatePickerInput> {
-  final _focusNode = FocusNode();
   final _textController = TextEditingController();
 
   @override
@@ -369,7 +370,7 @@ class _DatePickerInputState extends State<DatePickerInput> {
         initialDate: widget.initialDate,
         firstDate: widget.firstDate,
         lastDate: widget.lastDate);
-    _focusNode.nextFocus();
+
     if (date != null) {
       formatDate(date);
 
@@ -390,31 +391,35 @@ class _DatePickerInputState extends State<DatePickerInput> {
 
   @override
   Widget build(BuildContext context) {
-    return PrimaryTextInput(
-      label: widget.label,
-      focusNode: _focusNode,
-      controller: _textController,
-      validator: widget.validator,
-      decoration: InputDecoration(
-        // suffixIconConstraints: ,
-        suffixIcon: Icon(
-          IconlyLight.arrow_down_2,
-          size: widget.fontSize,
-          color: Theme.of(context).colorScheme.onBackground,
+    return GestureDetector(
+      onTap: () => onFocused(),
+      child: AbsorbPointer(
+        child: PrimaryTextInput(
+          label: widget.label,
+          focusNode: widget.focusNode,
+          controller: _textController,
+          validator: widget.validator,
+          decoration: InputDecoration(
+            // suffixIconConstraints: ,
+            suffixIcon: Icon(
+              IconlyLight.arrow_down_2,
+              size: widget.fontSize,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
+          inputFormatters: [
+            TextInputFormatter.withFunction((oldValue, newValue) {
+              final splited = newValue.text.split(" ");
+              if (splited.length == 2) {
+                final date = splited.first;
+
+                return TextEditingValue(text: date);
+              }
+              return TextEditingValue.empty;
+            })
+          ],
         ),
       ),
-      inputFormatters: [
-        TextInputFormatter.withFunction((oldValue, newValue) {
-          final splited = newValue.text.split(" ");
-          if (splited.length == 2) {
-            final date = splited.first;
-
-            return TextEditingValue(text: date);
-          }
-          return TextEditingValue.empty;
-        })
-      ],
-      onTap: () => onFocused(),
     );
   }
 }

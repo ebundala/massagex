@@ -91,8 +91,8 @@ class MassageX extends StatelessWidget {
                   }
                   if (state is AppLoggedOut) {
                     if (_navigatorKey.currentState?.mounted == true) {
-                      _navigatorKey.currentState
-                          ?.pushReplacementNamed(AppRoutes.login);
+                      _navigatorKey.currentState?.pushNamedAndRemoveUntil(
+                          AppRoutes.login, (r) => false);
                     }
                   }
                 },
