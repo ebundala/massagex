@@ -1,4 +1,4 @@
-mutation createService($uid: String, 
+mutation createService($uid: String!, 
 $name: String!, $price: Float!, $metadata: JSONObject $currency: String, $description: String, 
 $image: AttachmentCreateNestedOneWithoutServicesInput) {
 	updateOneUser(where: {

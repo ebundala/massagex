@@ -568,62 +568,62 @@ class _OTPInputState extends State<OTPInput> {
 class SearchInput extends StatelessWidget {
   final String? hintText;
 
-  const SearchInput(
-      {Key? key,
-      this.controller,
-      this.initialValue,
-      this.label,
-      this.focusNode,
-      this.keyboardType,
-      this.textInputAction,
-      this.style = const TextStyle(fontSize: 15),
-      this.strutStyle,
-      this.textDirection,
-      this.textAlignVertical,
-      this.toolbarOptions,
-      this.showCursor,
-      this.smartDashesType,
-      this.smartQuotesType,
-      this.maxLengthEnforcement,
-      this.minLines,
-      this.maxLength,
-      this.onChanged,
-      this.onTap,
-      this.onEditingComplete,
-      this.onFieldSubmitted,
-      this.onSaved,
-      this.validator,
-      this.inputFormatters,
-      this.enabled,
-      this.cursorHeight,
-      this.cursorRadius,
-      this.cursorColor,
-      this.keyboardAppearance,
-      this.enableInteractiveSelection,
-      this.selectionControls,
-      this.buildCounter,
-      this.scrollPhysics,
-      this.autofillHints,
-      this.autovalidateMode,
-      this.scrollController,
-      this.restorationId,
-      this.mouseCursor,
-      this.enableIMEPersonalizedLearning = true,
-      this.scrollPadding = const EdgeInsets.all(20.0),
-      this.cursorWidth = 2.0,
-      this.expands = false,
-      this.enableSuggestions = true,
-      this.decoration = const InputDecoration(),
-      this.textCapitalization = TextCapitalization.none,
-      this.autocorrect = true,
-      this.obscuringCharacter = '•',
-      this.obscureText = false,
-      this.textAlign = TextAlign.start,
-      this.autofocus = false,
-      this.readOnly = false,
-      this.maxLines,
-      this.hintText = "Search masseu or centre"})
-      : super(key: key);
+  const SearchInput({
+    Key? key,
+    this.controller,
+    this.initialValue,
+    this.label,
+    this.focusNode,
+    this.keyboardType,
+    this.textInputAction,
+    this.style = const TextStyle(fontSize: 15),
+    this.strutStyle,
+    this.textDirection,
+    this.textAlignVertical,
+    this.toolbarOptions,
+    this.showCursor,
+    this.smartDashesType,
+    this.smartQuotesType,
+    this.maxLengthEnforcement,
+    this.minLines,
+    this.maxLength,
+    this.onChanged,
+    this.onTap,
+    this.onEditingComplete,
+    this.onFieldSubmitted,
+    this.onSaved,
+    this.validator,
+    this.inputFormatters,
+    this.enabled,
+    this.cursorHeight,
+    this.cursorRadius,
+    this.cursorColor,
+    this.keyboardAppearance,
+    this.enableInteractiveSelection,
+    this.selectionControls,
+    this.buildCounter,
+    this.scrollPhysics,
+    this.autofillHints,
+    this.autovalidateMode,
+    this.scrollController,
+    this.restorationId,
+    this.mouseCursor,
+    this.enableIMEPersonalizedLearning = true,
+    this.scrollPadding = const EdgeInsets.all(20.0),
+    this.cursorWidth = 2.0,
+    this.expands = false,
+    this.enableSuggestions = true,
+    this.decoration = const InputDecoration(),
+    this.textCapitalization = TextCapitalization.none,
+    this.autocorrect = true,
+    this.obscuringCharacter = '•',
+    this.obscureText = false,
+    this.textAlign = TextAlign.start,
+    this.autofocus = false,
+    this.readOnly = false,
+    this.maxLines,
+    this.hintText = "Search masseu or centre",
+  }) : super(key: key);
 
   final bool autocorrect;
   final Iterable<String>? autofillHints;
@@ -760,6 +760,8 @@ class SearchInput extends StatelessWidget {
 }
 
 class LocationInput extends StatelessWidget {
+  final TextInputType keyboardType;
+
   LocationInput(
       {Key? key,
       required this.apiKey,
@@ -767,7 +769,8 @@ class LocationInput extends StatelessWidget {
       this.validator,
       this.onChanged,
       this.displayLocation,
-      this.inputController})
+      this.inputController,
+      this.keyboardType = TextInputType.none})
       : super(key: key);
   final _inputController = TextEditingController();
   final TextEditingController? inputController;
@@ -796,6 +799,7 @@ class LocationInput extends StatelessWidget {
     return PrimaryTextInput(
       controller: inputController ?? _inputController,
       label: label ?? const Text("Location"),
+      keyboardType: keyboardType,
       validator: validator,
       onTap: () async {
         final result = await showPlacePicker(context, displayLocation);

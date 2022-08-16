@@ -1,6 +1,7 @@
 import 'package:flutterfire_ui/auth.dart';
 import 'package:massagex/pages/complete_profile_page.dart';
 import 'package:massagex/pages/create_business_profile.dart';
+import 'package:massagex/pages/create_service_page.dart';
 import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
 import 'package:massagex/pages/splash_page.dart';
@@ -139,20 +140,26 @@ class MassageX extends StatelessWidget {
                           return MaterialPageRoute(
                             builder: (context) => const VerifyPhonePage(),
                           );
-                        case AppRoutes.home:
+
+                        case AppRoutes.createService:
+                          return MaterialPageRoute(
+                            builder: (context) => const CreateServicePage(),
+                          );
+
+                        case AppRoutes.createOrder:
 
                         case AppRoutes.recoverAccount:
-
                         case AppRoutes.providerHome:
                         case AppRoutes.profile:
                         case AppRoutes.orderSummary:
-                        case AppRoutes.createOrder:
+
                         case AppRoutes.payment:
                         case AppRoutes.schedules:
-                        case AppRoutes.createService:
+
                         case AppRoutes.changePassword:
                         case AppRoutes.tracking:
                         case AppRoutes.providerDetails:
+                        case AppRoutes.home:
                         default:
                           return MaterialPageRoute(
                               builder: ((context) => Scaffold(
@@ -184,6 +191,14 @@ class MassageX extends StatelessWidget {
                                           ),
                                           const SignOutButton(
                                             variant: ButtonVariant.text,
+                                          ),
+                                          PrimaryButton(
+                                            onPressed: () {
+                                              context.navigator.pushNamed(
+                                                  AppRoutes.createService);
+                                            },
+                                            child: const Nunito(
+                                                text: "Create service"),
                                           ),
                                         ],
                                       ),
