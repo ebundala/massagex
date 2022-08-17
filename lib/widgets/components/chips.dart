@@ -27,22 +27,38 @@ class OutlinedChip extends StatelessWidget {
 
 class DistanceChip extends StatelessWidget {
   final Widget label;
-  const DistanceChip({Key? key, required this.label}) : super(key: key);
+  final double fontSize;
+
+  final EdgeInsetsGeometry? padding;
+
+  final Color color;
+
+  final EdgeInsetsGeometry? labelPadding;
+  const DistanceChip(
+      {Key? key,
+      required this.label,
+      this.fontSize = 20,
+      this.padding = const EdgeInsets.all(0),
+      this.color = const Color.fromRGBO(237, 36, 132, 1),
+      this.labelPadding})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Chip(
       label: label,
-      avatar: const Icon(
+      padding: padding,
+      labelPadding: labelPadding,
+      avatar: Icon(
         IconlyLight.location,
-        size: 16,
-        color: Color.fromRGBO(237, 36, 132, 1),
+        size: fontSize,
+        color: color,
       ),
       backgroundColor: const Color.fromRGBO(243, 222, 234, 1),
       labelStyle: GoogleFonts.nunito(
-        fontSize: 16,
+        fontSize: fontSize,
         fontWeight: FontWeight.w400,
-        color: const Color.fromRGBO(237, 36, 132, 1),
+        color: color,
       ),
       // shape: const RoundedRectangleBorder(
       //   side: BorderSide.none,

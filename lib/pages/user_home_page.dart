@@ -5,6 +5,9 @@ import 'package:massagex/graphql/clients/find_many_business/find_many_businesses
 import 'package:massagex/pages/page_layout.dart';
 import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/widgets/components/buttons.dart';
+import 'package:massagex/widgets/components/cards.dart';
+import 'package:massagex/widgets/components/chips.dart';
+import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:models/business_mode.dart';
@@ -205,7 +208,7 @@ class _HomePageState extends State<HomePage> {
             create: (context) =>
                 FindManyBusinessesBloc(client: context.app.client!)
                   ..add(FindManyBusinessesReseted())
-                  ..add(FindManyBusinessesExcuted(take: 1)),
+                  ..add(FindManyBusinessesExcuted(take: 2)),
             child: Builder(builder: (context) {
               return BlocBuilder<FindManyBusinessesBloc,
                   FindManyBusinessesState>(builder: (context, state) {
@@ -285,13 +288,70 @@ class _HomePageState extends State<HomePage> {
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 0,
+                            crossAxisSpacing: 4,
+                            mainAxisSpacing: 4,
                           ),
                           delegate:
                               SliverChildBuilderDelegate((context, index) {
                             final item = items[index];
-                            return Nunito(text: item.businessName!);
+                            return PrimaryCard(
+                              color: Theme.of(context).backgroundColor,
+                              borderRadius: 8,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ProfileTile(
+                                      avatorWidth: 60,
+                                      avator:
+                                          "assets/images/intro_picture_1.png",
+                                      displayName: item.owner?.displayName ??
+                                          item.businessName!,
+                                      rating: 4,
+                                      starSize: 14,
+                                      spaceBetween: 4,
+                                      bottom: DistanceChip(
+                                        fontSize: 16,
+                                        label: Nunito(
+                                          text: 500000.0.kilometers,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Nunito(
+                                        text: item.about ?? '',
+                                        fontSize: 14,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Expanded(
+                                          child: Gordita(
+                                            text: "50000/Tsh",
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: PrimaryButton(
+                                              height:
+                                                  kMinInteractiveDimension - 16,
+                                              onPressed: () {},
+                                              child:
+                                                  const Nunito(text: "View")),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
                           }, childCount: items.length),
                         ),
                         if (loadingMore)

@@ -177,24 +177,33 @@ class TravelerMapInfoCard extends StatelessWidget {
 }
 
 class ProfileTile extends StatelessWidget {
-  const ProfileTile({
-    Key? key,
-    required this.avator,
-    required this.displayName,
-    required this.userSubTitle,
-    required this.rating,
-    required this.count,
-    this.avatorWidth = 68,
-    this.action,
-  }) : super(key: key);
+  final double? starSize;
+
+  const ProfileTile(
+      {Key? key,
+      required this.avator,
+      required this.displayName,
+      this.userSubTitle,
+      required this.rating,
+      this.count,
+      this.avatorWidth = 68,
+      this.action,
+      this.bottom,
+      this.spaceBetween = 8,
+      this.starSize})
+      : assert(bottom == null && userSubTitle != null ||
+            bottom != null && userSubTitle == null),
+        super(key: key);
 
   final String avator;
   final String displayName;
-  final String userSubTitle;
+  final String? userSubTitle;
   final double rating;
-  final int count;
+  final int? count;
   final Widget? action;
   final double avatorWidth;
+  final Widget? bottom;
+  final double spaceBetween;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -206,6 +215,9 @@ class ProfileTile extends StatelessWidget {
             backgroundImage: AssetImage(avator),
           ),
         ),
+        SizedBox(
+          width: spaceBetween,
+        ),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -214,21 +226,23 @@ class ProfileTile extends StatelessWidget {
               Gilroy(
                 text: displayName,
                 fontSize: avatorWidth * 5 / 17,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 overflow: TextOverflow.ellipsis,
               ),
-              Nunito(
-                text: userSubTitle,
-                fontSize: avatorWidth * 7 / 34,
-                color: const Color.fromRGBO(108, 108, 108, 1),
-                fontWeight: FontWeight.w400,
-                overflow: TextOverflow.ellipsis,
-              ),
+              if (userSubTitle != null)
+                Nunito(
+                  text: userSubTitle!,
+                  fontSize: avatorWidth * 7 / 34,
+                  color: const Color.fromRGBO(108, 108, 108, 1),
+                  fontWeight: FontWeight.w400,
+                  overflow: TextOverflow.ellipsis,
+                ),
               StarsRating(
                 rating: rating,
                 count: count,
-                iconSize: avatorWidth * 3 / 17,
-              )
+                iconSize: starSize ?? avatorWidth * 3 / 17,
+              ),
+              if (bottom != null) bottom!,
             ],
           ),
         ),

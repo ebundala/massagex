@@ -8,7 +8,7 @@ import 'package:widgetbook/widgetbook.dart' hide WidgetbookUseCase;
 class StarsRating extends StatelessWidget {
   const StarsRating(
       {Key? key,
-      this.count = 0,
+      this.count,
       this.rating = 0,
       this.iconSize = 24,
       this.starCount = 5,
@@ -18,7 +18,7 @@ class StarsRating extends StatelessWidget {
       : assert(rating <= starCount),
         super(key: key);
   final double rating;
-  final int count;
+  final int? count;
   final double iconSize;
   final Color? activeColor;
   final Color? inactiveColor;
@@ -75,15 +75,16 @@ class StarsRating extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onBackground,
               ),
             ),
-            SizedBox(
-              width: iconSize * countStr.length * textSizeFactor,
-              child: Nunito(
-                text: countStr,
-                fontWeight: FontWeight.w400,
-                fontSize: iconSize * textSizeFactor,
-                color: const Color.fromRGBO(128, 128, 128, 1),
-              ),
-            )
+            if (count != null && count! > 0)
+              SizedBox(
+                width: iconSize * countStr.length * textSizeFactor,
+                child: Nunito(
+                  text: countStr,
+                  fontWeight: FontWeight.w400,
+                  fontSize: iconSize * textSizeFactor,
+                  color: const Color.fromRGBO(128, 128, 128, 1),
+                ),
+              )
           ]
         ],
       ),
