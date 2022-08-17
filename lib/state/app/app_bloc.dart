@@ -13,6 +13,7 @@ import 'package:massagex/graphql/clients/find_payment_methods/find_payment_metho
 import 'package:massagex/graphql/clients/find_user/find_user_bloc.dart';
 import 'package:massagex/graphql/clients/update_my_business_profile/update_my_business_profile_bloc.dart';
 import 'package:massagex/graphql/clients/update_my_profile/update_my_profile_bloc.dart';
+import 'package:massagex/secrets/api_keys.dart';
 import 'package:massagex/state/app/fcm_background_handler.dart';
 import 'package:massagex/state/deeplink/deeplink_bloc.dart';
 import 'package:massagex/widgets/components/buttons.dart';
@@ -22,6 +23,7 @@ import 'package:models/business_update_without_owner_input.dart';
 import 'package:models/business_upsert_without_owner_input.dart';
 import 'package:models/enum_business_mode_field_update_operations_input.dart';
 import 'package:models/float_field_update_operations_input.dart';
+import 'package:models/gender.dart';
 import 'package:models/image_size.dart';
 import 'package:models/location_create_without_businesses_input.dart';
 import 'package:models/location_create_without_users_input.dart';
@@ -37,6 +39,7 @@ import 'package:models/payment_method.dart';
 import 'package:models/register_device_input.dart';
 import 'package:models/review.dart';
 import 'package:models/scalars/phone_number.dart';
+import 'package:place_picker/place_picker.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:massagex/state/geolocation/geolocation_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1060,6 +1063,17 @@ extension ClientContext on BuildContext {
     }
   }
 
+  Future<LocationResult?> showPlacePicker([LatLng? displayLocation]) async {
+    return Navigator.of(this).push<LocationResult?>(
+      MaterialPageRoute(
+        builder: (context) => PlacePicker(
+          apiKeyGMP,
+          displayLocation: displayLocation,
+        ),
+      ),
+    );
+  }
+
   Future<State?> waitForBlocOperation<
           B extends Bloc<Event, State>,
           Event extends Object,
@@ -1133,5 +1147,17 @@ extension Lastseen on DateTime {
       return true;
     }
     return false;
+  }
+}
+
+extension GenderETX on Gender {
+  String get friendlyName {
+    if (this == Gender.UNSPECIFIED) {
+      return "Any";
+    } else if (this == Gender.MALE) {
+      return "Male";
+    } else {
+      return "Female";
+    }
   }
 }

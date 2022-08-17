@@ -31,7 +31,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         (e) => DropdownMenuItem<Gender>(
           value: e,
           child: Gordita(
-            text: e.toJson().replaceAll("_", " "),
+            text: e.friendlyName,
             fontSize: 15,
             fontWeight: FontWeight.w400,
           ),

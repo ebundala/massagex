@@ -140,6 +140,7 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
 }
 
 class ServicesListPage extends StatelessWidget {
+  // FIXME use stateful widget due to non final fields
   ServicesListPage({
     Key? key,
     this.onEdited,
@@ -156,10 +157,10 @@ class ServicesListPage extends StatelessWidget {
               uid: context.app.fauth.currentUser!.uid, take: 1)),
         child: Builder(builder: (context) {
           return NotificationListener<OverscrollNotification>(
-            onNotification: ((e) {
+            onNotification: (e) {
               if (e.overscroll > 0) {
                 //overscroll bottom
-                print("bottom");
+
                 final bloc =
                     BlocProvider.of<FindMyBusinessServicesBloc>(context);
                 final loaded =
@@ -180,12 +181,9 @@ class ServicesListPage extends StatelessWidget {
                         uid: uid, take: loaded + 1),
                     reseted: FindMyBusinessServicesReseted(),
                     callback: (v) => loadingMore = !loadingMore);
-              } else {
-                // overscroll start
-                print("start");
               }
               return false;
-            }),
+            },
             child: RefreshIndicator(
               onRefresh: () async {
                 final bloc =
@@ -275,10 +273,14 @@ class ServicesListPage extends StatelessWidget {
                                     text: "Details",
                                     fontSize: 14,
                                     fontWeight: FontWeight.w400,
+                                    color: Color.fromRGBO(22, 10, 49, 1),
                                   )),
                               Align(
                                 alignment: Alignment.centerLeft,
-                                child: Nunito(text: item.description ?? ""),
+                                child: Nunito(
+                                  text: item.description ?? "",
+                                  color: const Color.fromRGBO(128, 128, 128, 1),
+                                ),
                               ),
                               Align(
                                 alignment: Alignment.topLeft,
@@ -307,6 +309,8 @@ class ServicesListPage extends StatelessWidget {
                                                     text: e.value,
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w400,
+                                                    color: const Color.fromRGBO(
+                                                        128, 128, 128, 1),
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                   ),
@@ -339,10 +343,11 @@ class ServicesListPage extends StatelessWidget {
                                                   width: 4,
                                                 ),
                                                 Nunito(
-                                                  fontSize: 13,
-                                                  text:
-                                                      "${item.metadata?.value["duration"] ?? ""} Minutes",
-                                                )
+                                                    fontSize: 13,
+                                                    text:
+                                                        "${item.metadata?.value["duration"] ?? ""} Minutes",
+                                                    color: const Color.fromRGBO(
+                                                        128, 128, 128, 1))
                                               ],
                                             )
                                           ])),

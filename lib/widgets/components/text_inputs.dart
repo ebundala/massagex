@@ -571,6 +571,8 @@ class _OTPInputState extends State<OTPInput> {
 class SearchInput extends StatelessWidget {
   final String? hintText;
 
+  final Color fillColor;
+
   const SearchInput({
     Key? key,
     this.controller,
@@ -626,6 +628,7 @@ class SearchInput extends StatelessWidget {
     this.readOnly = false,
     this.maxLines,
     this.hintText = "Search masseu or centre",
+    this.fillColor = const Color.fromRGBO(242, 243, 242, 1),
   }) : super(key: key);
 
   final bool autocorrect;
@@ -688,7 +691,7 @@ class SearchInput extends StatelessWidget {
       controller: controller,
       decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.grey.shade400,
+          fillColor: fillColor,
           border: const OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.all(
