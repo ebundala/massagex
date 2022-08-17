@@ -18,4 +18,5 @@ class AppRoutes {
   static const createBusinessProfile = 'createBussinessProfile';
   static const tracking = 'tracking';
   static const providerDetails = 'providerDetails';
+  static const userHome = 'userHome';
 }

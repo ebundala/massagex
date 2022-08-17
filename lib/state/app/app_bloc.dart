@@ -1059,6 +1059,42 @@ extension ClientContext on BuildContext {
       // );
     }
   }
+
+  Future<State?> waitForBlocOperation<
+          B extends Bloc<Event, State>,
+          Event extends Object,
+          State extends Object,
+          Success extends State,
+          Failure extends State,
+          Error extends State,
+          Excuted extends Event,
+          Reseted extends Event>(
+      {required B bloc,
+      required Excuted excuted,
+      required Reseted reseted,
+      void Function(bool status)? callback}) async {
+    callback?.call(true);
+    final completer = Completer<State>();
+
+    final subscription = bloc.stream.asBroadcastStream().listen((event) {
+      if (event is Success) {
+        completer.complete(event);
+      }
+      if (event is Error || event is Failure) {
+        completer.completeError(event);
+      }
+    });
+
+    bloc
+      ..add(reseted)
+      ..add(excuted);
+    State? result;
+    await completer.future.then((value) async {
+      result = value;
+    }).whenComplete(() => subscription.cancel());
+    callback?.call(false);
+    return Future.value(result);
+  }
 }
 
 extension Distance on double {

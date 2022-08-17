@@ -539,28 +539,26 @@ class NotificationBottomSheet extends StatelessWidget {
                         children: [
                           ...(data as IncomingRequestNotificationData)
                               .extras
-                              .map((e) => SizedBox(
-                                    width: 70,
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          IconlyLight.tick_square,
-                                          size: 14,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
+                              .map((e) => Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        IconlyLight.tick_square,
+                                        size: 14,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 4.0),
+                                        child: Nunito(
+                                          text: e,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
                                         ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 4.0),
-                                          child: Nunito(
-                                            text: e,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        )
-                                      ],
-                                    ),
+                                      )
+                                    ],
                                   ))
                         ],
                       )

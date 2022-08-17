@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:massagex/graphql/clients/create_service/create_service_bloc.dart';
 import 'package:massagex/graphql/clients/update_service/update_service_bloc.dart';
@@ -42,6 +43,8 @@ class _CreateServicePageState extends State<CreateServicePage> {
 
   final formKey = GlobalKey<FormState>();
 
+  Map<String, dynamic> extras = {};
+
   @override
   void initState() {
     if (widget.service != null) {
@@ -49,10 +52,15 @@ class _CreateServicePageState extends State<CreateServicePage> {
       detailsCtr.text = widget.service!.description ?? "";
       priceCtr.text = widget.service!.price?.toStringAsFixed(2) ?? "";
       if (widget.service?.metadata != null) {
-        final _duration =
-            int.tryParse(widget.service!.metadata?.value["duration"]);
-        if (_duration != null) {
+        // ignore: no_leading_underscores_for_local_identifiers
+        final _duration = widget.service!.metadata?.value["duration"];
+        // ignore: no_leading_underscores_for_local_identifiers
+        final _extras = widget.service!.metadata?.value["extras"];
+        if (_duration != null && _duration is int) {
           duration = Duration(minutes: _duration);
+        }
+        if (_extras != null) {
+          extras = _extras;
         }
       }
     }
@@ -97,15 +105,11 @@ class _CreateServicePageState extends State<CreateServicePage> {
                         const SizedBox(
                           height: 40,
                         ),
-                        ValueListenableBuilder<TextEditingValue>(
-                            valueListenable: serviceNameCtr,
-                            builder: (context, v, _) {
-                              return Nunito(
-                                text: v.text.isEmpty ? "Service name" : v.text,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              );
-                            }),
+                        Nunito(
+                          text: isSaved ? "Edit service" : "Create new service",
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                         const Nunito(
                           text: "Please edit details of your service",
                           fontSize: 14,
@@ -116,6 +120,7 @@ class _CreateServicePageState extends State<CreateServicePage> {
                         ),
                         PrimaryCard(
                           borderRadius: 8,
+                          color: const Color.fromRGBO(244, 244, 245, 1),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 16),
@@ -125,6 +130,9 @@ class _CreateServicePageState extends State<CreateServicePage> {
                                   height: inputHeight,
                                   child: PrimaryTextInput(
                                     label: const Nunito(text: "Service name"),
+                                    keyboardType: TextInputType.text,
+                                    textCapitalization:
+                                        TextCapitalization.sentences,
                                     controller: serviceNameCtr,
                                     validator: (v) {
                                       if (v == null || v.isEmpty == true) {
@@ -152,6 +160,7 @@ class _CreateServicePageState extends State<CreateServicePage> {
                                   height: inputHeight + 7,
                                   child: DropdownInput<Duration>(
                                       items: durations,
+                                      value: duration,
                                       label: const Nunito(text: "Duration"),
                                       validator: (v) {
                                         if (v == null) {
@@ -182,6 +191,17 @@ class _CreateServicePageState extends State<CreateServicePage> {
                                     },
                                   ),
                                 ),
+                                ExtrasInput(
+                                    values: extras,
+                                    label: const Nunito(text: "Extra services"),
+                                    onChanged: (v) {
+                                      setState(() {
+                                        extras = v;
+                                      });
+                                    }),
+                                const SizedBox(
+                                  height: 16,
+                                ),
                                 PrimaryButton(
                                     onPressed: loading
                                         ? null
@@ -203,31 +223,43 @@ class _CreateServicePageState extends State<CreateServicePage> {
                                                     CreateServiceBloc>(context);
                                                 bloc
                                                   ..add(CreateServiceReseted())
-                                                  ..add(CreateServiceExcuted(
+                                                  ..add(
+                                                    CreateServiceExcuted(
                                                       uid: uid,
                                                       name: name,
                                                       price: price,
                                                       description: description,
-                                                      metadata: JSONObject({
-                                                        "duration":
-                                                            durationInMinutes
-                                                      })));
+                                                      metadata: JSONObject(
+                                                        {
+                                                          "duration":
+                                                              durationInMinutes,
+                                                          "extras": extras
+                                                        },
+                                                      ),
+                                                    ),
+                                                  );
                                               } else {
                                                 final bloc = BlocProvider.of<
                                                     UpdateServiceBloc>(context);
                                                 bloc
                                                   ..add(UpdateServiceReseted())
-                                                  ..add(UpdateServiceExcuted(
+                                                  ..add(
+                                                    UpdateServiceExcuted(
                                                       uid: uid,
                                                       name: name,
                                                       serviceId:
                                                           widget.service!.id!,
                                                       price: price,
                                                       description: description,
-                                                      metadata: JSONObject({
-                                                        "duration":
-                                                            durationInMinutes
-                                                      })));
+                                                      metadata: JSONObject(
+                                                        {
+                                                          "duration":
+                                                              durationInMinutes,
+                                                          "extras": extras
+                                                        },
+                                                      ),
+                                                    ),
+                                                  );
                                               }
                                             }
                                           },

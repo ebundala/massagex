@@ -2,7 +2,7 @@ part of 'create_service_bloc.dart';
 
 extension on GraphQLClient {
   Future<OperationResult> createService(
-      {String? uid,
+      {required String uid,
       required String name,
       required double price,
       JSONObject? metadata,
@@ -11,9 +11,8 @@ extension on GraphQLClient {
       AttachmentCreateNestedOneWithoutServicesInput? image}) async {
     final Map<String, dynamic> vars = {};
     final List<ArgumentInfo> args = [];
-    if (uid != null) {
-      vars.addAll({'uid': uid});
-    }
+    vars.addAll({'uid': uid});
+
     vars.addAll({'name': name});
 
     vars.addAll({'price': price});

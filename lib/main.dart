@@ -4,7 +4,9 @@ import 'package:massagex/pages/create_business_profile.dart';
 import 'package:massagex/pages/create_service_page.dart';
 import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
+import 'package:massagex/pages/provider_home_page.dart';
 import 'package:massagex/pages/splash_page.dart';
+import 'package:massagex/pages/user_home_page.dart';
 import 'package:massagex/pages/verify_phone_page.dart';
 import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/state/routes/routes.dart';
@@ -13,9 +15,9 @@ import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
+import 'package:models/service.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main(List<String> args) async {
@@ -143,22 +145,30 @@ class MassageX extends StatelessWidget {
 
                         case AppRoutes.createService:
                           return MaterialPageRoute(
-                            builder: (context) => const CreateServicePage(),
+                            builder: (context) => CreateServicePage(
+                              service: settings.arguments != null
+                                  ? settings.arguments as Service
+                                  : null,
+                            ),
                           );
-
-                        case AppRoutes.createOrder:
-
-                        case AppRoutes.recoverAccount:
+                        case AppRoutes.userHome:
+                          return MaterialPageRoute(
+                            builder: (context) => const UserHomePage(),
+                          );
                         case AppRoutes.providerHome:
-                        case AppRoutes.profile:
+                          return MaterialPageRoute(
+                            builder: (context) => const ProviderHomePage(),
+                          );
+                        case AppRoutes.createOrder:
                         case AppRoutes.orderSummary:
-
                         case AppRoutes.payment:
-                        case AppRoutes.schedules:
-
-                        case AppRoutes.changePassword:
                         case AppRoutes.tracking:
                         case AppRoutes.providerDetails:
+
+                        case AppRoutes.profile:
+                        case AppRoutes.recoverAccount:
+                        case AppRoutes.changePassword:
+
                         case AppRoutes.home:
                         default:
                           return MaterialPageRoute(
@@ -199,6 +209,23 @@ class MassageX extends StatelessWidget {
                                             },
                                             child: const Nunito(
                                                 text: "Create service"),
+                                          ),
+                                          if (context.app.isBusiness)
+                                            PrimaryButton(
+                                              onPressed: () {
+                                                context.navigator.pushNamed(
+                                                    AppRoutes.providerHome);
+                                              },
+                                              child: const Nunito(
+                                                  text: "provider home"),
+                                            ),
+                                          PrimaryButton(
+                                            onPressed: () {
+                                              context.navigator.pushNamed(
+                                                  AppRoutes.userHome);
+                                            },
+                                            child:
+                                                const Nunito(text: "user home"),
                                           ),
                                         ],
                                       ),

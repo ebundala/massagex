@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:place_picker/place_picker.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 import 'package:massagex/secrets/api_keys.dart';
+
+import 'buttons.dart';
 
 class PrimaryTextInput extends StatelessWidget {
   const PrimaryTextInput(
@@ -1000,6 +1003,100 @@ class FilledTextInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField();
+  }
+}
+
+class ExtrasInput extends StatefulWidget {
+  final int maxCount;
+
+  const ExtrasInput({
+    Key? key,
+    required this.values,
+    required this.onChanged,
+    this.label,
+    this.maxCount = 6,
+  }) : super(key: key);
+  final Map<String, dynamic> values;
+  final void Function(Map<String, dynamic> values) onChanged;
+  final Widget? label;
+
+  @override
+  State<ExtrasInput> createState() => _ExtrasInputState();
+}
+
+class _ExtrasInputState extends State<ExtrasInput> {
+  final inputCtr = TextEditingController();
+
+  final inputKey = GlobalKey<FormState>();
+
+  void addValue() {
+    if (inputKey.currentState?.validate() == true) {
+      widget.values["key_${DateTime.now().microsecondsSinceEpoch}"] =
+          inputCtr.text;
+      inputCtr.clear();
+      widget.onChanged(widget.values);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (widget.label != null)
+          Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: DefaultTextStyle(
+                      style: GoogleFonts.nunito(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: const Color.fromRGBO(128, 128, 128, 1)),
+                      child: widget.label!))),
+        InputDecorator(
+          decoration: const InputDecoration(),
+          child: Form(
+            key: inputKey,
+            child: Wrap(
+              children: [
+                ...widget.values.entries
+                    .map<Widget>((v) => Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Chip(
+                            onDeleted: (() {
+                              widget.values.remove(v.key);
+                              widget.onChanged(widget.values);
+                            }),
+                            label: Nunito(text: v.value),
+                          ),
+                        ))
+                    .toList(),
+                if (widget.values.length < widget.maxCount)
+                  TextFormField(
+                    controller: inputCtr,
+                    onEditingComplete: addValue,
+                    keyboardType: TextInputType.text,
+                    textCapitalization: TextCapitalization.sentences,
+                    validator: (v) {
+                      if (v == null || v.isEmpty == true) {
+                        return "Cannot be empty";
+                      }
+
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      suffixIcon: TextsButton(
+                          onPressed: addValue,
+                          child: const Nunito(text: "Add")),
+                    ),
+                  )
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

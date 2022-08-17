@@ -1,5 +1,6 @@
 mutation updateService($uid: String, 
-$name: String!, $serviceId: String!, $metadata: JSONObject, $price: Float!, $currency: String, $description: String, 
+$name: String!, $serviceId: String!, $metadata: JSONObject, 
+$price: Float!, $currency: StringFieldUpdateOperationsInput, $description: String, 
 $image: AttachmentUpdateOneWithoutServicesInput) {
 	updateOneUser(where: {
 		id: $uid
@@ -14,7 +15,7 @@ $image: AttachmentUpdateOneWithoutServicesInput) {
 						data: {
 							name: { set: $name}
 							price: { set: $price}
-							currency: { set: $currency}
+							currency: $currency
 							description: { set: $description}
 							metadata: $metadata
 							image: $image

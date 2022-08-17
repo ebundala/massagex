@@ -7,7 +7,7 @@ extension on GraphQLClient {
       required String serviceId,
       JSONObject? metadata,
       required double price,
-      String? currency,
+      StringFieldUpdateOperationsInput? currency,
       String? description,
       AttachmentUpdateOneWithoutServicesInput? image}) async {
     final Map<String, dynamic> vars = {};
@@ -26,7 +26,8 @@ extension on GraphQLClient {
     vars.addAll({'price': price});
 
     if (currency != null) {
-      vars.addAll({'currency': currency});
+      args.add(ArgumentInfo(name: 'currency', value: currency));
+      vars.addAll(currency.getFilesVariables(field_name: 'currency'));
     }
     if (description != null) {
       vars.addAll({'description': description});

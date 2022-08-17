@@ -4,6 +4,7 @@ import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
 import 'package:models/scalars/json_object.dart';
+import 'package:models/string_field_update_operations_input.dart';
 import 'package:models/attachment_update_one_without_services_input.dart';
 import 'package:models/user_response.dart';
 import 'update_service_ast.dart' show document;

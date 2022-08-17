@@ -67,6 +67,19 @@ final mainTheme = ThemeData(
     ),
     floatingLabelBehavior: FloatingLabelBehavior.never,
   ),
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: Color.fromRGBO(229, 229, 229, 1),
+      elevation: 8.0,
+      selectedIconTheme: IconThemeData(color: Color.fromRGBO(255, 155, 37, 1)),
+      unselectedIconTheme: IconThemeData(color: Colors.black),
+      selectedItemColor: Color.fromRGBO(255, 155, 37, 1),
+      unselectedItemColor: Colors.black,
+      selectedLabelStyle: TextStyle(
+          fontFamily: "Gordita", fontSize: 9, fontWeight: FontWeight.w400),
+      unselectedLabelStyle: TextStyle(
+          fontFamily: "Gordita", fontSize: 9, fontWeight: FontWeight.w400),
+      showUnselectedLabels: true,
+      showSelectedLabels: true),
 );
 
 @WidgetbookTheme(name: 'Dark', isDefault: true)

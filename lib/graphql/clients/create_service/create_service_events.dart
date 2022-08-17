@@ -11,7 +11,7 @@ class CreateServiceStarted extends CreateServiceEvent {
 }
 
 class CreateServiceExcuted extends CreateServiceEvent {
-  final String? uid;
+  final String uid;
   final String name;
   final double price;
   final JSONObject? metadata;
@@ -19,7 +19,7 @@ class CreateServiceExcuted extends CreateServiceEvent {
   final String? description;
   final AttachmentCreateNestedOneWithoutServicesInput? image;
   CreateServiceExcuted(
-      {this.uid,
+      {required this.uid,
       required this.name,
       required this.price,
       this.metadata,

@@ -16,7 +16,7 @@ class UpdateServiceExcuted extends UpdateServiceEvent {
   final String serviceId;
   final JSONObject? metadata;
   final double price;
-  final String? currency;
+  final StringFieldUpdateOperationsInput? currency;
   final String? description;
   final AttachmentUpdateOneWithoutServicesInput? image;
   UpdateServiceExcuted(

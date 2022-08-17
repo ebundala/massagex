@@ -38,7 +38,8 @@ const mutation = _i1.OperationDefinitionNode(
       _i1.VariableDefinitionNode(
           variable: _i1.VariableNode(name: _i1.NameNode(value: 'currency')),
           type: _i1.NamedTypeNode(
-              name: _i1.NameNode(value: 'String'), isNonNull: false),
+              name: _i1.NameNode(value: 'StringFieldUpdateOperationsInput'),
+              isNonNull: false),
           defaultValue: _i1.DefaultValueNode(value: null),
           directives: []),
       _i1.VariableDefinitionNode(
@@ -140,18 +141,10 @@ const mutation = _i1.OperationDefinitionNode(
                                                     _i1.ObjectFieldNode(
                                                         name: _i1.NameNode(
                                                             value: 'currency'),
-                                                        value:
-                                                            _i1.ObjectValueNode(
-                                                                fields: [
-                                                              _i1.ObjectFieldNode(
-                                                                  name: _i1.NameNode(
-                                                                      value:
-                                                                          'set'),
-                                                                  value: _i1.VariableNode(
-                                                                      name: _i1.NameNode(
-                                                                          value:
-                                                                              'currency')))
-                                                            ])),
+                                                        value: _i1.VariableNode(
+                                                            name: _i1.NameNode(
+                                                                value:
+                                                                    'currency'))),
                                                     _i1.ObjectFieldNode(
                                                         name: _i1.NameNode(
                                                             value:
@@ -549,6 +542,12 @@ const userInfo = _i1.FragmentDefinitionNode(
                       selectionSet: null),
                   _i1.FieldNode(
                       name: _i1.NameNode(value: 'price'),
+                      alias: null,
+                      arguments: [],
+                      directives: [],
+                      selectionSet: null),
+                  _i1.FieldNode(
+                      name: _i1.NameNode(value: 'description'),
                       alias: null,
                       arguments: [],
                       directives: [],
