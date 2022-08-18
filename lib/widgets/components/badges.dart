@@ -21,7 +21,7 @@ class PrimaryBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      height: 104 / 97 * width,
+      height: 110 / 97 * width,
       child: Card(
         color: const Color.fromRGBO(244, 244, 245, 1),
         shape: const RoundedRectangleBorder(
@@ -47,7 +47,7 @@ class PrimaryBadge extends StatelessWidget {
             const Spacer(),
             SizedBox(
               //  width: 30,
-              height: 15 / 97 * width,
+              height: 18 / 97 * width,
               child: Gilroy(
                 fontWeight: FontWeight.w700,
                 text: text,
@@ -59,7 +59,7 @@ class PrimaryBadge extends StatelessWidget {
             const Spacer(),
             SizedBox(
               // width: 31,
-              height: 9 / 97 * width,
+              height: 10 / 97 * width,
               child: Gordita(
                 fontWeight: FontWeight.w400,
                 text: subText,

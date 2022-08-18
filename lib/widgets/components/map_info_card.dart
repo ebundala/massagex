@@ -179,6 +179,14 @@ class TravelerMapInfoCard extends StatelessWidget {
 class ProfileTile extends StatelessWidget {
   final double? starSize;
 
+  final FontWeight? titleFontWeight;
+
+  final double? titleFontSize;
+
+  final double? subTitleFontSize;
+
+  final FontWeight? subTitleFontWeight;
+
   const ProfileTile(
       {Key? key,
       required this.avator,
@@ -190,10 +198,12 @@ class ProfileTile extends StatelessWidget {
       this.action,
       this.bottom,
       this.spaceBetween = 8,
-      this.starSize})
-      : assert(bottom == null && userSubTitle != null ||
-            bottom != null && userSubTitle == null),
-        super(key: key);
+      this.starSize,
+      this.titleFontWeight,
+      this.titleFontSize,
+      this.subTitleFontSize,
+      this.subTitleFontWeight})
+      : super(key: key);
 
   final String avator;
   final String displayName;
@@ -207,6 +217,7 @@ class ProfileTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
           width: avatorWidth,
@@ -225,16 +236,16 @@ class ProfileTile extends StatelessWidget {
             children: [
               Gilroy(
                 text: displayName,
-                fontSize: avatorWidth * 5 / 17,
-                fontWeight: FontWeight.w500,
+                fontSize: titleFontSize ?? avatorWidth * 3 / 17,
+                fontWeight: titleFontWeight ?? FontWeight.w500,
                 overflow: TextOverflow.ellipsis,
               ),
               if (userSubTitle != null)
                 Nunito(
                   text: userSubTitle!,
-                  fontSize: avatorWidth * 7 / 34,
+                  fontSize: subTitleFontSize ?? avatorWidth * 5 / 34,
                   color: const Color.fromRGBO(108, 108, 108, 1),
-                  fontWeight: FontWeight.w400,
+                  fontWeight: subTitleFontWeight ?? FontWeight.w400,
                   overflow: TextOverflow.ellipsis,
                 ),
               StarsRating(

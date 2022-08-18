@@ -71,7 +71,7 @@ class PageLayoutWidget extends StatelessWidget {
             centerTitle: centerTitle,
             title: Gilroy(
               text: title,
-              fontSize: 19,
+              fontSize: 20,
               fontWeight: FontWeight.w600,
             ),
             leadingWidth: 0,

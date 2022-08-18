@@ -4,6 +4,7 @@ import 'package:massagex/pages/create_business_profile.dart';
 import 'package:massagex/pages/create_service_page.dart';
 import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
+import 'package:massagex/pages/provider_details_page.dart';
 import 'package:massagex/pages/provider_home_page.dart';
 import 'package:massagex/pages/splash_page.dart';
 import 'package:massagex/pages/user_home_page.dart';
@@ -15,6 +16,7 @@ import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
+import 'package:models/business.dart';
 import 'package:models/service.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 import 'package:flutter/material.dart';
@@ -159,11 +161,16 @@ class MassageX extends StatelessWidget {
                           return MaterialPageRoute(
                             builder: (context) => const ProviderHomePage(),
                           );
+                        case AppRoutes.providerDetails:
+                          return MaterialPageRoute(
+                            builder: (context) => ProviderDetailsPage(
+                              business: settings.arguments! as Business,
+                            ),
+                          );
                         case AppRoutes.createOrder:
                         case AppRoutes.orderSummary:
                         case AppRoutes.payment:
                         case AppRoutes.tracking:
-                        case AppRoutes.providerDetails:
 
                         case AppRoutes.profile:
                         case AppRoutes.recoverAccount:

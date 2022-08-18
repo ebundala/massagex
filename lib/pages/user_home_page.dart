@@ -4,6 +4,7 @@ import 'package:iconly/iconly.dart';
 import 'package:massagex/graphql/clients/find_many_business/find_many_businesses_bloc.dart';
 import 'package:massagex/pages/page_layout.dart';
 import 'package:massagex/state/app/app_bloc.dart';
+import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/components/cards.dart';
 import 'package:massagex/widgets/components/chips.dart';
@@ -38,6 +39,9 @@ class _UserHomePageState extends State<UserHomePage> {
       title:
           "Hello, ${context.app.currentUser?.data?.displayName?.split(" ").first ?? ''}",
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor:
+            Colors.white, //Theme.of(context).colorScheme.onPrimary,
+        elevation: 6,
         onTap: (value) {
           setState(() {
             currentPage = value;
@@ -312,11 +316,12 @@ class _HomePageState extends State<HomePage> {
                                       rating: 4,
                                       starSize: 14,
                                       spaceBetween: 4,
+                                      titleFontSize: 16,
                                       bottom: DistanceChip(
-                                        fontSize: 16,
+                                        iconSize: 20,
                                         label: Nunito(
                                           text: 500000.0.kilometers,
-                                          fontSize: 10,
+                                          fontSize: 14,
                                         ),
                                       ),
                                     ),
@@ -325,6 +330,8 @@ class _HomePageState extends State<HomePage> {
                                         text: item.about ?? '',
                                         fontSize: 14,
                                         maxLines: 2,
+                                        color:
+                                            const Color.fromRGBO(0, 0, 0, 0.5),
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
@@ -334,15 +341,24 @@ class _HomePageState extends State<HomePage> {
                                           child: Gordita(
                                             text: "50000/Tsh",
                                             fontSize: 12,
+                                            color:
+                                                Color.fromRGBO(22, 10, 49, 1),
                                             fontWeight: FontWeight.w500,
                                             overflow: TextOverflow.ellipsis,
                                           ),
+                                        ),
+                                        const SizedBox(
+                                          width: 4,
                                         ),
                                         Expanded(
                                           child: PrimaryButton(
                                               height:
                                                   kMinInteractiveDimension - 16,
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                context.navigator.pushNamed(
+                                                    AppRoutes.providerDetails,
+                                                    arguments: item);
+                                              },
                                               child:
                                                   const Nunito(text: "View")),
                                         ),

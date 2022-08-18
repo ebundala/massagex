@@ -27,7 +27,7 @@ class OutlinedChip extends StatelessWidget {
 
 class DistanceChip extends StatelessWidget {
   final Widget label;
-  final double fontSize;
+  final double iconSize;
 
   final EdgeInsetsGeometry? padding;
 
@@ -37,7 +37,7 @@ class DistanceChip extends StatelessWidget {
   const DistanceChip(
       {Key? key,
       required this.label,
-      this.fontSize = 20,
+      this.iconSize = 20,
       this.padding = const EdgeInsets.all(0),
       this.color = const Color.fromRGBO(237, 36, 132, 1),
       this.labelPadding})
@@ -51,12 +51,12 @@ class DistanceChip extends StatelessWidget {
       labelPadding: labelPadding,
       avatar: Icon(
         IconlyLight.location,
-        size: fontSize,
+        size: iconSize,
         color: color,
       ),
       backgroundColor: const Color.fromRGBO(243, 222, 234, 1),
       labelStyle: GoogleFonts.nunito(
-        fontSize: fontSize,
+        fontSize: iconSize,
         fontWeight: FontWeight.w400,
         color: color,
       ),
