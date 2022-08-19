@@ -1,6 +1,7 @@
 import 'package:flutterfire_ui/auth.dart';
 import 'package:massagex/pages/complete_profile_page.dart';
 import 'package:massagex/pages/create_business_profile.dart';
+import 'package:massagex/pages/create_order_page.dart';
 import 'package:massagex/pages/create_service_page.dart';
 import 'package:massagex/pages/login_page.dart';
 import 'package:massagex/pages/onbording_page.dart';
@@ -168,6 +169,11 @@ class MassageX extends StatelessWidget {
                             ),
                           );
                         case AppRoutes.createOrder:
+                          return MaterialPageRoute(
+                            builder: (context) => CreateOrderPage(
+                              service: settings.arguments! as Service,
+                            ),
+                          );
                         case AppRoutes.orderSummary:
                         case AppRoutes.payment:
                         case AppRoutes.tracking:

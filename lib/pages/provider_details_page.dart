@@ -1,6 +1,10 @@
 import "package:flutter/material.dart";
+import 'package:flutterfire_ui/auth.dart';
 import 'package:iconly/iconly.dart';
+import 'package:massagex/graphql/clients/find_services/find_services_bloc.dart';
 import 'package:massagex/pages/page_layout.dart';
+import 'package:massagex/state/app/app_bloc.dart';
+import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/widgets/components/badges.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/components/cards.dart';
@@ -16,6 +20,23 @@ class ProviderDetailsPage extends StatelessWidget {
     required this.business,
   }) : super(key: key);
   final Business business;
+
+  Future<FindServicesState?> loadServices(BuildContext context) async {
+    return context.waitForBlocOperation<
+        FindServicesBloc,
+        FindServicesEvent,
+        FindServicesState,
+        FindServicesSuccess,
+        FindServicesFailure,
+        FindServicesError,
+        FindServicesExcuted,
+        FindServicesReseted>(
+      bloc: FindServicesBloc(client: context.client),
+      excuted: FindServicesExcuted(businessId: business.id!),
+      reseted: FindServicesReseted(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     const space = SizedBox(
@@ -96,63 +117,96 @@ class ProviderDetailsPage extends StatelessWidget {
           color: Color.fromRGBO(22, 10, 49, 1),
         ),
         space,
-        ListBody(children: [
-          PrimaryCard(
-            borderRadius: 8,
-            color: Theme.of(context).backgroundColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Expanded(
-                          child: Nunito(
-                        text: "Service name",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Color.fromRGBO(22, 10, 49, 1),
-                      )),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      Gordita(
-                        text: "5000/= Tsh",
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Color.fromRGBO(22, 10, 49, 1),
-                      )
-                    ],
+        FutureBuilder<FindServicesState?>(
+            future: loadServices(context),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(),
                   ),
-                  space,
-                  const Nunito(
-                    text:
-                        "Lorem Ipsum is simply dummy text of  printing and typesetting industry.",
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    color: Color.fromRGBO(128, 128, 128, 1),
-                  ),
-                  space,
-                  Row(
-                    children: [
-                      const Icon(IconlyLight.time_circle),
-                      const SizedBox(
-                        width: 8,
+                );
+              } else {
+                final data = snapshot.data;
+                if (data is! FindServicesSuccess) {
+                  return ErrorText(
+                      exception: Exception(
+                          data?.message ?? data?.data?.message ?? "Error"));
+                }
+                final services = data.data.data!.services!;
+
+                return ListBody(
+                  children: List.generate(services.length, (index) {
+                    final service = services[index];
+                    return PrimaryCard(
+                      borderRadius: 8,
+                      color: Theme.of(context).backgroundColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Nunito(
+                                  text: service.name ?? "",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: const Color.fromRGBO(22, 10, 49, 1),
+                                )),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Gordita(
+                                  text:
+                                      "${service.price ?? ""}/= ${service.currency ?? "Tsh"}",
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: const Color.fromRGBO(22, 10, 49, 1),
+                                )
+                              ],
+                            ),
+                            space,
+                            Nunito(
+                              text: service.description ?? "",
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: const Color.fromRGBO(128, 128, 128, 1),
+                            ),
+                            space,
+                            Row(
+                              children: [
+                                const Icon(IconlyLight.time_circle),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Nunito(
+                                    text:
+                                        "${service.metadata?.value["duration"] ?? ""} minutes"),
+                                const Spacer(),
+                                PrimaryButton(
+                                  child: const Nunito(text: "Request"),
+                                  onPressed: () {
+                                    context.navigator.pushNamed(
+                                        AppRoutes.createOrder,
+                                        arguments: service);
+                                  },
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                      const Nunito(text: "1 hour"),
-                      const Spacer(),
-                      PrimaryButton(
-                        child: const Nunito(text: "Request"),
-                        onPressed: () {},
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          )
-        ]),
+                    );
+                  }),
+                );
+              }
+            }),
 
         space,
         // photos

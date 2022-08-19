@@ -1,0 +1,37 @@
+query findServices($businessId: String!, $where: ServiceWhereInput $take: Int, $skip: Int) {
+	findUniqueBusiness(where: {
+		id: $businessId
+	}) {
+		status
+		message
+		data {
+			id
+			services(where: $where, take: $take, skip: $skip) {
+				id
+				name
+				price
+				description
+				metadata
+				currency
+				business {
+					id
+					businessName
+					cover {
+						id
+						path
+					}
+					owner {
+						id
+						displayName
+					}
+				}
+				image {
+					id
+					path
+				}
+				createdAt
+				updatedAt
+			}
+		}
+	}
+}

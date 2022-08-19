@@ -39,8 +39,7 @@ class _UserHomePageState extends State<UserHomePage> {
       title:
           "Hello, ${context.app.currentUser?.data?.displayName?.split(" ").first ?? ''}",
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor:
-            Colors.white, //Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
         elevation: 6,
         onTap: (value) {
           setState(() {
