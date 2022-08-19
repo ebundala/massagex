@@ -16,6 +16,15 @@ query findServices($businessId: String!, $where: ServiceWhereInput $take: Int, $
 				business {
 					id
 					businessName
+					mode
+					status
+					location {
+						id
+						name
+						lat
+						lon
+						heading
+					}
 					cover {
 						id
 						path

@@ -13,7 +13,7 @@ import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:models/business_mode.dart';
 import 'package:models/gender.dart';
-import 'package:place_picker/entities/location_result.dart';
+import 'package:place_picker/place_picker.dart' hide SearchInput;
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({
@@ -108,6 +108,20 @@ class _HomePageState extends State<HomePage> {
 
   BusinessMode mode = BusinessMode.MOBILE$MODE;
   @override
+  void initState() {
+    final loc = context.app.currentUser?.data?.location;
+
+    if (loc?.lat != null && loc?.lon != null) {
+      final latlng = LatLng(loc!.lat!, loc.lon!);
+      location = LocationResult()
+        ..name = loc.name ?? ""
+        ..formattedAddress = loc.name ?? ""
+        ..latLng = latlng;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -136,7 +150,8 @@ class _HomePageState extends State<HomePage> {
                         color: Theme.of(context).backgroundColor,
                         child: const Nunito(text: "Change"),
                         onPressed: () async {
-                          final result = await context.showPlacePicker();
+                          final result =
+                              await context.showPlacePicker(location?.latLng);
                           if (result != null) {
                             setState(
                               () {

@@ -142,6 +142,12 @@ const businessProfile = _i1.FragmentDefinitionNode(
           directives: [],
           selectionSet: null),
       _i1.FieldNode(
+          name: _i1.NameNode(value: 'status'),
+          alias: null,
+          arguments: [],
+          directives: [],
+          selectionSet: null),
+      _i1.FieldNode(
           name: _i1.NameNode(value: 'location'),
           alias: null,
           arguments: [],
@@ -149,6 +155,12 @@ const businessProfile = _i1.FragmentDefinitionNode(
           selectionSet: _i1.SelectionSetNode(selections: [
             _i1.FieldNode(
                 name: _i1.NameNode(value: '__typename'),
+                alias: null,
+                arguments: [],
+                directives: [],
+                selectionSet: null),
+            _i1.FieldNode(
+                name: _i1.NameNode(value: 'id'),
                 alias: null,
                 arguments: [],
                 directives: [],
@@ -195,12 +207,6 @@ const businessProfile = _i1.FragmentDefinitionNode(
                 alias: null,
                 arguments: [],
                 directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'mimetype'),
-                alias: null,
-                arguments: [],
-                directives: [],
                 selectionSet: null)
           ])),
       _i1.FieldNode(
@@ -223,12 +229,6 @@ const businessProfile = _i1.FragmentDefinitionNode(
                 selectionSet: null),
             _i1.FieldNode(
                 name: _i1.NameNode(value: 'path'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'mimetype'),
                 alias: null,
                 arguments: [],
                 directives: [],

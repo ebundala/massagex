@@ -12,25 +12,28 @@ query findManyBusinesses($where: BusinessWhereInput, $take: Int, $skip: Int) {
 fragment businessProfile on Business {
 	id
 	owner {
-		id
+		id		
 	}
 	businessName
 	about
 	mode
+	status
 	location {
+		id
 		lat
 		lon
+		# heading
 		name
 	}
 	cover {
 		id
 		path
-		mimetype
+		# mimetype
 	}
 	attachments {
 		id
 		path
-		mimetype
+		# mimetype
 	}
 	# services {
 	# id
