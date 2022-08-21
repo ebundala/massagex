@@ -76,7 +76,7 @@ class PageLayoutWidget extends StatelessWidget {
             ),
             leadingWidth: 0,
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
-            foregroundColor: Theme.of(context).colorScheme.primary,
+            // foregroundColor: Theme.of(context).colorScheme.primary,
             actions: actions,
           ),
       backgroundColor: Theme.of(context).colorScheme.onPrimary,

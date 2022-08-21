@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> {
             create: (context) =>
                 FindManyBusinessesBloc(client: context.app.client!)
                   ..add(FindManyBusinessesReseted())
-                  ..add(FindManyBusinessesExcuted(take: 2)),
+                  ..add(FindManyBusinessesExcuted(take: context.app.pageSize)),
             child: Builder(builder: (context) {
               return BlocBuilder<FindManyBusinessesBloc,
                   FindManyBusinessesState>(builder: (context, state) {
@@ -265,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                               FindManyBusinessesReseted>(
                           bloc: bloc,
                           excuted: FindManyBusinessesMoreLoaded(
-                              skip: loaded, take: 2),
+                              skip: loaded, take: context.app.pageSize),
                           reseted: FindManyBusinessesReseted(),
                           callback: (v) => isLoadingMore = !isLoadingMore);
                     }

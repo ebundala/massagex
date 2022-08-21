@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
 import 'package:massagex/widgets/components/avators.dart';
@@ -94,7 +96,7 @@ class RequestBottomSheet extends StatelessWidget {
                     children: [
                       Nunito(
                         text: cancelText,
-                        fontSize: 13,
+                        fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
                       const Icon(
@@ -140,16 +142,12 @@ class RequestBottomSheet extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: PrimaryButton(
-                height: 32,
-                width: double.infinity,
-                child: Gordita(
-                    text: waitingButtonText,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400),
-              ),
-            ),
+                padding: const EdgeInsets.all(8.0),
+                child: TimeoutCounterWidget(
+                    timeout: const Duration(seconds: 60),
+                    onTimeout: () {
+                      print("Timedout");
+                    })),
           ],
           if (error && !success) ...[
             Padding(
@@ -267,8 +265,9 @@ class RequestBottomSheet extends StatelessWidget {
 }
 
 extension CustomBottomSheetExt on BuildContext {
-  PersistentBottomSheetController<T> showCustomBottomSheet<T>(
+  Future<T?> showCustomBottomSheet<T>(
       {double heightFactor = 1,
+      BuildContext? context,
       widthFactor = 1,
       Color? backgroundColor,
       double? elevation,
@@ -277,11 +276,12 @@ extension CustomBottomSheetExt on BuildContext {
     final constraints = BoxConstraints(
         maxHeight: size.height * heightFactor,
         maxWidth: size.width * widthFactor);
-    return showBottomSheet<T>(
-        context: this,
+
+    return showModalBottomSheet<T?>(
+        context: context ?? this,
         backgroundColor: backgroundColor,
         clipBehavior: Clip.antiAlias,
-        constraints: constraints,
+        // constraints: constraints,
         elevation: elevation,
         enableDrag: true,
         shape: const RoundedRectangleBorder(
@@ -631,6 +631,72 @@ class NotificationBottomSheet extends StatelessWidget {
                   )),
             )
           ]
+        ],
+      ),
+    );
+  }
+}
+
+class TimeoutCounterWidget extends StatefulWidget {
+  const TimeoutCounterWidget(
+      {Key? key, required this.timeout, required this.onTimeout})
+      : super(key: key);
+  final Duration timeout;
+  final VoidCallback onTimeout;
+  @override
+  State<TimeoutCounterWidget> createState() => _TimeoutCounterWidgetState();
+}
+
+class _TimeoutCounterWidgetState extends State<TimeoutCounterWidget> {
+  late Timer timer;
+  final Stopwatch stopwatch = Stopwatch();
+  late Timer periodicTimer;
+  @override
+  void initState() {
+    super.initState();
+    stopwatch.start();
+    periodicTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      setState(() {});
+    });
+    timer = Timer(widget.timeout, () {
+      periodicTimer.cancel();
+      // call timeout handler
+      widget.onTimeout();
+    });
+  }
+
+  Duration get elapsed => stopwatch.elapsed;
+  Duration get total => widget.timeout;
+  @override
+  void dispose() {
+    timer.cancel();
+    periodicTimer.cancel();
+    stopwatch.stop();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: kMinInteractiveDimension + 16,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: LinearProgressIndicator(
+              value: elapsed.inSeconds / total.inSeconds,
+              minHeight: kMinInteractiveDimension,
+              backgroundColor: Colors.grey,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          Positioned.fill(
+              child: Center(
+            child: Nunito(
+              text:
+                  "${elapsed.toString().substring(2, 7)}/${total.toString().substring(2, 7)}",
+              color: Colors.white,
+            ),
+          ))
         ],
       ),
     );
