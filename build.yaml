@@ -1,6 +1,8 @@
 targets:
   $default:
     builders:
+      widgetbook_generator:widgetbook_builder:
+        enabled: false
       graphql_to_dart:ast_generator:
         options:
           helper_path: graphql/common
