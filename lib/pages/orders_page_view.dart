@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
+import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/components/cards.dart';
 import 'package:massagex/widgets/components/map_info_card.dart';
@@ -156,6 +157,7 @@ class _OrdersPageState extends State<OrdersPage> {
                             ),
                           if (!loading) ...[
                             spaceSliver,
+                            spaceSliver,
                             const SliverToBoxAdapter(
                               child: Gilroy(
                                 text: "Newly appointed services",
@@ -244,7 +246,12 @@ class _OrdersPageState extends State<OrdersPage> {
                                             ),
                                             Expanded(
                                               child: PrimaryButton(
-                                                onPressed: () {},
+                                                onPressed: () async {
+                                                  await context.navigator
+                                                      .pushNamed(
+                                                          AppRoutes.payment,
+                                                          arguments: order);
+                                                },
                                                 child: Row(
                                                   children: [
                                                     Icon(
@@ -292,6 +299,8 @@ class _OrdersPageState extends State<OrdersPage> {
                                 );
                               }), childCount: newOrders.length),
                             ),
+                            spaceSliver,
+                            spaceSliver,
                             const SliverToBoxAdapter(
                               child: Gilroy(
                                 text: "Previous scheduled service",

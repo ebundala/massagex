@@ -1,4 +1,5 @@
 import 'package:flutterfire_ui/auth.dart';
+import 'package:massagex/pages/checkout_page.dart';
 import 'package:massagex/pages/complete_profile_page.dart';
 import 'package:massagex/pages/create_business_profile.dart';
 import 'package:massagex/pages/create_order_page.dart';
@@ -18,6 +19,7 @@ import 'package:massagex/widgets/texts/app_name.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
 import 'package:models/business.dart';
+import 'package:models/order.dart';
 import 'package:models/service.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart';
 import 'package:flutter/material.dart';
@@ -176,9 +178,15 @@ class MassageX extends StatelessWidget {
                           );
                         case AppRoutes.orderSummary:
                         case AppRoutes.payment:
+                          return MaterialPageRoute(
+                            builder: (context) => CheckoutPage(
+                              order: settings.arguments! as Order,
+                            ),
+                          );
                         case AppRoutes.tracking:
 
                         case AppRoutes.profile:
+
                         case AppRoutes.recoverAccount:
                         case AppRoutes.changePassword:
 
