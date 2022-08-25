@@ -16,10 +16,10 @@ class CompleteProfilePage extends StatefulWidget {
   const CompleteProfilePage({Key? key}) : super(key: key);
 
   @override
-  _CompleteProfilePageState createState() => _CompleteProfilePageState();
+  CompleteProfilePageState createState() => CompleteProfilePageState();
 }
 
-class _CompleteProfilePageState extends State<CompleteProfilePage> {
+class CompleteProfilePageState extends State<CompleteProfilePage> {
   final formKey = GlobalKey<FormState>();
   final double inputHeigt = 114;
 

@@ -21,6 +21,8 @@ import "package:equatable/equatable.dart";
 
 class User extends Equatable {
   final DateTime? lastSeen;
+  final double? compoundRating;
+  final double? experience;
   final String? id;
   final String? email;
   final String? displayName;
@@ -51,6 +53,8 @@ class User extends Equatable {
   final List<Favorite>? favorited;
   User(
       {this.lastSeen,
+      this.compoundRating,
+      this.experience,
       this.id,
       this.email,
       this.displayName,
@@ -84,6 +88,8 @@ class User extends Equatable {
     return User(
       lastSeen:
           json['lastSeen'] != null ? DateTime.parse(json['lastSeen']) : null,
+      compoundRating: json['compoundRating']?.toDouble(),
+      experience: json['experience']?.toDouble(),
       id: json['id'],
       email: json['email'],
       displayName: json['displayName'],
@@ -157,6 +163,8 @@ class User extends Equatable {
   Map<String, dynamic> toJson() {
     Map<String, dynamic> _data = {};
     if (lastSeen != null) _data['lastSeen'] = lastSeen!.toString();
+    if (compoundRating != null) _data['compoundRating'] = compoundRating;
+    if (experience != null) _data['experience'] = experience;
     if (id != null) _data['id'] = id;
     if (email != null) _data['email'] = email;
     if (displayName != null) _data['displayName'] = displayName;
@@ -207,6 +215,8 @@ class User extends Equatable {
 
   User copyWith(
       {DateTime? lastSeen,
+      double? compoundRating,
+      double? experience,
       String? id,
       String? email,
       String? displayName,
@@ -237,6 +247,8 @@ class User extends Equatable {
       List<Favorite>? favorited}) {
     return User(
         lastSeen: lastSeen ?? this.lastSeen,
+        compoundRating: compoundRating ?? this.compoundRating,
+        experience: experience ?? this.experience,
         id: id ?? this.id,
         email: email ?? this.email,
         displayName: displayName ?? this.displayName,
@@ -269,6 +281,8 @@ class User extends Equatable {
 
   List<Object?> get props => [
         lastSeen,
+        compoundRating,
+        experience,
         id,
         email,
         displayName,
@@ -316,6 +330,10 @@ extension UserExt on User {
 
 class UserController extends ValueNotifier<User> {
   TextEditingController? lastSeenController;
+
+  TextEditingController? compoundRatingController;
+
+  TextEditingController? experienceController;
 
   TextEditingController? idController;
 
@@ -452,6 +470,23 @@ class UserController extends ValueNotifier<User> {
               value = value.copyWith(
                   lastSeen: DateTime.tryParse(lastSeenController?.text ?? ''));
             });
+    }
+    if (isInSelectionSet('compoundRating')) {
+      compoundRatingController =
+          TextEditingController(text: "${initialValue.compoundRating ?? ''}")
+            ..addListener(() {
+              value = value.copyWith(
+                  compoundRating:
+                      double.tryParse(compoundRatingController?.text ?? ''));
+            });
+    }
+    if (isInSelectionSet('experience')) {
+      experienceController = TextEditingController(
+          text: "${initialValue.experience ?? ''}")
+        ..addListener(() {
+          value = value.copyWith(
+              experience: double.tryParse(experienceController?.text ?? ''));
+        });
     }
     if (isInSelectionSet('id')) {
       idController = TextEditingController(text: "${initialValue.id ?? ''}")
@@ -692,6 +727,12 @@ class UserController extends ValueNotifier<User> {
   dispose() {
     if (isInSelectionSet('lastSeen')) {
       lastSeenController?.dispose();
+    }
+    if (isInSelectionSet('compoundRating')) {
+      compoundRatingController?.dispose();
+    }
+    if (isInSelectionSet('experience')) {
+      experienceController?.dispose();
     }
     if (isInSelectionSet('id')) {
       idController?.dispose();

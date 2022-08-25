@@ -9,6 +9,7 @@ import 'package:massagex/pages/onbording_page.dart';
 import 'package:massagex/pages/provider_details_page.dart';
 import 'package:massagex/pages/provider_home_page.dart';
 import 'package:massagex/pages/splash_page.dart';
+import 'package:massagex/pages/tracking_page.dart';
 import 'package:massagex/pages/user_home_page.dart';
 import 'package:massagex/pages/verify_phone_page.dart';
 import 'package:massagex/state/app/app_bloc.dart';
@@ -184,7 +185,11 @@ class MassageX extends StatelessWidget {
                             ),
                           );
                         case AppRoutes.tracking:
-
+                          return MaterialPageRoute(
+                            builder: (context) => TrackingPage(
+                              order: settings.arguments! as Order,
+                            ),
+                          );
                         case AppRoutes.profile:
 
                         case AppRoutes.recoverAccount:

@@ -224,7 +224,12 @@ class _OrdersPageState extends State<OrdersPage> {
                                           children: [
                                             Expanded(
                                               child: SecondaryButton(
-                                                  onPressed: () {},
+                                                  onPressed: () async {
+                                                    await context.navigator
+                                                        .pushNamed(
+                                                            AppRoutes.tracking,
+                                                            arguments: order);
+                                                  },
                                                   child: Row(
                                                     children: [
                                                       Icon(

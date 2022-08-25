@@ -17,6 +17,12 @@ import 'selection_node_data.dart';
 import "package:equatable/equatable.dart";
 
 class Business extends Equatable {
+  final double? acceptance;
+  final double? cancelation;
+  final double? distance;
+  final int? clients;
+  final double? minPrice;
+  final int? workCompleted;
   final String? id;
   final User? owner;
   final String? ownerId;
@@ -38,7 +44,13 @@ class Business extends Equatable {
   final List<AbuseReport>? abuseReports;
   final List<Favorite>? favorites;
   Business(
-      {this.id,
+      {this.acceptance,
+      this.cancelation,
+      this.distance,
+      this.clients,
+      this.minPrice,
+      this.workCompleted,
+      this.id,
       this.owner,
       this.ownerId,
       this.mode,
@@ -61,6 +73,12 @@ class Business extends Equatable {
 
   static Business fromJson(Map<dynamic, dynamic> json) {
     return Business(
+      acceptance: json['acceptance']?.toDouble(),
+      cancelation: json['cancelation']?.toDouble(),
+      distance: json['distance']?.toDouble(),
+      clients: json['clients'],
+      minPrice: json['minPrice']?.toDouble(),
+      workCompleted: json['workCompleted'],
       id: json['id'],
       owner: json['owner'] != null ? User.fromJson(json['owner']) : null,
       ownerId: json['ownerId'],
@@ -111,6 +129,12 @@ class Business extends Equatable {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> _data = {};
+    if (acceptance != null) _data['acceptance'] = acceptance;
+    if (cancelation != null) _data['cancelation'] = cancelation;
+    if (distance != null) _data['distance'] = distance;
+    if (clients != null) _data['clients'] = clients;
+    if (minPrice != null) _data['minPrice'] = minPrice;
+    if (workCompleted != null) _data['workCompleted'] = workCompleted;
     if (id != null) _data['id'] = id;
     if (owner != null) _data['owner'] = owner!.toJson();
     if (ownerId != null) _data['ownerId'] = ownerId;
@@ -145,7 +169,13 @@ class Business extends Equatable {
   }
 
   Business copyWith(
-      {String? id,
+      {double? acceptance,
+      double? cancelation,
+      double? distance,
+      int? clients,
+      double? minPrice,
+      int? workCompleted,
+      String? id,
       User? owner,
       String? ownerId,
       BusinessMode? mode,
@@ -166,6 +196,12 @@ class Business extends Equatable {
       List<AbuseReport>? abuseReports,
       List<Favorite>? favorites}) {
     return Business(
+        acceptance: acceptance ?? this.acceptance,
+        cancelation: cancelation ?? this.cancelation,
+        distance: distance ?? this.distance,
+        clients: clients ?? this.clients,
+        minPrice: minPrice ?? this.minPrice,
+        workCompleted: workCompleted ?? this.workCompleted,
         id: id ?? this.id,
         owner: owner ?? this.owner,
         ownerId: ownerId ?? this.ownerId,
@@ -189,6 +225,12 @@ class Business extends Equatable {
   }
 
   List<Object?> get props => [
+        acceptance,
+        cancelation,
+        distance,
+        clients,
+        minPrice,
+        workCompleted,
         id,
         owner,
         ownerId,
@@ -227,6 +269,18 @@ extension BusinessExt on Business {
 }
 
 class BusinessController extends ValueNotifier<Business> {
+  TextEditingController? acceptanceController;
+
+  TextEditingController? cancelationController;
+
+  TextEditingController? distanceController;
+
+  TextEditingController? clientsController;
+
+  TextEditingController? minPriceController;
+
+  TextEditingController? workCompletedController;
+
   TextEditingController? idController;
 
   UserController? ownerController;
@@ -316,6 +370,54 @@ class BusinessController extends ValueNotifier<Business> {
     this.favoritesRemoved,
   }) : super(initialValue) {
     initSelectionData();
+    if (isInSelectionSet('acceptance')) {
+      acceptanceController = TextEditingController(
+          text: "${initialValue.acceptance ?? ''}")
+        ..addListener(() {
+          value = value.copyWith(
+              acceptance: double.tryParse(acceptanceController?.text ?? ''));
+        });
+    }
+    if (isInSelectionSet('cancelation')) {
+      cancelationController = TextEditingController(
+          text: "${initialValue.cancelation ?? ''}")
+        ..addListener(() {
+          value = value.copyWith(
+              cancelation: double.tryParse(cancelationController?.text ?? ''));
+        });
+    }
+    if (isInSelectionSet('distance')) {
+      distanceController =
+          TextEditingController(text: "${initialValue.distance ?? ''}")
+            ..addListener(() {
+              value = value.copyWith(
+                  distance: double.tryParse(distanceController?.text ?? ''));
+            });
+    }
+    if (isInSelectionSet('clients')) {
+      clientsController =
+          TextEditingController(text: "${initialValue.clients ?? ''}")
+            ..addListener(() {
+              value = value.copyWith(
+                  clients: int.tryParse(clientsController?.text ?? ''));
+            });
+    }
+    if (isInSelectionSet('minPrice')) {
+      minPriceController =
+          TextEditingController(text: "${initialValue.minPrice ?? ''}")
+            ..addListener(() {
+              value = value.copyWith(
+                  minPrice: double.tryParse(minPriceController?.text ?? ''));
+            });
+    }
+    if (isInSelectionSet('workCompleted')) {
+      workCompletedController = TextEditingController(
+          text: "${initialValue.workCompleted ?? ''}")
+        ..addListener(() {
+          value = value.copyWith(
+              workCompleted: int.tryParse(workCompletedController?.text ?? ''));
+        });
+    }
     if (isInSelectionSet('id')) {
       idController = TextEditingController(text: "${initialValue.id ?? ''}")
         ..addListener(() {
@@ -486,6 +588,24 @@ class BusinessController extends ValueNotifier<Business> {
   }
   @override
   dispose() {
+    if (isInSelectionSet('acceptance')) {
+      acceptanceController?.dispose();
+    }
+    if (isInSelectionSet('cancelation')) {
+      cancelationController?.dispose();
+    }
+    if (isInSelectionSet('distance')) {
+      distanceController?.dispose();
+    }
+    if (isInSelectionSet('clients')) {
+      clientsController?.dispose();
+    }
+    if (isInSelectionSet('minPrice')) {
+      minPriceController?.dispose();
+    }
+    if (isInSelectionSet('workCompleted')) {
+      workCompletedController?.dispose();
+    }
     if (isInSelectionSet('id')) {
       idController?.dispose();
     }

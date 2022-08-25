@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
 import 'package:massagex/graphql/clients/find_payment_methods/find_payment_methods_bloc.dart';
@@ -141,7 +138,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           ),
         ),
         space,
-        const Spacer(),
+        space,
         const Gilroy(
           text: "Order summary",
           fontSize: 20,
@@ -201,7 +198,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           ),
         ),
         space,
-        const Spacer(),
+        space,
         space,
         SwipableButton(onUnlocked: () {}, label: "Swipe to pay"),
         space

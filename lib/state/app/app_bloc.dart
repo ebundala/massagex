@@ -354,9 +354,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
         showNotification(
             notification.hashCode,
-            notification.notificationType!
-                .toJson()
-                .replaceAll(RegExp("_"), " "),
+            notification.message ??
+                notification.notificationType!
+                    .toJson()
+                    .replaceAll(RegExp("_"), " "),
             body,
             payload: message.data["payload"]);
       }
@@ -461,12 +462,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         title,
         body,
         NotificationDetails(
-          android: AndroidNotificationDetails(
-            channel.id,
-            channel.name,
-            channelDescription: channel.description,
-            icon: 'ic_launcher',
-          ),
+          android: AndroidNotificationDetails(channel.id, channel.name,
+              channelDescription: channel.description,
+              importance: Importance.high,
+              priority: Priority.high,
+              fullScreenIntent: true
+
+              // icon: 'ic_launcher',
+              ),
         ),
         payload: payload);
   }

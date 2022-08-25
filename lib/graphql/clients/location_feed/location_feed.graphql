@@ -1,0 +1,16 @@
+subscription locationFeed($orderId: String!) {
+	locations(where: {
+		id: $orderId
+	}) {
+		status
+		message
+		data {
+			id
+			name
+			lat
+			lon
+			heading
+			createdAt
+		}
+	}
+}

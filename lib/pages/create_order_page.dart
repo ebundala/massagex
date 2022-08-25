@@ -203,7 +203,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
           ]),
         ),
         space,
-        const Spacer(),
+        space,
         space,
         const Divider(),
         space,

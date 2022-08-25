@@ -13,11 +13,28 @@ query findMyOrders($uid: String!, $where: OrderWhereInput, $skip: Int, $take: In
 				metadata
 				createdAt
 				updatedAt
+				owner {
+					id
+					displayName
+					phoneNumber
+					avator {
+						id
+						path
+					}
+					location {
+						id
+						lat
+						lon
+						name
+						createdAt
+					}
+				}
 				business {
 					id
 					businessName
 					about
 					status
+					mode
 					owner {
 						id
 						displayName
@@ -26,6 +43,13 @@ query findMyOrders($uid: String!, $where: OrderWhereInput, $skip: Int, $take: In
 							id
 							path
 						}
+					}
+					location {
+						id
+						lat
+						lon
+						name
+						createdAt
 					}
 				}
 				transactions {
@@ -47,6 +71,7 @@ query findMyOrders($uid: String!, $where: OrderWhereInput, $skip: Int, $take: In
 					name
 					price
 					description
+					currency
 					metadata
 					createdAt
 					recordStatus
