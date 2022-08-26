@@ -107,6 +107,12 @@ const query = _i1.OperationDefinitionNode(
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
+                      name: _i1.NameNode(value: 'compoundRating'),
+                      alias: null,
+                      arguments: [],
+                      directives: [],
+                      selectionSet: null),
+                  _i1.FieldNode(
                       name: _i1.NameNode(value: 'email'),
                       alias: null,
                       arguments: [],
@@ -229,6 +235,54 @@ const query = _i1.OperationDefinitionNode(
                             directives: [],
                             selectionSet: null),
                         _i1.FieldNode(
+                            name: _i1.NameNode(value: 'businessName'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'about'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'cancelation'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'acceptance'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'workCompleted'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'metadata'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'mode'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'status'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
                             name: _i1.NameNode(value: 'owner'),
                             alias: null,
                             arguments: [],
@@ -247,30 +301,6 @@ const query = _i1.OperationDefinitionNode(
                                   directives: [],
                                   selectionSet: null)
                             ])),
-                        _i1.FieldNode(
-                            name: _i1.NameNode(value: 'businessName'),
-                            alias: null,
-                            arguments: [],
-                            directives: [],
-                            selectionSet: null),
-                        _i1.FieldNode(
-                            name: _i1.NameNode(value: 'about'),
-                            alias: null,
-                            arguments: [],
-                            directives: [],
-                            selectionSet: null),
-                        _i1.FieldNode(
-                            name: _i1.NameNode(value: 'mode'),
-                            alias: null,
-                            arguments: [],
-                            directives: [],
-                            selectionSet: null),
-                        _i1.FieldNode(
-                            name: _i1.NameNode(value: 'status'),
-                            alias: null,
-                            arguments: [],
-                            directives: [],
-                            selectionSet: null),
                         _i1.FieldNode(
                             name: _i1.NameNode(value: 'location'),
                             alias: null,

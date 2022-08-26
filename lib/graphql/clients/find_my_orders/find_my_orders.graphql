@@ -8,73 +8,81 @@ query findMyOrders($uid: String!, $where: OrderWhereInput, $skip: Int, $take: In
 			id
 			ordered(where: $where, skip: $skip, take: $take) {
 				id
+				quantity		
 				orderStatus
-				quantity
+				notes
 				metadata
 				createdAt
 				updatedAt
 				owner {
 					id
-					displayName
-					phoneNumber
+					displayName, 
+					phoneNumber, 
+					experience
+					compoundRating
+					metadata
 					avator {
 						id
 						path
+						mimetype
 					}
 					location {
 						id
 						lat
 						lon
+						heading
 						name
-						createdAt
-					}
-				}
-				business {
-					id
-					businessName
-					about
-					status
-					mode
-					owner {
-						id
-						displayName
-						phoneNumber
-						avator {
-							id
-							path
-						}
-					}
-					location {
-						id
-						lat
-						lon
-						name
-						createdAt
-					}
-				}
-				transactions {
-					id
-					status
-					createdAt
-					updatedAt
-					paymentMethod {
-						id
-						name
-						logo {
-							id
-							path
-						}
 					}
 				}
 				service {
 					id
 					name
 					price
-					description
 					currency
+					description
 					metadata
 					createdAt
-					recordStatus
+					updatedAt
+				}
+				business {
+					id
+					businessName
+					about
+					cancelation
+					acceptance
+					workCompleted
+					metadata
+					mode
+					status
+					location {
+						id
+						lat
+						lon
+						heading
+						name
+					}
+					owner {
+						id
+						displayName, 
+						phoneNumber, 
+						experience
+						compoundRating
+						metadata
+						location {
+							id
+							lat
+							lon
+							heading
+							name
+						}
+						avator {
+							id
+							path
+							mimetype
+						}
+					}
+					createdAt
+					updatedAt
 				}
 			}
 		}

@@ -67,7 +67,7 @@ class StarsRating extends StatelessWidget {
           ...icons,
           if (showCount) ...[
             SizedBox(
-              width: iconSize / 2 * (ratingStr.length + 2) * textSizeFactor,
+              width: iconSize / 1.8 * (ratingStr.length + 2) * textSizeFactor,
               child: Nunito(
                 text: '($ratingStr)',
                 fontWeight: FontWeight.w600,

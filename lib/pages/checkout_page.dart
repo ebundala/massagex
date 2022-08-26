@@ -42,7 +42,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   starSize: 20,
                   avator: "assets/images/intro_picture_2.png",
                   displayName: widget.order.business!.businessName!,
-                  rating: 3.7,
+                  rating: widget.order.business!.owner!.compoundRating!,
                   action: IconButton(
                     icon: const Icon(IconlyLight.call),
                     onPressed: () {},

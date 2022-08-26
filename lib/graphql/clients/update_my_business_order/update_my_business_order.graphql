@@ -1,0 +1,101 @@
+mutation updateMyBusinessOrder($uid: String!, $count: Int, $orders: [OrderUpdateWithWhereUniqueWithoutBusinessInput!]!) {
+	updateOneUser(where: {
+		id: $uid
+	}, data: {
+		businessProfile: {
+			update: {
+				orders: {
+					update: $orders
+				}
+			}
+		}}
+		) {
+			status    
+			message
+			data {
+				id
+				businessProfile {
+					orders(take: $count, orderBy: [ { createdAt: desc}])  {
+						id
+						quantity		
+						orderStatus
+						notes
+						metadata
+						createdAt
+						updatedAt
+						owner {
+							id
+							displayName, 
+							phoneNumber, 
+							experience
+							compoundRating
+							metadata
+							avator {
+								id
+								path
+								mimetype
+							}
+							location {
+								id
+								lat
+								lon
+								heading
+								name
+							}
+						}
+						service {
+							id
+							name
+							price
+							currency
+							description
+							metadata
+							createdAt
+							updatedAt
+						}
+						business {
+							id
+							businessName
+							about
+							cancelation
+							acceptance
+							workCompleted
+							distance
+							metadata
+							mode
+							status
+							location {
+								id
+								lat
+								lon
+								heading
+								name
+							}
+							owner {
+								id
+								displayName, 
+								phoneNumber, 
+								experience
+								compoundRating
+								metadata
+								location {
+									id
+									lat
+									lon
+									heading
+									name
+								}
+								avator {
+									id
+									path
+									mimetype
+								}
+							}
+							createdAt
+							updatedAt
+						}
+					}
+				}
+			}
+		}
+	}

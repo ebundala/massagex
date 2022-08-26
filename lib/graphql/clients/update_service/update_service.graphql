@@ -35,118 +35,62 @@ $image: AttachmentUpdateOneWithoutServicesInput) {
 
 fragment userInfo on User {
 	id
-	disabled
-	emailVerified
-	displayName
-	phoneNumber
-	email
-	role  
-	createdAt
-	updatedAt
-	location {
-		lat
-		lon
-		name
-	}
-	avator {
-		id
-		path
-		mimetype
-	}
 	businessProfile {
-		id
-		owner {
-			id
-		}
-		businessName
-		about
-		mode
-		location {
-			lat
-			lon
-			name
-		}
-		cover {
-			id
-			path
-			mimetype
-		}
-		attachments {
-			id
-			path
-			mimetype
-		}
+		id		
 		services (take: 1, orderBy: [ { updatedAt: desc}]) {
 			id
 			name
-			currency
 			price
 			description
+			metadata
+			currency
+			business {
+				id
+				businessName
+				# about
+				# cancelation
+				# acceptance
+				workCompleted
+				metadata
+				mode
+				status
+				distance
+				# location {
+				# id
+				# lat
+				# lon
+				# heading
+				# name
+				# }
+				owner {
+					id
+					# displayName, 
+					# phoneNumber, 
+					# experience
+					compoundRating
+					# metadata
+					# location {
+					# id
+					# lat
+					# lon
+					# heading
+					# name
+					# }
+					avator {
+						id
+						path
+						mimetype
+					}
+				}
+				createdAt
+				updatedAt
+			}
 			image {
 				id
 				path
-				mimetype
 			}
-		}
-	}
-	reviewed {
-		id
-		value
-		content
-		attachments {
-			id
-			path
-			mimetype
-		}
-		comments {
-			id
-			content
-			review {
-				id
-			}
-			attachments {
-				id
-				path
-				mimetype
-			}
-		}
-	}
-	comments {
-		id
-		content
-		review {
-			id
-		}
-	}
-	favorited {
-		id
-		type {
-			name
-		}
-		business {
-			id
-			businessName
-		}
-	}
-	ordered {
-		id
-		quantity
-		service {
-			name
-		}
-		business {
-			id
-			businessName
-		}
-	}
-	abuseReported {
-		id
-		type {
-			name
-		}
-		service {
-			id 
-			name
+			createdAt
+			updatedAt
 		}
 	}
 }

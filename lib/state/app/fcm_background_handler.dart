@@ -73,14 +73,17 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     }
     flutterLocalNotificationsPlugin.show(
         notification.hashCode,
-        notification.notificationType!.toJson().replaceAll(RegExp("_"), " "),
+        notification.message ??
+            notification.notificationType!
+                .toJson()
+                .replaceAll(RegExp("_"), " "),
         body,
         NotificationDetails(
           android: AndroidNotificationDetails(
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            icon: 'ic_launcher',
+            // icon: 'ic_launcher',
           ),
         ),
         payload: message.data["payload"]);

@@ -51,8 +51,7 @@ class ProviderDetailsPage extends StatelessWidget {
           avator: "assets/images/intro_picture_3.png",
           displayName: business.businessName!,
           userSubTitle: "Massage specialist",
-          rating: 3.7,
-          count: 500,
+          rating: business.owner!.compoundRating!,
           avatorWidth: 128,
           titleFontSize: 20,
           subTitleFontSize: 14,
@@ -60,9 +59,8 @@ class ProviderDetailsPage extends StatelessWidget {
             onTap: () {},
             child: const Icon(IconlyLight.heart),
           ),
-          bottom: const DistanceChip(
-            label: Nunito(text: "5 km away"),
-          ),
+          bottom:
+              DistanceChip(label: Nunito(text: business.distance!.kilometers)),
         ),
         space,
         Row(
@@ -70,15 +68,15 @@ class ProviderDetailsPage extends StatelessWidget {
           children: [
             PrimaryBadge(
               subText: "Clients",
-              text: "971",
+              text: "${business.workCompleted}",
               icon: Icon(
                 IconlyLight.user_1,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
             PrimaryBadge(
-              subText: "Experience",
-              text: "8 Years",
+              subText: "Acceptance",
+              text: "${(business.acceptance! * 100).toStringAsFixed(1)}%",
               icon: Icon(
                 IconlyLight.shield_done,
                 color: Theme.of(context).colorScheme.onPrimary,
@@ -86,7 +84,7 @@ class ProviderDetailsPage extends StatelessWidget {
             ),
             PrimaryBadge(
               subText: "Rating",
-              text: "3.7",
+              text: "${business.owner!.compoundRating}",
               icon: Icon(
                 IconlyLight.star,
                 color: Theme.of(context).colorScheme.onPrimary,

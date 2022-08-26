@@ -261,14 +261,14 @@ class _HomePageState extends State<HomePage> {
                                           "assets/images/intro_picture_1.png",
                                       displayName: item.owner?.displayName ??
                                           item.businessName!,
-                                      rating: 4,
+                                      rating: item.owner!.compoundRating!,
                                       starSize: 14,
                                       spaceBetween: 4,
                                       titleFontSize: 16,
                                       bottom: DistanceChip(
                                         iconSize: 20,
                                         label: Nunito(
-                                          text: 500000.0.kilometers,
+                                          text: item.distance!.meters,
                                           fontSize: 14,
                                         ),
                                       ),
@@ -285,12 +285,12 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     Row(
                                       children: [
-                                        const Expanded(
+                                        Expanded(
                                           child: Gordita(
-                                            text: "50000/Tsh",
+                                            text: "${item.minPrice}/Tsh",
                                             fontSize: 12,
-                                            color:
-                                                Color.fromRGBO(22, 10, 49, 1),
+                                            color: const Color.fromRGBO(
+                                                22, 10, 49, 1),
                                             fontWeight: FontWeight.w500,
                                             overflow: TextOverflow.ellipsis,
                                           ),

@@ -1,8 +1,6 @@
 targets:
   $default:
     builders:
-      widgetbook_generator:widgetbook_builder:
-        enabled: false
       graphql_to_dart:ast_generator:
         options:
           helper_path: graphql/common
@@ -25,3 +23,29 @@ targets:
             JSONObject: "scalars/json_object.dart"
             EmailAddress: "scalars/email_address.dart"
             PhoneNumber: "scalars/phone_number.dart"
+      widgetbook_generator:widgetbook_builder:
+        enabled: false
+      widgetbook_generator:theme_builder:
+        enabled: false
+      widgetbook_generator:locales_builder:
+        enabled: false
+      widgetbook_generator:localization_delegates_builder:
+        enabled: false
+      widgetbook_generator:story_builder:
+        enabled: false
+      widgetbook_generator:devices_builder:
+        enabled: false
+      widgetbook_generator:text_scale_factor_builder:
+        enabled: false
+      widgetbook_generator:device_frame_builder:
+        enabled: false
+      widgetbook_generator:localization_builder:
+        enabled: false
+      widgetbook_generator:app_resolver_builder:
+        enabled: false
+      widgetbook_generator:scaffold_builder:
+        enabled: false
+      widgetbook_generator:theme_resolver_builder:
+        enabled: false
+      widgetbook_generator:use_case_builder:
+        enabled: false

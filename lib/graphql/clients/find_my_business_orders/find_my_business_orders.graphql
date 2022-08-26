@@ -10,12 +10,28 @@ query findMyBusinessOrders($uid: String!, $where: OrderWhereInput, $take: Int, $
 				id
 				orders(where: $where, take: $take, skip: $skip) {
 					id
+					quantity		
 					orderStatus
-					transactions {
+					notes
+					metadata
+					createdAt
+					updatedAt
+					owner {
 						id
-						status
-						paymentMethod {
+						displayName, 
+						phoneNumber, 						
+						compoundRating
+						metadata
+						avator {
 							id
+							path
+							mimetype
+						}
+						location {
+							id
+							lat
+							lon
+							heading
 							name
 						}
 					}
@@ -23,7 +39,59 @@ query findMyBusinessOrders($uid: String!, $where: OrderWhereInput, $take: Int, $
 						id
 						name
 						price
+						currency
+						description
 						metadata
+						createdAt
+						updatedAt
+					}
+					business {
+						id
+						# businessName
+						# about
+						# cancelation
+						# acceptance
+						# workCompleted
+						# metadata
+						# mode
+						# status
+						location {
+							id
+							lat
+							lon
+							heading
+							name
+						}
+						# owner {
+						# id
+						# displayName, 
+						# phoneNumber, 
+						# experience
+						# compoundRating
+						# metadata
+						# location {
+						# id
+						# lat
+						# lon
+						# heading
+						# name
+						# }
+						# avator {
+						# id
+						# path
+						# mimetype
+						# }
+						# }
+						createdAt
+						updatedAt
+					}
+					transactions {
+						id
+						status
+						paymentMethod {
+							id
+							name
+						}
 					}
 				}
 			}

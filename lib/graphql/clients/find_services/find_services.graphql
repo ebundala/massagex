@@ -16,23 +16,43 @@ query findServices($businessId: String!, $where: ServiceWhereInput $take: Int, $
 				business {
 					id
 					businessName
+					# about
+					# cancelation
+					# acceptance
+					workCompleted
+					metadata
 					mode
 					status
+					distance
 					location {
 						id
-						name
 						lat
 						lon
 						heading
-					}
-					cover {
-						id
-						path
+						name
 					}
 					owner {
 						id
-						displayName
+						# displayName, 
+						# phoneNumber, 
+						# experience
+						compoundRating
+						# metadata
+						# location {
+						# id
+						# lat
+						# lon
+						# heading
+						# name
+						# }
+						avator {
+							id
+							path
+							mimetype
+						}
 					}
+					createdAt
+					updatedAt
 				}
 				image {
 					id

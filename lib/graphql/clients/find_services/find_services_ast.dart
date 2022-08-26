@@ -175,6 +175,18 @@ const query = _i1.OperationDefinitionNode(
                                   directives: [],
                                   selectionSet: null),
                               _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'workCompleted'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'metadata'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
                                   name: _i1.NameNode(value: 'mode'),
                                   alias: null,
                                   arguments: [],
@@ -182,6 +194,12 @@ const query = _i1.OperationDefinitionNode(
                                   selectionSet: null),
                               _i1.FieldNode(
                                   name: _i1.NameNode(value: 'status'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'distance'),
                                   alias: null,
                                   arguments: [],
                                   directives: [],
@@ -206,12 +224,6 @@ const query = _i1.OperationDefinitionNode(
                                         directives: [],
                                         selectionSet: null),
                                     _i1.FieldNode(
-                                        name: _i1.NameNode(value: 'name'),
-                                        alias: null,
-                                        arguments: [],
-                                        directives: [],
-                                        selectionSet: null),
-                                    _i1.FieldNode(
                                         name: _i1.NameNode(value: 'lat'),
                                         alias: null,
                                         arguments: [],
@@ -228,29 +240,9 @@ const query = _i1.OperationDefinitionNode(
                                         alias: null,
                                         arguments: [],
                                         directives: [],
-                                        selectionSet: null)
-                                  ])),
-                              _i1.FieldNode(
-                                  name: _i1.NameNode(value: 'cover'),
-                                  alias: null,
-                                  arguments: [],
-                                  directives: [],
-                                  selectionSet:
-                                      _i1.SelectionSetNode(selections: [
-                                    _i1.FieldNode(
-                                        name: _i1.NameNode(value: '__typename'),
-                                        alias: null,
-                                        arguments: [],
-                                        directives: [],
                                         selectionSet: null),
                                     _i1.FieldNode(
-                                        name: _i1.NameNode(value: 'id'),
-                                        alias: null,
-                                        arguments: [],
-                                        directives: [],
-                                        selectionSet: null),
-                                    _i1.FieldNode(
-                                        name: _i1.NameNode(value: 'path'),
+                                        name: _i1.NameNode(value: 'name'),
                                         alias: null,
                                         arguments: [],
                                         directives: [],
@@ -276,13 +268,59 @@ const query = _i1.OperationDefinitionNode(
                                         directives: [],
                                         selectionSet: null),
                                     _i1.FieldNode(
-                                        name:
-                                            _i1.NameNode(value: 'displayName'),
+                                        name: _i1.NameNode(
+                                            value: 'compoundRating'),
                                         alias: null,
                                         arguments: [],
                                         directives: [],
-                                        selectionSet: null)
-                                  ]))
+                                        selectionSet: null),
+                                    _i1.FieldNode(
+                                        name: _i1.NameNode(value: 'avator'),
+                                        alias: null,
+                                        arguments: [],
+                                        directives: [],
+                                        selectionSet:
+                                            _i1.SelectionSetNode(selections: [
+                                          _i1.FieldNode(
+                                              name: _i1.NameNode(
+                                                  value: '__typename'),
+                                              alias: null,
+                                              arguments: [],
+                                              directives: [],
+                                              selectionSet: null),
+                                          _i1.FieldNode(
+                                              name: _i1.NameNode(value: 'id'),
+                                              alias: null,
+                                              arguments: [],
+                                              directives: [],
+                                              selectionSet: null),
+                                          _i1.FieldNode(
+                                              name: _i1.NameNode(value: 'path'),
+                                              alias: null,
+                                              arguments: [],
+                                              directives: [],
+                                              selectionSet: null),
+                                          _i1.FieldNode(
+                                              name: _i1.NameNode(
+                                                  value: 'mimetype'),
+                                              alias: null,
+                                              arguments: [],
+                                              directives: [],
+                                              selectionSet: null)
+                                        ]))
+                                  ])),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'createdAt'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'updatedAt'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null)
                             ])),
                         _i1.FieldNode(
                             name: _i1.NameNode(value: 'image'),

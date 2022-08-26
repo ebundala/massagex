@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:collection/collection.dart';
-// import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -462,14 +461,15 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         title,
         body,
         NotificationDetails(
-          android: AndroidNotificationDetails(channel.id, channel.name,
-              channelDescription: channel.description,
-              importance: Importance.high,
-              priority: Priority.high,
-              fullScreenIntent: true
-
-              // icon: 'ic_launcher',
-              ),
+          android: AndroidNotificationDetails(
+            channel.id, channel.name,
+            channelDescription: channel.description,
+            importance: Importance.high,
+            priority: Priority.high,
+            fullScreenIntent: true,
+            playSound: true,
+            // icon: 'ic_launcher',
+          ),
         ),
         payload: payload);
   }

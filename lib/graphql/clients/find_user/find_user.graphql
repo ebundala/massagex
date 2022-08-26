@@ -12,6 +12,7 @@ query findUser($id: String!) {
 			phoneNumber
 			gender
 			dateOfBirth
+			compoundRating
 			email
 			role  
 			metadata
@@ -31,13 +32,17 @@ query findUser($id: String!) {
 			}
 			businessProfile {
 				id
+				businessName
+				about
+				cancelation
+				acceptance
+				workCompleted
+				metadata
+				mode
+				status
 				owner {
 					id
 				}
-				businessName
-				about
-				mode
-				status
 				location {
 					id
 					lat

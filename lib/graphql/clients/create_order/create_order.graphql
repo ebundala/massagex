@@ -10,29 +10,87 @@ mutation createOrder($uid: String!, $count: Int!, $orders: [OrderCreateWithoutOw
 		status    
 		message
 		data {
-			...userInfo
-		}
-	}
-}
-
-
-fragment userInfo on User {
-	id	
-	ordered (take: $count, orderBy: [ { createdAt: desc}]) {
-		id
-		quantity
-		createdAt
-		updatedAt
-		orderStatus
-		notes
-		service {
-			id
-			name
-			price
-		}
-		business {
-			id
-			businessName
+			id	
+			ordered (take: $count, orderBy: [ { createdAt: desc}])  {
+				id
+				quantity		
+				orderStatus
+				notes
+				metadata
+				createdAt
+				updatedAt
+				owner {
+					id
+					displayName, 
+					phoneNumber, 
+					experience
+					compoundRating
+					metadata
+					avator {
+						id
+						path
+						mimetype
+					}
+					location {
+						id
+						lat
+						lon
+						heading
+						name
+					}
+				}
+				service {
+					id
+					name
+					price
+					currency
+					description
+					metadata
+					createdAt
+					updatedAt
+				}
+				business {
+					id
+					businessName
+					about
+					cancelation
+					acceptance
+					workCompleted
+					distance
+					metadata
+					mode
+					status
+					location {
+						id
+						lat
+						lon
+						heading
+						name
+					}
+					owner {
+						id
+						displayName, 
+						phoneNumber, 
+						experience
+						compoundRating
+						metadata
+						location {
+							id
+							lat
+							lon
+							heading
+							name
+						}
+						avator {
+							id
+							path
+							mimetype
+						}
+					}
+					createdAt
+					updatedAt
+				}
+			}
 		}
 	}
 }

@@ -167,243 +167,6 @@ const mutation = _i1.OperationDefinitionNode(
                       arguments: [],
                       directives: [],
                       selectionSet: null),
-                  _i1.FragmentSpreadNode(
-                      name: _i1.NameNode(value: 'userInfo'), directives: [])
-                ]))
-          ]))
-    ]));
-const userInfo = _i1.FragmentDefinitionNode(
-    name: _i1.NameNode(value: 'userInfo'),
-    typeCondition: _i1.TypeConditionNode(
-        on: _i1.NamedTypeNode(
-            name: _i1.NameNode(value: 'User'), isNonNull: false)),
-    directives: [],
-    selectionSet: _i1.SelectionSetNode(selections: [
-      _i1.FieldNode(
-          name: _i1.NameNode(value: '__typename'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'id'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'disabled'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'emailVerified'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'displayName'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'phoneNumber'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'gender'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'dateOfBirth'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'email'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'role'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'metadata'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'createdAt'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'updatedAt'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: null),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'location'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: _i1.SelectionSetNode(selections: [
-            _i1.FieldNode(
-                name: _i1.NameNode(value: '__typename'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'id'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'lat'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'lon'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'heading'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'name'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null)
-          ])),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'avator'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: _i1.SelectionSetNode(selections: [
-            _i1.FieldNode(
-                name: _i1.NameNode(value: '__typename'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'id'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'path'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'mimetype'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null)
-          ])),
-      _i1.FieldNode(
-          name: _i1.NameNode(value: 'businessProfile'),
-          alias: null,
-          arguments: [],
-          directives: [],
-          selectionSet: _i1.SelectionSetNode(selections: [
-            _i1.FieldNode(
-                name: _i1.NameNode(value: '__typename'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'id'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'owner'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: _i1.SelectionSetNode(selections: [
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: '__typename'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null),
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: 'id'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null)
-                ])),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'businessName'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'about'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'mode'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'status'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: null),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'location'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: _i1.SelectionSetNode(selections: [
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: '__typename'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null),
                   _i1.FieldNode(
                       name: _i1.NameNode(value: 'id'),
                       alias: null,
@@ -411,136 +174,116 @@ const userInfo = _i1.FragmentDefinitionNode(
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'lat'),
+                      name: _i1.NameNode(value: 'disabled'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'lon'),
+                      name: _i1.NameNode(value: 'emailVerified'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'heading'),
+                      name: _i1.NameNode(value: 'displayName'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'name'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null)
-                ])),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'cover'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: _i1.SelectionSetNode(selections: [
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: '__typename'),
+                      name: _i1.NameNode(value: 'phoneNumber'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'id'),
+                      name: _i1.NameNode(value: 'gender'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'path'),
+                      name: _i1.NameNode(value: 'dateOfBirth'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'mimetype'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null)
-                ])),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'attachments'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: _i1.SelectionSetNode(selections: [
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: '__typename'),
+                      name: _i1.NameNode(value: 'email'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'id'),
+                      name: _i1.NameNode(value: 'role'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'path'),
+                      name: _i1.NameNode(value: 'metadata'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'mimetype'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null)
-                ])),
-            _i1.FieldNode(
-                name: _i1.NameNode(value: 'services'),
-                alias: null,
-                arguments: [],
-                directives: [],
-                selectionSet: _i1.SelectionSetNode(selections: [
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: '__typename'),
+                      name: _i1.NameNode(value: 'createdAt'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'id'),
+                      name: _i1.NameNode(value: 'updatedAt'),
                       alias: null,
                       arguments: [],
                       directives: [],
                       selectionSet: null),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'name'),
+                      name: _i1.NameNode(value: 'location'),
                       alias: null,
                       arguments: [],
                       directives: [],
-                      selectionSet: null),
+                      selectionSet: _i1.SelectionSetNode(selections: [
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: '__typename'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'id'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'lat'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'lon'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'heading'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'name'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null)
+                      ])),
                   _i1.FieldNode(
-                      name: _i1.NameNode(value: 'currency'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null),
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: 'price'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null),
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: 'description'),
-                      alias: null,
-                      arguments: [],
-                      directives: [],
-                      selectionSet: null),
-                  _i1.FieldNode(
-                      name: _i1.NameNode(value: 'image'),
+                      name: _i1.NameNode(value: 'avator'),
                       alias: null,
                       arguments: [],
                       directives: [],
@@ -569,8 +312,131 @@ const userInfo = _i1.FragmentDefinitionNode(
                             arguments: [],
                             directives: [],
                             selectionSet: null)
+                      ])),
+                  _i1.FieldNode(
+                      name: _i1.NameNode(value: 'businessProfile'),
+                      alias: null,
+                      arguments: [],
+                      directives: [],
+                      selectionSet: _i1.SelectionSetNode(selections: [
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: '__typename'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'id'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'businessName'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'about'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'metadata'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'mode'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'status'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'location'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: _i1.SelectionSetNode(selections: [
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: '__typename'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'id'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'lat'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'lon'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'heading'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'name'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null)
+                            ])),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'owner'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: _i1.SelectionSetNode(selections: [
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: '__typename'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null),
+                              _i1.FieldNode(
+                                  name: _i1.NameNode(value: 'id'),
+                                  alias: null,
+                                  arguments: [],
+                                  directives: [],
+                                  selectionSet: null)
+                            ])),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'createdAt'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null),
+                        _i1.FieldNode(
+                            name: _i1.NameNode(value: 'updatedAt'),
+                            alias: null,
+                            arguments: [],
+                            directives: [],
+                            selectionSet: null)
                       ]))
                 ]))
           ]))
     ]));
-const document = _i1.DocumentNode(definitions: [mutation, userInfo]);
+const document = _i1.DocumentNode(definitions: [mutation]);

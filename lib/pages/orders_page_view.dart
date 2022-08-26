@@ -188,7 +188,8 @@ class _OrdersPageState extends State<OrdersPage> {
                                               "assets/images/intro_picture_2.png",
                                           displayName:
                                               order.business!.businessName!,
-                                          rating: 3.7,
+                                          rating: order
+                                              .business!.owner!.compoundRating!,
                                           action: IconButton(
                                             icon: const Icon(IconlyLight.call),
                                             onPressed: () {},

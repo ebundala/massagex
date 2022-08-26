@@ -39,14 +39,54 @@ fragment userInfo on User {
 		]) {
 			id
 			name
-			currency
 			price
 			description
 			metadata
+			currency
+			business {
+				id
+				businessName
+				# about
+				# cancelation
+				# acceptance
+				workCompleted
+				metadata
+				mode
+				status
+				distance
+				# location {
+				# id
+				# lat
+				# lon
+				# heading
+				# name
+				# }
+				owner {
+					id
+					# displayName, 
+					# phoneNumber, 
+					# experience
+					compoundRating
+					# metadata
+					# location {
+					# id
+					# lat
+					# lon
+					# heading
+					# name
+					# }
+					avator {
+						id
+						path
+						mimetype
+					}
+				}
+				createdAt
+				updatedAt
+			}
 			image {
 				id
 				path
-				mimetype
 			}
 			createdAt
 			updatedAt

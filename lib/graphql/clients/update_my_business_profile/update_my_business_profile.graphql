@@ -44,38 +44,19 @@ $deletedAttachments: [AttachmentWhereUniqueInput!]
 
 fragment userInfo on User {
 	id
-	disabled
-	emailVerified
-	displayName
-	phoneNumber
-	gender
-	dateOfBirth
-	email
-	role  
-	metadata
-	createdAt
-	updatedAt
-	location {
-		id
-		lat
-		lon
-		heading
-		name
-	}
-	avator {
-		id
-		path
-		mimetype
-	}
 	businessProfile {
 		id
+		businessName
+		about
+		cancelation
+		acceptance
+		workCompleted
+		metadata
+		mode
+		status
 		owner {
 			id
 		}
-		businessName
-		about
-		mode
-		status
 		location {
 			id
 			lat
@@ -92,18 +73,6 @@ fragment userInfo on User {
 			id
 			path
 			mimetype
-		}
-		services {
-			id
-			name
-			currency
-			price
-			description
-			image {
-				id
-				path
-				mimetype
-			}
 		}
 	}
 }

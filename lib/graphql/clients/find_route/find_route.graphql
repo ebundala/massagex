@@ -1,0 +1,32 @@
+query route($origin: LatLngInput!, $destination: LatLngInput!) {
+	route(data: {
+		origin: $origin, 
+		destination: $destination
+	}) {
+		status
+		message
+		data {
+			routes {
+				overview_path {
+					lat
+					lng
+				}
+				warnings
+				waypoint_order
+				overview_polyline {
+					points
+				}
+				bounds {
+					northeast {
+						lat
+						lng
+					}
+					southwest {
+						lat
+						lng
+					}
+				}
+			}
+		}
+	}
+}
