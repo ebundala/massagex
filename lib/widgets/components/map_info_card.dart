@@ -14,7 +14,7 @@ class TravelerMapInfoCard extends StatelessWidget {
       required this.avator,
       required this.displayName,
       required this.rating,
-      required this.count,
+      this.count,
       required this.onCall,
       required this.onCancel,
       required this.eta,
@@ -22,6 +22,7 @@ class TravelerMapInfoCard extends StatelessWidget {
       required this.title,
       required this.userSubTitle,
       required this.price,
+      required this.currency,
       this.isProvider = false,
       this.isArrived = false,
       required this.onArrival,
@@ -30,7 +31,7 @@ class TravelerMapInfoCard extends StatelessWidget {
   final String avator;
   final String displayName;
   final double rating;
-  final int count;
+  final int? count;
   final void Function() onCall;
   final void Function() onCancel;
   final void Function() onArrival;
@@ -40,6 +41,7 @@ class TravelerMapInfoCard extends StatelessWidget {
   final String title;
   final String userSubTitle;
   final String price;
+  final String currency;
   final bool isProvider;
   final bool isArrived;
 
@@ -50,7 +52,12 @@ class TravelerMapInfoCard extends StatelessWidget {
         ProfileTile(
           avator: avator,
           displayName: displayName,
+          titleFontSize: 18,
+          titleFontWeight: FontWeight.w600,
           userSubTitle: userSubTitle,
+          subTitleFontSize: 14,
+          subTitleFontWeight: FontWeight.w400,
+          starSize: 20,
           rating: rating,
           count: count,
           avatorWidth: 40,
@@ -83,6 +90,9 @@ class TravelerMapInfoCard extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  const SizedBox(
+                    height: 8,
+                  ),
                   Nunito(
                     text: discription,
                     fontSize: 12,
@@ -94,17 +104,17 @@ class TravelerMapInfoCard extends StatelessWidget {
               ),
             ),
             Gordita(
-              text: price,
+              text: "$price/=$currency",
               fontSize: 14,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             )
           ],
         ),
         const Divider(
           thickness: 1,
         ),
-        SizedBox(
-          height: 32,
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -151,7 +161,7 @@ class TravelerMapInfoCard extends StatelessWidget {
         ),
         if (!isArrived)
           PrimaryButton(
-              height: 28,
+              //height: 28,
               width: double.infinity,
               onPressed: onArrival,
               child: const Nunito(
@@ -159,15 +169,15 @@ class TravelerMapInfoCard extends StatelessWidget {
                 fontSize: 17,
                 fontWeight: FontWeight.w400,
               )),
-        if (isArrived)
+        if (isArrived && !isProvider)
           SecondaryButton(
-              height: 28,
+              // height: 28,
               width: double.infinity,
               onPressed: () {
                 onPayment(isProvider);
               },
-              child: Nunito(
-                text: isProvider ? "Request payment" : "Make payment",
+              child: const Nunito(
+                text: "Make payment",
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
               )),
@@ -274,7 +284,7 @@ class WaitingMapInfoCard extends StatelessWidget {
       this.etaTitle = 'ETA',
       required this.destination,
       required this.userSubTitle,
-      required this.count})
+      this.count})
       : super(key: key);
   final String avator;
   final String displayName;
@@ -284,7 +294,7 @@ class WaitingMapInfoCard extends StatelessWidget {
   final String etaTitle;
   final String destination;
   final String userSubTitle;
-  final int count;
+  final int? count;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -332,7 +342,7 @@ class WaitingMapInfoCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: 60,
+              height: 70,
               child: Row(
                 children: [
                   Expanded(
@@ -342,7 +352,7 @@ class WaitingMapInfoCard extends StatelessWidget {
                       children: [
                         Gilroy(
                           text: displayName,
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.w600,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -356,7 +366,7 @@ class WaitingMapInfoCard extends StatelessWidget {
                         StarsRating(
                           rating: rating,
                           count: count,
-                          iconSize: 12,
+                          iconSize: 20,
                         )
                       ],
                     ),
@@ -372,13 +382,13 @@ class WaitingMapInfoCard extends StatelessWidget {
             ),
             Nunito(
               text: etaTitle,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               overflow: TextOverflow.ellipsis,
             ),
             Nunito(
               text: eta,
-              fontSize: 15,
+              fontSize: 14,
               fontWeight: FontWeight.w500,
               overflow: TextOverflow.ellipsis,
             ),
@@ -495,6 +505,7 @@ Widget getTravelerMapInfoCard(BuildContext context) {
           onCancel: () {},
           onArrival: () {},
           onPayment: (provider) {},
+          currency: 'TZS',
         ))),
   );
 }
@@ -529,6 +540,7 @@ Widget getCustomerTravelerMapInfoCard(BuildContext context) {
         onCancel: () {},
         onArrival: () {},
         onPayment: (provider) {},
+        currency: 'TZS',
       ),
     ),
   );

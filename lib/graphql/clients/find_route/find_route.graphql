@@ -1,18 +1,73 @@
-query route($origin: LatLngInput!, $destination: LatLngInput!) {
+query findRoute($origin: LatLngInput!, $destination: LatLngInput!) {
 	route(data: {
 		origin: $origin, 
-		destination: $destination
+		destination: $destination, 
+		units: METRIC
 	}) {
 		status
 		message
 		data {
+			available_travel_modes
+			geocoded_waypoints {
+				geocoder_status
+				place_id
+				partial_match
+				types
+			}
 			routes {
+				summary
+				legs {
+					start_address
+					start_location {
+						lat
+						lng
+					}
+					end_address
+					end_location {
+						lat
+						lng
+					}
+					arrival_time {
+						value
+						text
+					}
+					departure_time {
+						value
+						text
+					}
+					steps {
+						maneuver
+						duration {
+							value
+							text
+						}
+						distance {
+							value
+							text
+						}
+						start_location {
+							lat
+							lng
+						}
+						end_location {
+							lat
+							lng
+						}
+						duration {
+							value
+							text
+						}
+					}
+					distance {
+						value
+						text
+					}
+				}
+				waypoint_order
 				overview_path {
 					lat
 					lng
 				}
-				warnings
-				waypoint_order
 				overview_polyline {
 					points
 				}
@@ -26,6 +81,13 @@ query route($origin: LatLngInput!, $destination: LatLngInput!) {
 						lng
 					}
 				}
+				copyrights
+				fare {
+					value
+					currency
+					text
+				}
+				warnings
 			}
 		}
 	}

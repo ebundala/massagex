@@ -37,7 +37,7 @@ final mainTheme = ThemeData(
     disabledColor: const Color.fromRGBO(196, 196, 196, 0.72),
     // secondaryHeaderColor
     backgroundColor: const Color(0xE5E5E5),
-    // dialogBackgroundColor
+    dialogBackgroundColor: Colors.transparent,
     // indicatorColor
     // hintColor
     // errorColor

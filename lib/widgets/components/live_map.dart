@@ -1,10 +1,14 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/map_location_name_card.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:massagex/graphql/clients/find_route/find_route_bloc.dart';
+import 'package:models/lat_lng_input.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart'
     show WidgetbookUseCase;
 import 'package:widgetbook/widgetbook.dart' hide WidgetbookUseCase;
@@ -26,13 +30,16 @@ class LiveMap extends StatefulWidget {
 class _LiveMapState extends State<LiveMap> {
   final Completer<GoogleMapController> _mapControllerCompleter = Completer();
   GoogleMapController? mapController;
-  final CameraPosition startingPosition =
-      const CameraPosition(target: LatLng(0.0, 0.0));
-
+  late CameraPosition startingPosition;
+  late FindRouteBloc routeBloc;
   final Set<Marker> markers = <Marker>{};
-
+  PolylinePoints polylinePoints = PolylinePoints();
+  bool showMapInfo = false;
+  Polyline? route;
   // final Set<Polygon> polygons = <Polygon>{};
-  // final Set<Polyline> polylines = <Polyline>{};
+  final Set<Polyline> polylines = <Polyline>{};
+  bool isFindingRoute = false;
+
   // final Set<Circle> circles = <Circle>{};
   // final Set<TileOverlay> tileOverlays = <TileOverlay>{};
   @override
@@ -48,11 +55,13 @@ class _LiveMapState extends State<LiveMap> {
   @override
   void initState() {
     super.initState();
-
+    routeBloc = FindRouteBloc(client: context.client);
+    startingPosition =
+        CameraPosition(target: widget.data.startingPoint, zoom: 12);
     _mapControllerCompleter.future.then((value) async {
       mapController = value;
       const imageConfig = ImageConfiguration(
-        size: Size(24, 24),
+        size: Size(50, 50),
       );
       final startIcon = await BitmapDescriptor.fromAssetImage(
           imageConfig, "assets/images/starting_pos.png");
@@ -78,6 +87,32 @@ class _LiveMapState extends State<LiveMap> {
         ]);
         widget.data.positionUpdateStream.stream.listen(updateCurrentPosition);
       });
+
+      // ignore: use_build_context_synchronously
+      // final routes = await context.waitForBlocOperation<
+      //         FindRouteBloc,
+      //         FindRouteEvent,
+      //         FindRouteState,
+      //         FindRouteSuccess,
+      //         FindRouteFailure,
+      //         FindRouteError,
+      //         FindRouteExcuted,
+      //         FindRouteReseted>(
+      //     bloc: routeBloc,
+      //     excuted: FindRouteExcuted(
+      //         origin: LatLngInput(
+      //           lat: widget.data.startingPoint.latitude,
+      //           lng: widget.data.startingPoint.longitude,
+      //         ),
+      //         destination: LatLngInput(
+      //           lat: widget.data.destinationPoint.latitude,
+      //           lng: widget.data.destinationPoint.longitude,
+      //         )),
+      //     reseted: FindRouteReseted(),
+      //     callback: (v) => isFindingRoute = !isFindingRoute);
+      // if (routes is FindRouteSuccess) {
+      //   _handleRouteResult(routes);
+      // }
     });
   }
 
@@ -101,199 +136,211 @@ class _LiveMapState extends State<LiveMap> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox.expand(
-          child: Stack(
-        children: [
-          //map goes here
-          Positioned(
-            top: widget.data is WaitingMapData ? 0 : kToolbarHeight * 2.5 - 24,
-            left: 0,
-            right: 0,
-            bottom: widget.data is WaitingMapData ? 130 : 160,
-            child: Container(
-              color: const Color.fromRGBO(117, 186, 243, 1),
-              child: LayoutBuilder(builder: ((context, constraints) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0, top: 22),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: GoogleMap(
-                          myLocationEnabled: true,
-                          initialCameraPosition: startingPosition,
-                          mapType: MapType.normal,
-                          markers: markers,
-                          // tileOverlays: tileOverlays,
-                          // polylines: polylines,
-                          // polygons: polygons,
-                          // onCameraIdle: () async {
-                          //   // await getStartAndDestinationCordinates();
-                          // },
-                          onMapCreated: (ctr) =>
-                              _mapControllerCompleter.complete(ctr),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              })),
-            ),
+        appBar: AppBar(
+            title: Gilroy(
+          text: widget.data.mapTitle,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        )),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.miniCenterFloat,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            setState(() {
+              showMapInfo = !showMapInfo;
+            });
+          },
+          child: Icon(
+            showMapInfo ? Icons.arrow_downward : Icons.arrow_upward,
+            size: 32,
           ),
-          //Headers
-          if (widget.data is TravellerMapData)
-            Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: kToolbarHeight * 2.5,
-                child: Material(
-                  color: Colors.white,
-                  elevation: 8,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(24),
-                        bottomRight: Radius.circular(24)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
+        ),
+        body: BlocConsumer<FindRouteBloc, FindRouteState>(
+          bloc: routeBloc
+            ..add(FindRouteReseted())
+            ..add(FindRouteExcuted(
+                origin: LatLngInput(
+                  lat: widget.data.startingPoint.latitude,
+                  lng: widget.data.startingPoint.longitude,
+                ),
+                destination: LatLngInput(
+                  lat: widget.data.destinationPoint.latitude,
+                  lng: widget.data.destinationPoint.longitude,
+                ))),
+          listener: (context, state) {
+            if (state is FindRouteSuccess) {
+              _handleRouteResult(state);
+            }
+          },
+          builder: (context, state) => SizedBox.expand(
+              child: Stack(
+            children: [
+              //map goes here
+              Positioned.fill(
+                child: GoogleMap(
+                  padding: const EdgeInsets.fromLTRB(
+                      8, kTextTabBarHeight * 2 + 20, 8, 8),
+                  myLocationEnabled: true, //?? widget.data.myLocationEnabled,
+                  initialCameraPosition: startingPosition,
+                  mapType: MapType.normal,
+                  markers: markers,
+                  // tileOverlays: tileOverlays,
+                  polylines: polylines,
+                  // polygons: polygons,
+                  // onCameraIdle: () async {
+                  //   // await getStartAndDestinationCordinates();
+                  // },
+                  onMapCreated: (ctr) => _mapControllerCompleter.complete(ctr),
+                ),
+              ),
+
+              //Headers
+              if (widget.data is TravellerMapData)
+                Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: kToolbarHeight * 2,
+                    child: Material(
+                      color: Colors.white,
+                      elevation: 8,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(24),
+                            bottomRight: Radius.circular(24)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
                           children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: BackButton(
-                                onPressed: () =>
-                                    widget.data.onbackButton(context),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.center,
-                              child: Gilroy(
-                                text: widget.data.mapTitle,
-                                fontSize: 21,
-                                fontWeight: FontWeight.w600,
+                            //  Row(
+                            //   children: [
+                            //     Align(
+                            //       alignment: Alignment.centerLeft,
+                            //       child: BackButton(
+                            //         onPressed: () =>
+                            //             widget.data.onbackButton(context),
+                            //       ),
+                            //     ),
+                            //     Align(
+                            //       alignment: Alignment.center,
+                            //       child: Gilroy(
+                            //         text: widget.data.mapTitle,
+                            //         fontSize: 21,
+                            //         fontWeight: FontWeight.w600,
+                            //       ),
+                            //     )
+                            //   ],
+                            // ),
+                            Expanded(
+                              child: MapNavigationDestinationInfo(
+                                startingPoint: (widget.data as TravellerMapData)
+                                    .startingPointName,
+                                startingPointSubtitle:
+                                    (widget.data as TravellerMapData)
+                                        .startingPointSubtitle,
+                                destination: widget.data.destinationName,
+                                destinationSubTitle:
+                                    (widget.data as TravellerMapData)
+                                        .destinationSubtitle,
                               ),
                             )
                           ],
                         ),
-                        Expanded(
-                          child: MapNavigationDestinationInfo(
-                            startingPoint: (widget.data as TravellerMapData)
-                                .startingPointName,
-                            startingPointSubtitle:
-                                (widget.data as TravellerMapData)
-                                    .startingPointSubtitle,
-                            destination: widget.data.destinationName,
-                            destinationSubTitle:
-                                (widget.data as TravellerMapData)
-                                    .destinationSubtitle,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                )),
-          if (widget.data is WaitingMapData)
-            Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                height: kToolbarHeight,
-                child: Container(
-                  color: Colors.transparent,
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: BackButton(
-                          onPressed: () => widget.data.onbackButton(context),
-                        ),
                       ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Gilroy(
-                          text: widget.data.mapTitle,
-                          fontSize: 21,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      )
-                    ],
-                  ),
-                )),
+                    )),
+            ],
+          )),
+        ),
+        bottomSheet: showInfo());
+  }
 
-          //Bottom info
-          if (widget.data is WaitingMapData)
-            Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 150,
-                child: Material(
-                  color: Colors.white,
-                  elevation: 8,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4.0, 16, 4.0, 8),
-                    child: WaitingMapInfoCard(
-                        avator: widget.data.avator,
-                        displayName: widget.data.displayName,
-                        rating: widget.data.rating,
-                        onCall: () => widget.data.onCall(context),
-                        eta: (widget.data as WaitingMapData).eta,
-                        destination:
-                            (widget.data as WaitingMapData).destinationName,
-                        userSubTitle: widget.data.userSubTitle,
-                        count: widget.data.count),
-                  ),
-                )),
-          if (widget.data is TravellerMapData)
-            Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 180,
-                child: Material(
-                  color: Colors.white,
-                  elevation: 8,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24),
-                        topRight: Radius.circular(24)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4.0, 8, 4.0, 8),
-                    child: TravelerMapInfoCard(
-                      avator: widget.data.avator,
-                      displayName: widget.data.displayName,
-                      rating: widget.data.rating,
-                      onCall: () => widget.data.onCall(context),
-                      eta: widget.data.eta,
-                      userSubTitle: widget.data.userSubTitle,
-                      count: widget.data.count,
-                      discription:
-                          (widget.data as TravellerMapData).serviceDescription,
-                      price: (widget.data as TravellerMapData).servicePrice,
-                      title: (widget.data as TravellerMapData).serviceName,
-                      onArrival: () =>
-                          (widget.data as TravellerMapData).onArrival(context),
-                      onCancel: () =>
-                          (widget.data as TravellerMapData).onCancel(context),
-                      onPayment: (status) => (widget.data as TravellerMapData)
-                          .onPayment(context, status),
-                      isProvider: widget.data.isProvider,
-                      isArrived: widget.data.isArrived,
-                    ),
-                  ),
-                ))
-        ],
-      )),
-    );
+  Widget? showInfo() {
+    if (!showMapInfo) return null;
+    return widget.data is WaitingMapData
+        ? SizedBox(
+            height: 180,
+            child: Material(
+              color: Colors.white,
+              elevation: 8,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(4.0, 36, 4.0, 8),
+                child: WaitingMapInfoCard(
+                    avator: widget.data.avator,
+                    displayName: widget.data.displayName,
+                    rating: widget.data.rating,
+                    onCall: () => widget.data.onCall(context),
+                    eta: (widget.data as WaitingMapData).eta,
+                    destination:
+                        (widget.data as WaitingMapData).destinationName,
+                    userSubTitle: widget.data.userSubTitle,
+                    count: widget.data.count),
+              ),
+            ))
+        : SizedBox(
+            height: 320,
+            child: Material(
+              color: Colors.white,
+              clipBehavior: Clip.antiAlias,
+              elevation: 8,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(4.0, 36, 4.0, 8),
+                child: TravelerMapInfoCard(
+                  avator: widget.data.avator,
+                  displayName: widget.data.displayName,
+                  rating: widget.data.rating,
+                  currency: widget.data.currency,
+                  onCall: () => widget.data.onCall(context),
+                  eta: widget.data.eta,
+                  userSubTitle: widget.data.userSubTitle,
+                  count: widget.data.count,
+                  discription:
+                      (widget.data as TravellerMapData).serviceDescription,
+                  price: (widget.data as TravellerMapData).servicePrice,
+                  title: (widget.data as TravellerMapData).serviceName,
+                  onArrival: () =>
+                      (widget.data as TravellerMapData).onArrival(context),
+                  onCancel: () =>
+                      (widget.data as TravellerMapData).onCancel(context),
+                  onPayment: (status) => (widget.data as TravellerMapData)
+                      .onPayment(context, status),
+                  isProvider: widget.data.isProvider,
+                  isArrived: widget.data.isArrived,
+                ),
+              ),
+            ));
+  }
+
+  void _handleRouteResult(FindRouteSuccess state) {
+    if (state.data.data?.routes?.isNotEmpty == true) {
+      if (mounted) {
+        setState(() {
+          final line = state.data.data!.routes!.first;
+          final points = polylinePoints
+              .decodePolyline(line.overview$polyline!.points!)
+              .map<LatLng>((e) => LatLng(e.latitude, e.longitude))
+              .toList();
+
+          polylines.remove(route);
+          route = Polyline(
+              polylineId: const PolylineId("main-route"),
+              points: points,
+              width: 5,
+              color: Theme.of(context).colorScheme.primary);
+          polylines.add(route!);
+        });
+      }
+    }
   }
 }
 
@@ -304,7 +351,7 @@ abstract class LiveMapData {
   final String avator;
   final double rating;
   final String userSubTitle;
-  final int count;
+  final int? count;
   final void Function(BuildContext ctx) onCall;
   final LatLng startingPoint;
   final LatLng destinationPoint;
@@ -316,6 +363,10 @@ abstract class LiveMapData {
 
   StreamController<PositionUpdateData> positionUpdateStream;
 
+  final bool myLocationEnabled;
+
+  final String currency;
+
   LiveMapData(
       {required this.eta,
       required this.destinationName,
@@ -326,11 +377,13 @@ abstract class LiveMapData {
       required this.avator,
       required this.rating,
       required this.userSubTitle,
-      required this.count,
+      this.count,
       required this.onCall,
       required this.startingPoint,
       required this.destinationPoint,
       required this.isArrived,
+      required this.currency,
+      this.myLocationEnabled = false,
       required this.positionUpdateStream});
 }
 
@@ -359,13 +412,15 @@ class TravellerMapData extends LiveMapData {
     required super.avator,
     required super.rating,
     required super.userSubTitle,
-    required super.count,
+    super.count,
     required super.onCall,
     required super.destinationPoint,
     required super.startingPoint,
     required super.destinationName,
     required super.eta,
     required super.isArrived,
+    required super.currency,
+    super.myLocationEnabled,
     required super.positionUpdateStream,
     required this.onArrival,
     required this.onCancel,
@@ -388,12 +443,14 @@ class WaitingMapData extends LiveMapData {
     required super.avator,
     required super.rating,
     required super.userSubTitle,
-    required super.count,
+    super.count,
     required super.onCall,
     required super.destinationPoint,
     required super.startingPoint,
     required super.destinationName,
     required super.positionUpdateStream,
+    required super.currency,
+    super.myLocationEnabled = true,
     required super.eta,
     required super.isArrived,
   });
@@ -421,6 +478,7 @@ Widget getTravellerLivemap(BuildContext context) {
         avator: "assets/images/intro_picture_2.png",
         rating: 3.3,
         userSubTitle: "Specialist",
+        currency: 'tzs',
         count: 45674,
         onCall: (ctx) {},
         destinationPoint: const LatLng(44.5, 24.5),
@@ -447,6 +505,7 @@ Widget getTravellerLivemap(BuildContext context) {
         avator: "assets/images/intro_picture_2.png",
         rating: 3.3,
         userSubTitle: "Specialist",
+        currency: 'tzs',
         count: 45674,
         positionUpdateStream: positionStream,
         onCall: (ctx) {},

@@ -175,19 +175,24 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     box = await Hive.openBox(AppBloc.dataKey);
     userSettings = await Hive.openBox(AppBloc.userSettingsKey);
     appSettings = await Hive.openBox(AppBloc.appSettingsKey);
-    await clearStorage();
+    // await clearStorage();
     _initDeviceId();
     final httplink = HttpLink(url);
-    final tokenlink = AuthLink(getToken: () => token);
+    final tokenlink = AuthLink(getToken: getIdToken);
     final ws = serverUrl(
       isSubscription: true,
       path: "graphql",
     );
 
-    final wsLink = WebSocketLink(ws,
-        config: SocketClientConfig(
-            inactivityTimeout: const Duration(minutes: 30),
-            initialPayload: () => ({"authorization": token})));
+    final wsLink = WebSocketLink(
+      ws,
+      config: SocketClientConfig(
+        inactivityTimeout: const Duration(minutes: 30),
+        initialPayload: () async {
+          return {"authorization": await getIdToken()};
+        },
+      ),
+    );
 
     final link = Link.from([
       // common links run before every request
@@ -204,6 +209,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     client = GraphQLClient(
       link: link,
+      alwaysRebroadcast: true,
       cache: GraphQLCache(
         dataIdFromObject: (data) {
           if (data["id"] != null && data["__typename"] != null) {
@@ -550,6 +556,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   String? get token {
     final idToken = userSettings!.get(idTokenKey);
+    return idToken != null ? "Bearer $idToken" : null;
+  }
+
+  Future<String?> getIdToken() async {
+    final idToken = await fauth.currentUser?.getIdToken();
     return idToken != null ? "Bearer $idToken" : null;
   }
 

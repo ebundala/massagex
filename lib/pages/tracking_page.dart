@@ -10,6 +10,7 @@ import 'package:models/business_mode.dart';
 import 'package:models/location.dart';
 
 import 'package:models/order.dart';
+import 'package:models/user.dart';
 
 class TrackingPage extends StatefulWidget {
   const TrackingPage({Key? key, required this.order}) : super(key: key);
@@ -26,6 +27,8 @@ class _TrackingPageState extends State<TrackingPage> {
   bool isProvider = false;
   late LatLng startingPoint;
   late LatLng destinationPoint;
+  late User traveller;
+  late User waiter;
   @override
   void initState() {
     locationFeedBloc = LocationFeedBloc(client: context.client);
@@ -39,7 +42,10 @@ class _TrackingPageState extends State<TrackingPage> {
       }
     } else if (widget.order.business!.mode == BusinessMode.OFFICE$MODE) {
       isTraveller = true;
+      traveller = widget.order.owner!;
+      waiter = widget.order.business!.owner!;
     }
+
     Location start;
     Location end;
     if (isTraveller && isProvider) {
@@ -47,18 +53,26 @@ class _TrackingPageState extends State<TrackingPage> {
       start = context.app.currentUser!.data!.location!;
       end = Location.fromJson(widget.order.metadata?.value["venue"] ??
           widget.order.owner!.location!.toJson());
+      traveller = widget.order.business!.owner!;
+      waiter = widget.order.owner!;
     } else if (isTraveller && !isProvider) {
       // user traveller
       start = context.app.currentUser!.data!.location!;
       end = widget.order.business!.location!;
+      waiter = widget.order.business!.owner!;
+      traveller = widget.order.owner!;
     } else if (!isTraveller && isProvider) {
       // provider waiting
       start = widget.order.owner!.location!;
       end = widget.order.business!.location!;
+      waiter = widget.order.business!.owner!;
+      traveller = widget.order.owner!;
     } else {
       //user waiting
       start = widget.order.business!.location!;
       end = widget.order.owner!.location!;
+      traveller = widget.order.business!.owner!;
+      waiter = widget.order.owner!;
     }
     startingPoint = LatLng(start.lat!, start.lon!);
     destinationPoint = LatLng(end.lat!, end.lon!);
@@ -71,18 +85,18 @@ class _TrackingPageState extends State<TrackingPage> {
             heading: e.data?.data?.heading));
     final positionStream = StreamController<PositionUpdateData>()
       ..addStream(stream);
-// TODO use appropriate display name and picture
+
     if (isTraveller) {
       mapData = TravellerMapData(
           onbackButton: (ctx) {},
           isProvider: isProvider,
           mapTitle:
               "${isProvider ? "Customer" : "specialist"} is waiting for you ",
-          displayName: context.app.fauth.currentUser!.displayName!,
+          displayName: traveller.displayName!,
+          currency: widget.order.service!.currency!,
           avator: "assets/images/intro_picture_1.png",
-          rating: 3.3,
-          userSubTitle: "Massage specialist",
-          count: 100,
+          rating: traveller.compoundRating!,
+          userSubTitle: isProvider ? "Customer" : "Massage specialist",
           onCall: (ctx) {},
           destinationPoint: destinationPoint,
           startingPoint: startingPoint,
@@ -96,20 +110,19 @@ class _TrackingPageState extends State<TrackingPage> {
           serviceDescription: widget.order.service!.description!,
           serviceName: widget.order.service!.name!,
           servicePrice: widget.order.service!.price!.toStringAsFixed(2),
-          destinationSubtitle: "destinationSubtitle",
+          destinationSubtitle: "destination point",
           startingPointName: start.name!,
-          startingPointSubtitle: "startingPointSubtitle");
+          startingPointSubtitle: "starting point");
     } else {
       mapData = WaitingMapData(
         onbackButton: ((ctx) {}),
-        mapTitle:
-            "${isProvider ? "Customer" : "specialist"} is on the way Please wait for ",
+        mapTitle: "${isProvider ? "Customer" : "specialist"} is on the way",
         isProvider: isProvider,
-        displayName: context.app.fauth.currentUser!.displayName!,
+        displayName: waiter.displayName!,
         avator: "assets/images/intro_picture_1.png",
-        rating: 3.3,
-        userSubTitle: "Massage specialist",
-        count: 100,
+        currency: widget.order.service!.currency!,
+        rating: waiter.compoundRating!,
+        userSubTitle: isProvider ? "Customer" : "Massage specialist",
         onCall: (ctx) {},
         destinationPoint: destinationPoint,
         startingPoint: startingPoint,
@@ -123,6 +136,12 @@ class _TrackingPageState extends State<TrackingPage> {
       ..add(LocationFeedReseted())
       ..add(LocationFeedExcuted(orderId: widget.order.id!));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    locationFeedBloc.close();
+    super.dispose();
   }
 
   @override
