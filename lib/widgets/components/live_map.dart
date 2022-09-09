@@ -61,7 +61,7 @@ class _LiveMapState extends State<LiveMap> {
     _mapControllerCompleter.future.then((value) async {
       mapController = value;
       const imageConfig = ImageConfiguration(
-        size: Size(50, 50),
+        size: Size(60, 60),
       );
       final startIcon = await BitmapDescriptor.fromAssetImage(
           imageConfig, "assets/images/starting_pos.png");

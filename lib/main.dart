@@ -16,6 +16,7 @@ import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/state/routes/routes.dart';
 import 'package:massagex/utils.dart';
 import 'package:massagex/widgets/components/buttons.dart';
+import 'package:massagex/widgets/components/push_notifications_listener.dart';
 import 'package:massagex/widgets/texts/app_name.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/widgets/themes/light_theme.dart';
@@ -113,152 +114,154 @@ class MassageX extends StatelessWidget {
                     }
                     return true;
                   },
-                  child: Navigator(
-                    key: _navigatorKey,
-                    initialRoute: AppRoutes.splash,
-                    // TODO use on on generate initial route for deeplinks and app open on notifications
-                    // onGenerateInitialRoutes: ,
-                    onGenerateRoute: (settings) {
-                      switch (settings.name) {
-                        case AppRoutes.splash:
-                          return MaterialPageRoute(
-                            fullscreenDialog: true,
-                            builder: (context) => const SplashPage(),
-                          );
-                        case AppRoutes.onboarding:
-                          return MaterialPageRoute(
-                            builder: ((context) => const OnboardingPage()),
-                          );
-                        case AppRoutes.login:
-                          return MaterialPageRoute(
-                              builder: (context) => LoginPage(
-                                    register:
-                                        (settings.arguments ?? false) as bool,
-                                  ));
-                        case AppRoutes.createBusinessProfile:
-                          return MaterialPageRoute(
-                            builder: (context) =>
-                                const CreateBusinessProfilePage(),
-                          );
-                        case AppRoutes.completeProfile:
-                          return MaterialPageRoute(
-                            builder: (context) => const CompleteProfilePage(),
-                          );
-                        case AppRoutes.verifyPhoneOTP:
-                          return MaterialPageRoute(
-                            builder: (context) => const VerifyPhonePage(),
-                          );
+                  child: PushNotificationsListener(
+                    child: Navigator(
+                      key: _navigatorKey,
+                      initialRoute: AppRoutes.splash,
+                      // TODO use on on generate initial route for deeplinks and app open on notifications
+                      // onGenerateInitialRoutes: ,
+                      onGenerateRoute: (settings) {
+                        switch (settings.name) {
+                          case AppRoutes.splash:
+                            return MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (context) => const SplashPage(),
+                            );
+                          case AppRoutes.onboarding:
+                            return MaterialPageRoute(
+                              builder: ((context) => const OnboardingPage()),
+                            );
+                          case AppRoutes.login:
+                            return MaterialPageRoute(
+                                builder: (context) => LoginPage(
+                                      register:
+                                          (settings.arguments ?? false) as bool,
+                                    ));
+                          case AppRoutes.createBusinessProfile:
+                            return MaterialPageRoute(
+                              builder: (context) =>
+                                  const CreateBusinessProfilePage(),
+                            );
+                          case AppRoutes.completeProfile:
+                            return MaterialPageRoute<bool?>(
+                              builder: (context) => const CompleteProfilePage(),
+                            );
+                          case AppRoutes.verifyPhoneOTP:
+                            return MaterialPageRoute(
+                              builder: (context) => const VerifyPhonePage(),
+                            );
 
-                        case AppRoutes.createService:
-                          return MaterialPageRoute(
-                            builder: (context) => CreateServicePage(
-                              service: settings.arguments != null
-                                  ? settings.arguments as Service
-                                  : null,
-                            ),
-                          );
-                        case AppRoutes.userHome:
-                          return MaterialPageRoute(
-                            builder: (context) => const UserHomePage(),
-                          );
-                        case AppRoutes.providerHome:
-                          return MaterialPageRoute(
-                            builder: (context) => const ProviderHomePage(),
-                          );
-                        case AppRoutes.providerDetails:
-                          return MaterialPageRoute(
-                            builder: (context) => ProviderDetailsPage(
-                              business: settings.arguments! as Business,
-                            ),
-                          );
-                        case AppRoutes.createOrder:
-                          return MaterialPageRoute(
-                            builder: (context) => CreateOrderPage(
-                              service: settings.arguments! as Service,
-                            ),
-                          );
-                        case AppRoutes.orderSummary:
-                        case AppRoutes.payment:
-                          return MaterialPageRoute(
-                            builder: (context) => CheckoutPage(
-                              order: settings.arguments! as Order,
-                            ),
-                          );
-                        case AppRoutes.tracking:
-                          return MaterialPageRoute(
-                            builder: (context) => TrackingPage(
-                              order: settings.arguments! as Order,
-                            ),
-                          );
-                        case AppRoutes.profile:
+                          case AppRoutes.createService:
+                            return MaterialPageRoute<bool?>(
+                              builder: (context) => CreateServicePage(
+                                service: settings.arguments != null
+                                    ? settings.arguments as Service
+                                    : null,
+                              ),
+                            );
+                          case AppRoutes.userHome:
+                            return MaterialPageRoute(
+                              builder: (context) => const UserHomePage(),
+                            );
+                          case AppRoutes.providerHome:
+                            return MaterialPageRoute(
+                              builder: (context) => const ProviderHomePage(),
+                            );
+                          case AppRoutes.providerDetails:
+                            return MaterialPageRoute(
+                              builder: (context) => ProviderDetailsPage(
+                                business: settings.arguments! as Business,
+                              ),
+                            );
+                          case AppRoutes.createOrder:
+                            return MaterialPageRoute<bool?>(
+                              builder: (context) => CreateOrderPage(
+                                service: settings.arguments! as Service,
+                              ),
+                            );
+                          case AppRoutes.orderSummary:
+                          case AppRoutes.payment:
+                            return MaterialPageRoute<bool?>(
+                              builder: (context) => CheckoutPage(
+                                order: settings.arguments! as Order,
+                              ),
+                            );
+                          case AppRoutes.tracking:
+                            return MaterialPageRoute(
+                              builder: (context) => TrackingPage(
+                                order: settings.arguments! as Order,
+                              ),
+                            );
+                          case AppRoutes.profile:
 
-                        case AppRoutes.recoverAccount:
-                        case AppRoutes.changePassword:
+                          case AppRoutes.recoverAccount:
+                          case AppRoutes.changePassword:
 
-                        case AppRoutes.home:
-                        default:
-                          return MaterialPageRoute(
-                              builder: ((context) => Scaffold(
-                                    appBar: AppBar(
-                                      title: const AppName(),
-                                    ),
-                                    body: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          PrimaryButton(
-                                            onPressed: () {
-                                              context.navigator.pushNamed(
-                                                  AppRoutes.completeProfile);
-                                            },
-                                            child: const Nunito(
-                                                text: "Complete profile"),
-                                          ),
-                                          PrimaryButton(
-                                            onPressed: () {
-                                              context.navigator.pushNamed(
-                                                  AppRoutes
-                                                      .createBusinessProfile);
-                                            },
-                                            child: const Nunito(
-                                                text:
-                                                    "create business profile"),
-                                          ),
-                                          const SignOutButton(
-                                            variant: ButtonVariant.text,
-                                          ),
-                                          PrimaryButton(
-                                            onPressed: () {
-                                              context.navigator.pushNamed(
-                                                  AppRoutes.createService);
-                                            },
-                                            child: const Nunito(
-                                                text: "Create service"),
-                                          ),
-                                          if (context.app.isBusiness)
+                          case AppRoutes.home:
+                          default:
+                            return MaterialPageRoute(
+                                builder: ((context) => Scaffold(
+                                      appBar: AppBar(
+                                        title: const AppName(),
+                                      ),
+                                      body: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
                                             PrimaryButton(
                                               onPressed: () {
                                                 context.navigator.pushNamed(
-                                                    AppRoutes.providerHome);
+                                                    AppRoutes.completeProfile);
                                               },
                                               child: const Nunito(
-                                                  text: "provider home"),
+                                                  text: "Complete profile"),
                                             ),
-                                          PrimaryButton(
-                                            onPressed: () {
-                                              context.navigator.pushNamed(
-                                                  AppRoutes.userHome);
-                                            },
-                                            child:
-                                                const Nunito(text: "user home"),
-                                          ),
-                                        ],
+                                            PrimaryButton(
+                                              onPressed: () {
+                                                context.navigator.pushNamed(
+                                                    AppRoutes
+                                                        .createBusinessProfile);
+                                              },
+                                              child: const Nunito(
+                                                  text:
+                                                      "create business profile"),
+                                            ),
+                                            const SignOutButton(
+                                              variant: ButtonVariant.text,
+                                            ),
+                                            PrimaryButton(
+                                              onPressed: () {
+                                                context.navigator.pushNamed(
+                                                    AppRoutes.createService);
+                                              },
+                                              child: const Nunito(
+                                                  text: "Create service"),
+                                            ),
+                                            if (context.app.isBusiness)
+                                              PrimaryButton(
+                                                onPressed: () {
+                                                  context.navigator.pushNamed(
+                                                      AppRoutes.providerHome);
+                                                },
+                                                child: const Nunito(
+                                                    text: "provider home"),
+                                              ),
+                                            PrimaryButton(
+                                              onPressed: () {
+                                                context.navigator.pushNamed(
+                                                    AppRoutes.userHome);
+                                              },
+                                              child: const Nunito(
+                                                  text: "user home"),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )));
-                      }
-                    },
+                                    )));
+                        }
+                      },
+                    ),
                   ),
                 )),
           ),

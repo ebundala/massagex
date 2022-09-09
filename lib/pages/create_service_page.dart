@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:massagex/graphql/clients/create_service/create_service_bloc.dart';
 import 'package:massagex/graphql/clients/update_service/update_service_bloc.dart';
@@ -16,10 +15,10 @@ class CreateServicePage extends StatefulWidget {
   const CreateServicePage({Key? key, this.service}) : super(key: key);
   final Service? service;
   @override
-  _CreateServicePageState createState() => _CreateServicePageState();
+  CreateServicePageState createState() => CreateServicePageState();
 }
 
-class _CreateServicePageState extends State<CreateServicePage> {
+class CreateServicePageState extends State<CreateServicePage> {
   final serviceNameCtr = TextEditingController();
   final detailsCtr = TextEditingController();
   final priceCtr = TextEditingController();

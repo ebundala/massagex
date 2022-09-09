@@ -12,6 +12,7 @@ import 'selection_node_data.dart';
 import "package:equatable/equatable.dart";
 
 class Comment extends Equatable {
+  final bool? isFavorited;
   final String? id;
   final User? author;
   final String? authorId;
@@ -29,7 +30,8 @@ class Comment extends Equatable {
   final List<AbuseReport>? abuseReports;
   final List<Favorite>? favorites;
   Comment(
-      {this.id,
+      {this.isFavorited,
+      this.id,
       this.author,
       this.authorId,
       this.review,
@@ -48,6 +50,7 @@ class Comment extends Equatable {
 
   static Comment fromJson(Map<dynamic, dynamic> json) {
     return Comment(
+      isFavorited: json['isFavorited'],
       id: json['id'],
       author: json['author'] != null ? User.fromJson(json['author']) : null,
       authorId: json['authorId'],
@@ -86,6 +89,7 @@ class Comment extends Equatable {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> _data = {};
+    if (isFavorited != null) _data['isFavorited'] = isFavorited;
     if (id != null) _data['id'] = id;
     if (author != null) _data['author'] = author!.toJson();
     if (authorId != null) _data['authorId'] = authorId;
@@ -114,7 +118,8 @@ class Comment extends Equatable {
   }
 
   Comment copyWith(
-      {String? id,
+      {bool? isFavorited,
+      String? id,
       User? author,
       String? authorId,
       Review? review,
@@ -131,6 +136,7 @@ class Comment extends Equatable {
       List<AbuseReport>? abuseReports,
       List<Favorite>? favorites}) {
     return Comment(
+        isFavorited: isFavorited ?? this.isFavorited,
         id: id ?? this.id,
         author: author ?? this.author,
         authorId: authorId ?? this.authorId,
@@ -150,6 +156,7 @@ class Comment extends Equatable {
   }
 
   List<Object?> get props => [
+        isFavorited,
         id,
         author,
         authorId,
@@ -184,6 +191,8 @@ extension CommentExt on Comment {
 }
 
 class CommentController extends ValueNotifier<Comment> {
+  TextEditingController? isFavoritedController;
+
   TextEditingController? idController;
 
   UserController? authorController;

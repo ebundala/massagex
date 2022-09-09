@@ -59,8 +59,7 @@ class ProviderDetailsPage extends StatelessWidget {
             onTap: () {},
             child: const Icon(IconlyLight.heart),
           ),
-          bottom:
-              DistanceChip(label: Nunito(text: business.distance!.kilometers)),
+          bottom: DistanceChip(label: Nunito(text: business.distance!.display)),
         ),
         space,
         Row(
@@ -100,12 +99,11 @@ class ProviderDetailsPage extends StatelessWidget {
           color: Color.fromRGBO(22, 10, 49, 1),
         ),
         space,
-        const Nunito(
-            color: Color.fromRGBO(108, 108, 108, 1),
+        Nunito(
+            color: const Color.fromRGBO(108, 108, 108, 1),
             fontSize: 14,
             fontWeight: FontWeight.w400,
-            text:
-                "Massage treatment of superficial parts of the body by systematic rubbing, stroking, kneading, or slapping. Massages can be administered manually or with mechanical devices. They are sought most often to relieve muscle stiffness see more..."),
+            text: business.about!),
         space,
         // services
         const Gilroy(
@@ -190,9 +188,11 @@ class ProviderDetailsPage extends StatelessWidget {
                                 PrimaryButton(
                                   child: const Nunito(text: "Request"),
                                   onPressed: () {
-                                    context.navigator.pushNamed(
-                                        AppRoutes.createOrder,
-                                        arguments: service);
+                                    context.requireToCompleteProfile(
+                                      onSuccess: () => context.navigator
+                                          .pushNamed(AppRoutes.createOrder,
+                                              arguments: service),
+                                    );
                                   },
                                 )
                               ],

@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:iconly/iconly.dart';
 import 'package:massagex/graphql/clients/create_order/create_order_bloc.dart';
-import 'package:massagex/graphql/clients/update_my_business_order/update_my_business_order_bloc.dart';
 import 'package:massagex/graphql/clients/update_order/update_order_bloc.dart';
 import 'package:massagex/pages/page_layout.dart';
 import 'package:massagex/state/app/app_bloc.dart';
@@ -18,16 +15,9 @@ import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:models/business_mode.dart';
-import 'package:models/enum_order_status_field_update_operations_input.dart';
 import 'package:models/location.dart';
 import 'package:models/order.dart';
 import 'package:models/order_create_without_owner_input.dart';
-import 'package:models/order_status.dart';
-import 'package:models/order_update_with_where_unique_without_business_input.dart';
-import 'package:models/order_update_with_where_unique_without_owner_input.dart';
-import 'package:models/order_update_without_business_input.dart';
-import 'package:models/order_update_without_owner_input.dart';
-import 'package:models/order_where_unique_input.dart';
 import 'package:models/scalars/json_object.dart';
 import 'package:models/service.dart';
 import 'package:models/service_create_nested_one_without_orders_input.dart';
@@ -51,12 +41,10 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
   final formKey = GlobalKey<FormState>();
   late BusinessMode mode;
   final notesCtr = TextEditingController();
-  late StreamSubscription<BoxEvent> notificationSubscription;
   final quantityCtr = TextEditingController(text: "1");
 
   @override
   void dispose() {
-    notificationSubscription.cancel();
     super.dispose();
   }
 
@@ -80,138 +68,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
         ..formattedAddress = loc.name ?? ""
         ..latLng = latlng;
     }
-    notificationSubscription = context.app.userSettings!
-        .watch(key: AppBloc.notificationsKey)
-        .listen((event) async {
-      if (event.value != null) {
-        final rawData = (event.value as List)
-            .map<nt.Notification>((json) => nt.Notification.fromJson(json))
-            .where((element) =>
-                element.notificationType == NotificationType.ORDER$RECIEVED)
-            .map((e) {
-          final order = Order.fromJson(e.payload!.value);
-          return showIncomingRequestNotification(context, order);
-        });
 
-        await Future.wait(rawData);
-      }
-    });
     super.initState();
-  }
-
-  Future<T?> showIncomingRequestNotification<T>(
-      BuildContext context, Order order) {
-    return context.showCustomBottomSheet<T>(
-        backgroundColor: Colors.white,
-        elevation: 8,
-        builder: (ctx) {
-          return BlocProvider<UpdateMyBusinessOrderBloc>(
-              create: ((context) =>
-                  UpdateMyBusinessOrderBloc(client: context.client)),
-              child: Builder(builder: (context) {
-                return BlocBuilder<UpdateMyBusinessOrderBloc,
-                    UpdateMyBusinessOrderState>(builder: (context, state) {
-                  final loading = state is UpdateMyBusinessOrderInProgress;
-                  final error = state is UpdateMyBusinessOrderError ||
-                      state is UpdateMyBusinessOrderFailure;
-
-                  final bloc = context.bloc<UpdateMyBusinessOrderBloc>();
-                  final uid = context.app.fauth.currentUser!.uid;
-                  final data = IncomingRequestNotificationData(
-                      avator: "assets/images/intro_picture_4.png",
-                      cancelText: "Cancel",
-                      title: loading
-                          ? "Processing please wait.."
-                          : "Incomming request..",
-                      userName: order.owner!.displayName!,
-                      dateTime: order.createdAt!.display,
-                      onCancel: (ctx) {
-                        // bloc
-                        //   ..add(UpdateMyBusinessOrderReseted())
-                        //   ..add(
-                        //     UpdateMyBusinessOrderExcuted(
-                        //         uid: uid,
-                        //         count: 1,
-                        //         orders: [
-                        //           OrderUpdateWithWhereUniqueWithoutOwnerInput(
-                        //             where: OrderWhereUniqueInput(id: order.id),
-                        //             data: OrderUpdateWithoutOwnerInput(
-                        //               orderStatus:
-                        //                   EnumOrderStatusFieldUpdateOperationsInput(
-                        //                       set$: OrderStatus.REJECTED),
-                        //             ),
-                        //           )
-                        //         ]),
-                        //   );
-                        context.navigator.pop();
-                      },
-                      onComplete: (ctx, status) {},
-                      serviceTitle: order.service!.name!,
-                      price: order.service!.price!,
-                      description: order.service!.description!,
-                      descriptionUnderline: "descriptionUnderline",
-                      extras: [],
-                      onAccept: (ctx) {
-                        bloc
-                          ..add(UpdateMyBusinessOrderReseted())
-                          ..add(
-                            UpdateMyBusinessOrderExcuted(
-                                uid: uid,
-                                count: 1,
-                                orders: [
-                                  OrderUpdateWithWhereUniqueWithoutBusinessInput(
-                                    where: OrderWhereUniqueInput(id: order.id),
-                                    data: OrderUpdateWithoutBusinessInput(
-                                      orderStatus:
-                                          EnumOrderStatusFieldUpdateOperationsInput(
-                                              set$: OrderStatus.ACCEPTED),
-                                    ),
-                                  )
-                                ]),
-                          );
-                      },
-                      onDecline: (ctx) {
-                        bloc
-                          ..add(UpdateMyBusinessOrderReseted())
-                          ..add(
-                            UpdateMyBusinessOrderExcuted(
-                                uid: uid,
-                                count: 1,
-                                orders: [
-                                  OrderUpdateWithWhereUniqueWithoutBusinessInput(
-                                    where: OrderWhereUniqueInput(id: order.id),
-                                    data: OrderUpdateWithoutBusinessInput(
-                                      orderStatus:
-                                          EnumOrderStatusFieldUpdateOperationsInput(
-                                              set$: OrderStatus.REJECTED),
-                                    ),
-                                  )
-                                ]),
-                          );
-                      },
-                      distanceText: "${order.business!.distance ?? ""}",
-                      declineText: "Decline",
-                      acceptText: "Accept");
-
-                  return loading || error
-                      ? SizedBox.expand(
-                          child: Center(
-                          child: loading
-                              ? const SizedBox(
-                                  height: 32,
-                                  width: 32,
-                                  child: CircularProgressIndicator(),
-                                )
-                              : Nunito(
-                                  color: Colors.red,
-                                  text: state.message ??
-                                      state.data?.message ??
-                                      "Error"),
-                        ))
-                      : NotificationBottomSheet(data: data);
-                });
-              }));
-        });
   }
 
   List<bool> checkOrderStatus(Order order) {
@@ -263,8 +121,8 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                   titleFontWeight: FontWeight.w600,
                   rating: widget.service.business!.owner!.compoundRating!,
                   bottom: DistanceChip(
-                      label:
-                          Nunito(text: "${widget.service.business!.distance}")),
+                      label: Nunito(
+                          text: widget.service.business!.distance!.display)),
                 ),
                 space,
                 Gilroy(
@@ -477,116 +335,125 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                           ),
                                         )
                                       ];
-                                      final result =
-                                          await context.waitForBlocOperation<
-                                              CreateOrderBloc,
-                                              CreateOrderEvent,
-                                              CreateOrderState,
-                                              CreateOrderSuccess,
-                                              CreateOrderFailure,
-                                              CreateOrderError,
-                                              CreateOrderExcuted,
-                                              CreateOrderReseted>(
-                                        bloc: bloc,
-                                        excuted: CreateOrderExcuted(
-                                            uid: uid,
-                                            count: orders.length,
-                                            orders: orders),
-                                        reseted: CreateOrderReseted(),
-                                      );
+                                      //bloc.emit(CreateOrderInProgress(data:UserResponse()));
+                                      await context.requireRegisteredDevice(
+                                          onSuccess: () async {
+                                        final result =
+                                            await context.waitForBlocOperation<
+                                                CreateOrderBloc,
+                                                CreateOrderEvent,
+                                                CreateOrderState,
+                                                CreateOrderSuccess,
+                                                CreateOrderFailure,
+                                                CreateOrderError,
+                                                CreateOrderExcuted,
+                                                CreateOrderReseted>(
+                                          bloc: bloc,
+                                          excuted: CreateOrderExcuted(
+                                              uid: uid,
+                                              count: orders.length,
+                                              orders: orders),
+                                          reseted: CreateOrderReseted(),
+                                        );
 
-                                      if (result is CreateOrderSuccess &&
-                                          result.data.data?.ordered
-                                                  ?.isNotEmpty ==
-                                              true) {
-                                        final order =
-                                            result.data.data!.ordered!.first;
-                                        // ignore: use_build_context_synchronously
-                                        context.showCustomBottomSheet(
-                                            backgroundColor: Colors.white,
-                                            elevation: 8,
-                                            builder: (ctx) {
-                                              return StreamBuilder<BoxEvent>(
-                                                  stream: context
-                                                      .app.userSettings!
-                                                      .watch(
-                                                          key: AppBloc
-                                                              .notificationsKey),
-                                                  builder: (context, snapshot) {
-                                                    final status =
-                                                        checkOrderStatus(order);
-                                                    return RequestBottomSheet(
-                                                        success: status[0],
-                                                        error: status[1],
-                                                        waitingText:
-                                                            "Please Hold on! We are requesting now",
-                                                        waitingTextSubTitle:
-                                                            "Apologies for your waiting",
-                                                        waitingButtonText:
-                                                            "REQUESTING...",
-                                                        avator:
-                                                            'assets/images/intro_picture_4.png',
-                                                        displayName:
-                                                            widget.service.business!
-                                                                .businessName!,
-                                                        userSubTitle:
-                                                            "Massage therapist",
-                                                        count: 1000,
-                                                        rating: 3.5,
-                                                        badgeIcon1: const Icon(
-                                                            IconlyLight
-                                                                .shield_done,
-                                                            color: Colors
-                                                                .green),
-                                                        badgeIcon2: const Icon(
-                                                            IconlyLight.star,
-                                                            color:
-                                                                Colors.orange),
-                                                        badgeIcon3:
-                                                            const Icon(
-                                                                IconlyLight
-                                                                    .shield_fail,
-                                                                color:
-                                                                    Colors.red),
-                                                        badgeText1:
-                                                            "${order.business!.acceptance!}%",
-                                                        badgeText2:
-                                                            "${order.business!.owner!.compoundRating!}%",
-                                                        badgeText3:
-                                                            "${order.business!.cancelation!}%",
-                                                        badgeSubText1:
-                                                            "accaptance",
-                                                        badgeSubText2: "rating",
-                                                        badgeSubText3:
-                                                            "cancelation",
-                                                        successButtonText:
-                                                            "CHECK SCHEDULE",
-                                                        successText:
-                                                            "Congratulations",
-                                                        successTextSubTitle:
-                                                            "Please Hold on! We are requesting now",
-                                                        errorButtonText:
-                                                            "Go back",
-                                                        errorText: "Oh Snap!",
-                                                        errorTextSubTitle:
-                                                            "Please Hold on! We are requesting now",
-                                                        onCall: (ctx) async {
-                                                          // TODO only allow calls for accepted orders
-                                                          await launchUrlString(
-                                                              "tel:${order.business!.owner!.phoneNumber}");
-                                                        },
-                                                        onCancel: (ctx) {
-                                                          Navigator.of(ctx)
-                                                              .pop();
-                                                        },
-                                                        onComplete:
-                                                            (ctx, status) {
-                                                          Navigator.of(ctx)
-                                                              .pop();
-                                                        });
-                                                  });
-                                            });
-                                      }
+                                        if (result is CreateOrderSuccess &&
+                                            result.data.data?.ordered
+                                                    ?.isNotEmpty ==
+                                                true) {
+                                          final order =
+                                              result.data.data!.ordered!.first;
+                                          // ignore: use_build_context_synchronously
+                                          context.showCustomBottomSheet(
+                                              backgroundColor: Colors.white,
+                                              elevation: 8,
+                                              builder: (ctx) {
+                                                return StreamBuilder<BoxEvent>(
+                                                    stream: context
+                                                        .app.userSettings!
+                                                        .watch(
+                                                            key: AppBloc
+                                                                .notificationsKey),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      final status =
+                                                          checkOrderStatus(
+                                                              order);
+                                                      return RequestBottomSheet(
+                                                          success: status[0],
+                                                          error: status[1],
+                                                          waitingText:
+                                                              "Please Hold on! We are requesting now",
+                                                          waitingTextSubTitle:
+                                                              "Apologies for your waiting",
+                                                          waitingButtonText:
+                                                              "REQUESTING...",
+                                                          avator:
+                                                              'assets/images/intro_picture_4.png',
+                                                          displayName: widget
+                                                              .service
+                                                              .business!
+                                                              .businessName!,
+                                                          userSubTitle:
+                                                              "Massage therapist",
+                                                          count: 1000,
+                                                          rating: 3.5,
+                                                          badgeIcon1: const Icon(
+                                                              IconlyLight
+                                                                  .shield_done,
+                                                              color:
+                                                                  Colors.green),
+                                                          badgeIcon2: const Icon(
+                                                              IconlyLight.star,
+                                                              color: Colors
+                                                                  .orange),
+                                                          badgeIcon3: const Icon(
+                                                              IconlyLight
+                                                                  .shield_fail,
+                                                              color:
+                                                                  Colors.red),
+                                                          badgeText1:
+                                                              "${order.business!.acceptance!}%",
+                                                          badgeText2:
+                                                              "${order.business!.owner!.compoundRating!}%",
+                                                          badgeText3:
+                                                              "${order.business!.cancelation!}%",
+                                                          badgeSubText1:
+                                                              "accaptance",
+                                                          badgeSubText2:
+                                                              "rating",
+                                                          badgeSubText3:
+                                                              "cancelation",
+                                                          successButtonText:
+                                                              "CHECK SCHEDULE",
+                                                          successText:
+                                                              "Congratulations",
+                                                          successTextSubTitle:
+                                                              "Please Hold on! We are requesting now",
+                                                          errorButtonText:
+                                                              "Go back",
+                                                          errorText: "Oh Snap!",
+                                                          errorTextSubTitle:
+                                                              "Please Hold on! We are requesting now",
+                                                          onCall: (ctx) async {
+                                                            // TODO only allow calls for accepted orders
+                                                            await launchUrlString(
+                                                                "tel:${order.business!.owner!.phoneNumber}");
+                                                          },
+                                                          onCancel: (ctx) {
+                                                            Navigator.of(ctx)
+                                                                .pop();
+                                                          },
+                                                          onComplete:
+                                                              (ctx, status) {
+                                                            Navigator.of(ctx)
+                                                                .pop();
+                                                          });
+                                                    });
+                                              });
+                                        }
+                                      }, onError: () {
+                                        // Failed to register device here
+                                      });
                                     }
                                   },
                             child: isLoading

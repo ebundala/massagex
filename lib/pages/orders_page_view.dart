@@ -295,7 +295,7 @@ class _OrdersPageState extends State<OrdersPage> {
                                             DropdownButton<dynamic>(
                                                 icon: const Icon(
                                                     Icons.more_horiz),
-                                                items: [],
+                                                items: const [],
                                                 onChanged: (v) {})
                                           ],
                                         )
@@ -384,7 +384,8 @@ class _OrdersPageState extends State<OrdersPage> {
                                                     0, 0, 0, 1)),
                                             const Spacer(),
                                             DropdownButton<dynamic>(
-                                                items: [], onChanged: (v) {})
+                                                items: const [],
+                                                onChanged: (v) {})
                                           ],
                                         )
                                       ],

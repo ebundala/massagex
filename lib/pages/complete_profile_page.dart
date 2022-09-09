@@ -83,7 +83,18 @@ class CompleteProfilePageState extends State<CompleteProfilePage> {
         ),
         Form(
           key: formKey,
-          child: BlocBuilder<UpdateMyProfileBloc, UpdateMyProfileState>(
+          child: BlocConsumer<UpdateMyProfileBloc, UpdateMyProfileState>(
+              listener: (context, state) {
+                final success = state is UpdateMyProfileSuccess && submited;
+                final errored = (state is UpdateMyProfileErrored ||
+                        state is UpdateMyProfileFailure) &&
+                    submited;
+                if (success) {
+                  context.navigator.pop(true);
+                } else if (errored) {
+                  context.navigator.pop(false);
+                }
+              },
               bloc: context.app.updateMyProfileBloc,
               builder: (context, state) {
                 final loading = state is UpdateMyProfileInProgress && submited;

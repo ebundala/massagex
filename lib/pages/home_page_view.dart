@@ -268,7 +268,7 @@ class _HomePageState extends State<HomePage> {
                                       bottom: DistanceChip(
                                         iconSize: 20,
                                         label: Nunito(
-                                          text: item.distance!.meters,
+                                          text: item.distance!.display,
                                           fontSize: 14,
                                         ),
                                       ),

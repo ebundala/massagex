@@ -24,7 +24,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await flutterLocalNotificationsPlugin.initialize(
       const InitializationSettings(
         android: AndroidInitializationSettings(
-          "ic_launcher",
+          "launch_background",
         ),
       ), onSelectNotification: (payload) {
     try {

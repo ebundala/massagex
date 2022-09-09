@@ -10,17 +10,21 @@ import 'package:graphql/client.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:massagex/graphql/clients/find_payment_methods/find_payment_methods_bloc.dart';
 import 'package:massagex/graphql/clients/find_user/find_user_bloc.dart';
+import 'package:massagex/graphql/clients/update_my_business_order/update_my_business_order_bloc.dart';
 import 'package:massagex/graphql/clients/update_my_business_profile/update_my_business_profile_bloc.dart';
 import 'package:massagex/graphql/clients/update_my_profile/update_my_profile_bloc.dart';
 import 'package:massagex/secrets/api_keys.dart';
 import 'package:massagex/state/app/fcm_background_handler.dart';
 import 'package:massagex/state/deeplink/deeplink_bloc.dart';
+import 'package:massagex/state/routes/routes.dart';
+import 'package:massagex/widgets/components/bottom_sheets.dart';
 import 'package:massagex/widgets/components/buttons.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:models/business_create_without_owner_input.dart';
 import 'package:models/business_update_without_owner_input.dart';
 import 'package:models/business_upsert_without_owner_input.dart';
 import 'package:models/enum_business_mode_field_update_operations_input.dart';
+import 'package:models/enum_order_status_field_update_operations_input.dart';
 import 'package:models/float_field_update_operations_input.dart';
 import 'package:models/gender.dart';
 import 'package:models/image_size.dart';
@@ -29,14 +33,16 @@ import 'package:models/location_create_without_users_input.dart';
 import 'package:models/location_update_one_without_businesses_input.dart';
 import 'package:models/location_update_without_users_input.dart';
 import 'package:models/location_upsert_without_users_input.dart';
+import 'package:models/order_status.dart';
+import 'package:models/order_update_with_where_unique_without_business_input.dart';
+import 'package:models/order_update_without_business_input.dart';
+import 'package:models/order_where_unique_input.dart';
 import 'package:models/string_field_update_operations_input.dart';
 import 'package:models/user_response.dart';
-import 'package:models/notification_type.dart';
 import 'package:models/notification.dart' as nt;
 import 'package:models/paybill_request.dart';
 import 'package:models/payment_method.dart';
 import 'package:models/register_device_input.dart';
-import 'package:models/review.dart';
 import 'package:models/scalars/phone_number.dart';
 import 'package:place_picker/place_picker.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -66,6 +72,7 @@ Future<nt.Notification?> handleNotificationPayload(
       final notification =
           jsonDecode(message.data["payload"]) as Map<dynamic, dynamic>;
       notifications.insertAll(0, [notification]);
+
       await box.put(AppBloc.notificationsKey, notifications);
       // print('Handling message $notification');
       return nt.Notification.fromJson(notification);
@@ -96,6 +103,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   static const userSettingsKey = "temporary_app_setting_key";
   static const travellingSalesmanKey = "travelling_salesman_key";
   static const businessProfileKey = "business_profile_key";
+  static const isProfileIncompleteKey = "incomplete_profile_Key";
+  static const isDeviceRegisteredKey = "device_registration_key";
   Box? appSettings;
 
   /// hive box streams
@@ -142,6 +151,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   bool get isBusiness =>
       currentUser?.data?.businessProfile?.id?.isNotEmpty == true;
 
+  bool get isProfileCompleted =>
+      !userSettings!.get(isProfileIncompleteKey, defaultValue: true);
+
+  bool get isDeviceRegistered =>
+      !userSettings!.get(isDeviceRegisteredKey, defaultValue: false);
+
   @override
   Future<void> close() async {
     await authStream!.cancel();
@@ -175,7 +190,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     box = await Hive.openBox(AppBloc.dataKey);
     userSettings = await Hive.openBox(AppBloc.userSettingsKey);
     appSettings = await Hive.openBox(AppBloc.appSettingsKey);
+
     // await clearStorage();
+    userSettings!.put(isProfileIncompleteKey, true);
+    userSettings!.put(isDeviceRegisteredKey, false);
+
     _initDeviceId();
     final httplink = HttpLink(url);
     final tokenlink = AuthLink(getToken: getIdToken);
@@ -237,7 +256,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       }
       if (state is GeolocationPositionChanged &&
           currentUser?.data?.id != null) {
-        // updateMyProfileBloc.add(UpdateMyProfileResseted());
         print(state.position);
         updateMyProfileBloc!
           ..add(UpdateMyProfileReseted())
@@ -264,7 +282,27 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     });
     findUserBloc!.stream.asBroadcastStream().listen((event) {
       userSettings!.put(userProfileKey, event.data?.toJson());
+      final user = event.data?.data;
+      if (user != null) {
+        if (user.displayName == null ||
+            user.displayName?.isEmpty == true ||
+            user.gender == null ||
+            user.phoneNumber == null ||
+            user.dateOfBirth == null) {
+          userSettings!.put(isProfileIncompleteKey, true);
+        } else {
+          userSettings!.put(isProfileIncompleteKey, false);
+        }
+        //device registration
+        if (user.device!.fcm$id == null ||
+            user.device!.fcm$id?.isEmpty == true) {
+          userSettings!.put(isDeviceRegisteredKey, false);
+        } else {
+          userSettings!.put(isDeviceRegisteredKey, true);
+        }
+      }
     });
+
     updateMyProfileBloc!.stream.asBroadcastStream().listen((event) {
       if (event is UpdateMyProfileSuccess) {
         // refresh user profile after every update
@@ -345,27 +383,27 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen((message) async {
-      final notification =
-          await handleNotificationPayload(userSettings!, message);
-      if (notification != null) {
-        final data = parseNotification(notification);
-        var body = "";
-        if (data is Order) {
-          body = data.service!.name!;
-        }
-        if (data is Review) {
-          body = data.author!.displayName!;
-        }
+      //final notification =
+      await handleNotificationPayload(userSettings!, message);
+      // if (notification != null) {
+      // final data = parseNotification(notification);
+      // var body = "";
+      // if (data is Order) {
+      //   body = data.service!.name!;
+      // }
+      // if (data is Review) {
+      //   body = data.author!.displayName!;
+      // }
 
-        showNotification(
-            notification.hashCode,
-            notification.message ??
-                notification.notificationType!
-                    .toJson()
-                    .replaceAll(RegExp("_"), " "),
-            body,
-            payload: message.data["payload"]);
-      }
+      // showNotification(
+      //     notification.hashCode,
+      //     notification.message ??
+      //         notification.notificationType!
+      //             .toJson()
+      //             .replaceAll(RegExp("_"), " "),
+      //     body,
+      //     payload: message.data["payload"]);
+      // }
     });
 
     messaging.onTokenRefresh.listen((key) {
@@ -419,6 +457,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       final data = jsonDecode(payload ?? '{}');
       final d = nt.Notification.fromJson(data);
       await removeSeenNotification(d);
+      // deeplinkBloc!
+      //   ..add(const DeeplinkResetted())
+      //   ..add(DeeplinkExcuted(data: notification));
     });
     if (!kIsWeb) {
       /// Create an Android Notification Channel.
@@ -445,20 +486,27 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     });
 
     //handle app opened by notifications
-    final details =
-        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
-    if (details?.didNotificationLaunchApp ?? false) {
-      try {
-        final data =
-            nt.Notification.fromJson(jsonDecode(details!.payload ?? '{}'));
-        deeplinkBloc!
-          ..add(const DeeplinkResetted())
-          ..add(DeeplinkExcuted(data: data));
-      } catch (e) {
-        print(e);
+    Future.delayed(const Duration(seconds: 5)).then((value) async {
+      final details = await flutterLocalNotificationsPlugin
+          .getNotificationAppLaunchDetails();
+
+      if (details?.didNotificationLaunchApp == true) {
+        try {
+          final data =
+              nt.Notification.fromJson(jsonDecode(details!.payload ?? '{}'));
+          deeplinkBloc!
+            ..add(const DeeplinkResetted())
+            ..add(DeeplinkExcuted(data: data));
+        } catch (e) {
+          print(e);
+        }
       }
-    }
+      if (notifications.isNotEmpty == true) {
+        final value = userSettings?.get(notificationsKey, defaultValue: []);
+        userSettings!.put(notificationsKey, value);
+      }
+    });
   }
 
   showNotification(int id, String title, String body, {String? payload}) {
@@ -609,8 +657,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           isProviderMode: isProviderEnabled,
           isTravellingSalesman: isTravellingSalesman));
     } else if (event is AppAuth) {
-      //Start geolocation service
-      startGeolocation();
       emit(AppAuthenticated(
           isProviderMode: isProviderEnabled,
           isTravellingSalesman: isTravellingSalesman));
@@ -648,7 +694,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       await box?.clear();
       await userSettings!.clear();
       //stop geolocation service
-      stopGeolocation();
+
       emit(
         AppLoggedOut(
             isProviderMode: isProviderEnabled,
@@ -680,10 +726,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         .where((element) => !const DeepCollectionEquality()
             .equals(element, notification.toJson()))
         .toList();
+    await userSettings!.delete(AppBloc.notificationsKey);
     await userSettings!.put(notificationsKey, trancated);
-    deeplinkBloc!
-      ..add(const DeeplinkResetted())
-      ..add(DeeplinkExcuted(data: notification));
     return notification;
   }
 
@@ -1122,6 +1166,177 @@ extension ClientContext on BuildContext {
     }).whenComplete(() => subscription.cancel());
     callback?.call(false);
     return Future.value(result);
+  }
+
+  Future<T?> showIncomingRequestNotification<T>(
+      {BuildContext? context, required Order order}) {
+    return (context ?? this).showCustomBottomSheet<T>(
+        backgroundColor: Colors.white,
+        elevation: 8,
+        builder: (ctx) {
+          return BlocProvider<UpdateMyBusinessOrderBloc>(
+              create: ((context) =>
+                  UpdateMyBusinessOrderBloc(client: context.client)),
+              child: Builder(builder: (context) {
+                return BlocConsumer<UpdateMyBusinessOrderBloc,
+                    UpdateMyBusinessOrderState>(listener: (context, state) {
+                  if (state is UpdateMyBusinessOrderSuccess) {
+                    context.navigator.pop();
+                  }
+                }, builder: (context, state) {
+                  final loading = state is UpdateMyBusinessOrderInProgress;
+                  final error = state is UpdateMyBusinessOrderError ||
+                      state is UpdateMyBusinessOrderFailure;
+
+                  final bloc = context.bloc<UpdateMyBusinessOrderBloc>();
+                  final uid = context.app.fauth.currentUser!.uid;
+                  final data = IncomingRequestNotificationData(
+                      avator: "assets/images/intro_picture_4.png",
+                      cancelText: "Cancel",
+                      title: loading
+                          ? "Processing please wait.."
+                          : "Incomming request..",
+                      userName: order.owner!.displayName!,
+                      dateTime: order.createdAt!.display,
+                      onCancel: (ctx) {
+                        // bloc
+                        //   ..add(UpdateMyBusinessOrderReseted())
+                        //   ..add(
+                        //     UpdateMyBusinessOrderExcuted(
+                        //         uid: uid,
+                        //         count: 1,
+                        //         orders: [
+                        //           OrderUpdateWithWhereUniqueWithoutOwnerInput(
+                        //             where: OrderWhereUniqueInput(id: order.id),
+                        //             data: OrderUpdateWithoutOwnerInput(
+                        //               orderStatus:
+                        //                   EnumOrderStatusFieldUpdateOperationsInput(
+                        //                       set$: OrderStatus.REJECTED),
+                        //             ),
+                        //           )
+                        //         ]),
+                        //   );
+                        context.navigator.pop();
+                      },
+                      onComplete: (ctx, status) {},
+                      serviceTitle: order.service!.name!,
+                      price: order.service!.price!,
+                      description: order.service!.description!,
+                      descriptionUnderline: "descriptionUnderline",
+                      extras: [],
+                      onAccept: (ctx) {
+                        bloc
+                          ..add(UpdateMyBusinessOrderReseted())
+                          ..add(
+                            UpdateMyBusinessOrderExcuted(
+                                uid: uid,
+                                count: 1,
+                                orders: [
+                                  OrderUpdateWithWhereUniqueWithoutBusinessInput(
+                                    where: OrderWhereUniqueInput(id: order.id),
+                                    data: OrderUpdateWithoutBusinessInput(
+                                      orderStatus:
+                                          EnumOrderStatusFieldUpdateOperationsInput(
+                                              set$: OrderStatus.ACCEPTED),
+                                    ),
+                                  )
+                                ]),
+                          );
+                      },
+                      onDecline: (ctx) {
+                        bloc
+                          ..add(UpdateMyBusinessOrderReseted())
+                          ..add(
+                            UpdateMyBusinessOrderExcuted(
+                                uid: uid,
+                                count: 1,
+                                orders: [
+                                  OrderUpdateWithWhereUniqueWithoutBusinessInput(
+                                    where: OrderWhereUniqueInput(id: order.id),
+                                    data: OrderUpdateWithoutBusinessInput(
+                                      orderStatus:
+                                          EnumOrderStatusFieldUpdateOperationsInput(
+                                              set$: OrderStatus.REJECTED),
+                                    ),
+                                  )
+                                ]),
+                          );
+                      },
+                      distanceText: "${order.business!.distance ?? ""}",
+                      declineText: "Decline",
+                      acceptText: "Accept");
+
+                  return loading
+                      ? SizedBox.expand(
+                          child: Center(
+                          child: loading
+                              ? const SizedBox(
+                                  height: 32,
+                                  width: 32,
+                                  child: CircularProgressIndicator(),
+                                )
+                              : Nunito(
+                                  color: Colors.red,
+                                  text: state.message ??
+                                      state.data.message ??
+                                      "Error"),
+                        ))
+                      : NotificationBottomSheet(data: data);
+                });
+              }));
+        });
+  }
+
+  Future<void> requireToCompleteProfile(
+      {VoidCallback? onSuccess,
+      VoidCallback? onCancel,
+      VoidCallback? onError}) async {
+    if (app.isProfileCompleted) {
+      onSuccess?.call();
+      return;
+    }
+    final state = await navigator.pushNamed<bool?>(AppRoutes.completeProfile);
+    if (state == true) {
+      onSuccess?.call();
+    } else if (state == false) {
+      onCancel?.call();
+    } else {
+      onError?.call();
+    }
+  }
+
+  Future<void> requireRegisteredDevice(
+      {VoidCallback? onSuccess, VoidCallback? onError}) async {
+    if (app.isDeviceRegistered) {
+      onSuccess?.call();
+      return;
+    }
+    var fcmId =
+        app.appSettings!.get(AppBloc.fcmIdKey, defaultValue: null) as String?;
+    fcmId ??= await app.messaging.getToken();
+
+    final state = await waitForBlocOperation<
+            RegisterDeviceBloc,
+            RegisterDeviceEvent,
+            RegisterDeviceState,
+            RegisterDeviceSuccess,
+            RegisterDeviceFailure,
+            RegisterDeviceError,
+            RegisterDeviceExcuted,
+            RegisterDeviceReseted>(
+        bloc: app.registerDeviceBloc!,
+        excuted: RegisterDeviceExcuted(
+          device: RegisterDeviceInput(
+              id: app.deviceId!,
+              fcm$id: fcmId,
+              userId: app.fauth.currentUser!.uid),
+        ),
+        reseted: RegisterDeviceReseted());
+    if (state is RegisterDeviceSuccess) {
+      onSuccess?.call();
+    } else if (state is RegisterDeviceError || state is RegisterDeviceFailure) {
+      onError?.call();
+    }
   }
 }
 

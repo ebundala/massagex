@@ -1,3 +1,4 @@
+import 'category_where_input.dart';
 import 'string_filter.dart';
 import 'user_relation_filter.dart';
 import 'enum_business_mode_filter.dart';
@@ -18,6 +19,7 @@ import "package:gql/ast.dart" as ast;
 import "package:equatable/equatable.dart";
 
 class BusinessWhereInput extends Equatable {
+  final CategoryWhereInput? category;
   final List<BusinessWhereInput>? AND;
   final List<BusinessWhereInput>? OR;
   final List<BusinessWhereInput>? NOT;
@@ -47,6 +49,11 @@ class BusinessWhereInput extends Equatable {
     if (variables == null) {
       variables = Map();
     }
+    if (category != null) {
+      category!.getFilesVariables(
+          field_name: '${field_name}_category', variables: variables);
+    }
+
     if (AND != null) {
       int i = -1;
       AND!.forEach((e) {
@@ -192,6 +199,11 @@ class BusinessWhereInput extends Equatable {
 
   ast.ObjectValueNode toValueNode({required String field_name}) {
     return ast.ObjectValueNode(fields: [
+      if (category != null)
+        ast.ObjectFieldNode(
+          name: ast.NameNode(value: 'category'),
+          value: category!.toValueNode(field_name: '${field_name}_category'),
+        ),
       if (AND != null)
         ast.ObjectFieldNode(
             name: ast.NameNode(value: 'AND'),
@@ -349,7 +361,8 @@ class BusinessWhereInput extends Equatable {
   }
 
   BusinessWhereInput(
-      {this.AND,
+      {this.category,
+      this.AND,
       this.OR,
       this.NOT,
       this.id,
@@ -375,6 +388,9 @@ class BusinessWhereInput extends Equatable {
 
   static BusinessWhereInput fromJson(Map<dynamic, dynamic> json) {
     return BusinessWhereInput(
+      category: json['category'] != null
+          ? CategoryWhereInput.fromJson(json['category'])
+          : null,
       AND: json['AND'] != null
           ? List.generate(json['AND'].length,
               (index) => BusinessWhereInput.fromJson(json['AND'][index]))
@@ -449,6 +465,7 @@ class BusinessWhereInput extends Equatable {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> _data = {};
+    if (category != null) _data['category'] = category!.toJson();
     if (AND != null)
       _data['AND'] =
           List.generate(AND?.length ?? 0, (index) => AND![index].toJson());
@@ -482,7 +499,8 @@ class BusinessWhereInput extends Equatable {
   }
 
   BusinessWhereInput copyWith(
-      {List<BusinessWhereInput>? AND,
+      {CategoryWhereInput? category,
+      List<BusinessWhereInput>? AND,
       List<BusinessWhereInput>? OR,
       List<BusinessWhereInput>? NOT,
       StringFilter? id,
@@ -506,6 +524,7 @@ class BusinessWhereInput extends Equatable {
       AbuseReportListRelationFilter? abuseReports,
       FavoriteListRelationFilter? favorites}) {
     return BusinessWhereInput(
+        category: category ?? this.category,
         AND: AND ?? this.AND,
         OR: OR ?? this.OR,
         NOT: NOT ?? this.NOT,
@@ -532,6 +551,7 @@ class BusinessWhereInput extends Equatable {
   }
 
   List<Object?> get props => [
+        category,
         List.from(AND ?? []),
         List.from(OR ?? []),
         List.from(NOT ?? []),

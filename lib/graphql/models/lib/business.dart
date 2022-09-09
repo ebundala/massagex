@@ -23,6 +23,7 @@ class Business extends Equatable {
   final int? clients;
   final double? minPrice;
   final int? workCompleted;
+  final bool? isFavorited;
   final String? id;
   final User? owner;
   final String? ownerId;
@@ -50,6 +51,7 @@ class Business extends Equatable {
       this.clients,
       this.minPrice,
       this.workCompleted,
+      this.isFavorited,
       this.id,
       this.owner,
       this.ownerId,
@@ -79,6 +81,7 @@ class Business extends Equatable {
       clients: json['clients'],
       minPrice: json['minPrice']?.toDouble(),
       workCompleted: json['workCompleted'],
+      isFavorited: json['isFavorited'],
       id: json['id'],
       owner: json['owner'] != null ? User.fromJson(json['owner']) : null,
       ownerId: json['ownerId'],
@@ -135,6 +138,7 @@ class Business extends Equatable {
     if (clients != null) _data['clients'] = clients;
     if (minPrice != null) _data['minPrice'] = minPrice;
     if (workCompleted != null) _data['workCompleted'] = workCompleted;
+    if (isFavorited != null) _data['isFavorited'] = isFavorited;
     if (id != null) _data['id'] = id;
     if (owner != null) _data['owner'] = owner!.toJson();
     if (ownerId != null) _data['ownerId'] = ownerId;
@@ -175,6 +179,7 @@ class Business extends Equatable {
       int? clients,
       double? minPrice,
       int? workCompleted,
+      bool? isFavorited,
       String? id,
       User? owner,
       String? ownerId,
@@ -202,6 +207,7 @@ class Business extends Equatable {
         clients: clients ?? this.clients,
         minPrice: minPrice ?? this.minPrice,
         workCompleted: workCompleted ?? this.workCompleted,
+        isFavorited: isFavorited ?? this.isFavorited,
         id: id ?? this.id,
         owner: owner ?? this.owner,
         ownerId: ownerId ?? this.ownerId,
@@ -231,6 +237,7 @@ class Business extends Equatable {
         clients,
         minPrice,
         workCompleted,
+        isFavorited,
         id,
         owner,
         ownerId,
@@ -280,6 +287,8 @@ class BusinessController extends ValueNotifier<Business> {
   TextEditingController? minPriceController;
 
   TextEditingController? workCompletedController;
+
+  TextEditingController? isFavoritedController;
 
   TextEditingController? idController;
 

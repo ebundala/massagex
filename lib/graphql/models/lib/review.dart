@@ -12,6 +12,7 @@ import 'selection_node_data.dart';
 import "package:equatable/equatable.dart";
 
 class Review extends Equatable {
+  final bool? isFavorited;
   final String? id;
   final User? author;
   final String? authorId;
@@ -27,7 +28,8 @@ class Review extends Equatable {
   final List<AbuseReport>? abuseReports;
   final List<Favorite>? favorites;
   Review(
-      {this.id,
+      {this.isFavorited,
+      this.id,
       this.author,
       this.authorId,
       this.reviewee,
@@ -44,6 +46,7 @@ class Review extends Equatable {
 
   static Review fromJson(Map<dynamic, dynamic> json) {
     return Review(
+      isFavorited: json['isFavorited'],
       id: json['id'],
       author: json['author'] != null ? User.fromJson(json['author']) : null,
       authorId: json['authorId'],
@@ -80,6 +83,7 @@ class Review extends Equatable {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> _data = {};
+    if (isFavorited != null) _data['isFavorited'] = isFavorited;
     if (id != null) _data['id'] = id;
     if (author != null) _data['author'] = author!.toJson();
     if (authorId != null) _data['authorId'] = authorId;
@@ -106,7 +110,8 @@ class Review extends Equatable {
   }
 
   Review copyWith(
-      {String? id,
+      {bool? isFavorited,
+      String? id,
       User? author,
       String? authorId,
       User? reviewee,
@@ -121,6 +126,7 @@ class Review extends Equatable {
       List<AbuseReport>? abuseReports,
       List<Favorite>? favorites}) {
     return Review(
+        isFavorited: isFavorited ?? this.isFavorited,
         id: id ?? this.id,
         author: author ?? this.author,
         authorId: authorId ?? this.authorId,
@@ -138,6 +144,7 @@ class Review extends Equatable {
   }
 
   List<Object?> get props => [
+        isFavorited,
         id,
         author,
         authorId,
@@ -170,6 +177,8 @@ extension ReviewExt on Review {
 }
 
 class ReviewController extends ValueNotifier<Review> {
+  TextEditingController? isFavoritedController;
+
   TextEditingController? idController;
 
   UserController? authorController;

@@ -16,6 +16,8 @@ import 'selection_node_data.dart';
 import "package:equatable/equatable.dart";
 
 class Order extends Equatable {
+  final bool? isFavorited;
+  final bool? isExpired;
   final String? id;
   final int? quantity;
   final RecordStatus? recordStatus;
@@ -36,7 +38,9 @@ class Order extends Equatable {
   final List<AbuseReport>? abuseReports;
   final List<Favorite>? favorites;
   Order(
-      {this.id,
+      {this.isFavorited,
+      this.isExpired,
+      this.id,
       this.quantity,
       this.recordStatus,
       this.orderStatus,
@@ -58,6 +62,8 @@ class Order extends Equatable {
 
   static Order fromJson(Map<dynamic, dynamic> json) {
     return Order(
+      isFavorited: json['isFavorited'],
+      isExpired: json['isExpired'],
       id: json['id'],
       quantity: json['quantity'],
       recordStatus: json['recordStatus'] != null
@@ -102,6 +108,8 @@ class Order extends Equatable {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> _data = {};
+    if (isFavorited != null) _data['isFavorited'] = isFavorited;
+    if (isExpired != null) _data['isExpired'] = isExpired;
     if (id != null) _data['id'] = id;
     if (quantity != null) _data['quantity'] = quantity;
     if (recordStatus != null) _data['recordStatus'] = recordStatus!.toJson();
@@ -131,7 +139,9 @@ class Order extends Equatable {
   }
 
   Order copyWith(
-      {String? id,
+      {bool? isFavorited,
+      bool? isExpired,
+      String? id,
       int? quantity,
       RecordStatus? recordStatus,
       OrderStatus? orderStatus,
@@ -151,6 +161,8 @@ class Order extends Equatable {
       List<AbuseReport>? abuseReports,
       List<Favorite>? favorites}) {
     return Order(
+        isFavorited: isFavorited ?? this.isFavorited,
+        isExpired: isExpired ?? this.isExpired,
         id: id ?? this.id,
         quantity: quantity ?? this.quantity,
         recordStatus: recordStatus ?? this.recordStatus,
@@ -173,6 +185,8 @@ class Order extends Equatable {
   }
 
   List<Object?> get props => [
+        isFavorited,
+        isExpired,
         id,
         quantity,
         recordStatus,
@@ -210,6 +224,10 @@ extension OrderExt on Order {
 }
 
 class OrderController extends ValueNotifier<Order> {
+  TextEditingController? isFavoritedController;
+
+  TextEditingController? isExpiredController;
+
   TextEditingController? idController;
 
   TextEditingController? quantityController;

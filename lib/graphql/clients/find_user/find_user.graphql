@@ -18,6 +18,10 @@ query findUser($id: String!) {
 			metadata
 			createdAt
 			updatedAt
+			device {
+				id
+				fcm_id			  
+			}
 			location {
 				id
 				lat

@@ -23,6 +23,7 @@ class User extends Equatable {
   final DateTime? lastSeen;
   final double? compoundRating;
   final double? experience;
+  final bool? isFavorited;
   final String? id;
   final String? email;
   final String? displayName;
@@ -55,6 +56,7 @@ class User extends Equatable {
       {this.lastSeen,
       this.compoundRating,
       this.experience,
+      this.isFavorited,
       this.id,
       this.email,
       this.displayName,
@@ -90,6 +92,7 @@ class User extends Equatable {
           json['lastSeen'] != null ? DateTime.parse(json['lastSeen']) : null,
       compoundRating: json['compoundRating']?.toDouble(),
       experience: json['experience']?.toDouble(),
+      isFavorited: json['isFavorited'],
       id: json['id'],
       email: json['email'],
       displayName: json['displayName'],
@@ -165,6 +168,7 @@ class User extends Equatable {
     if (lastSeen != null) _data['lastSeen'] = lastSeen!.toString();
     if (compoundRating != null) _data['compoundRating'] = compoundRating;
     if (experience != null) _data['experience'] = experience;
+    if (isFavorited != null) _data['isFavorited'] = isFavorited;
     if (id != null) _data['id'] = id;
     if (email != null) _data['email'] = email;
     if (displayName != null) _data['displayName'] = displayName;
@@ -217,6 +221,7 @@ class User extends Equatable {
       {DateTime? lastSeen,
       double? compoundRating,
       double? experience,
+      bool? isFavorited,
       String? id,
       String? email,
       String? displayName,
@@ -249,6 +254,7 @@ class User extends Equatable {
         lastSeen: lastSeen ?? this.lastSeen,
         compoundRating: compoundRating ?? this.compoundRating,
         experience: experience ?? this.experience,
+        isFavorited: isFavorited ?? this.isFavorited,
         id: id ?? this.id,
         email: email ?? this.email,
         displayName: displayName ?? this.displayName,
@@ -283,6 +289,7 @@ class User extends Equatable {
         lastSeen,
         compoundRating,
         experience,
+        isFavorited,
         id,
         email,
         displayName,
@@ -334,6 +341,8 @@ class UserController extends ValueNotifier<User> {
   TextEditingController? compoundRatingController;
 
   TextEditingController? experienceController;
+
+  TextEditingController? isFavoritedController;
 
   TextEditingController? idController;
 

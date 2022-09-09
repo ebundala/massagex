@@ -14,6 +14,7 @@ import 'selection_node_data.dart';
 import "package:equatable/equatable.dart";
 
 class Service extends Equatable {
+  final bool? isFavorited;
   final String? id;
   final String? name;
   final String? description;
@@ -33,7 +34,8 @@ class Service extends Equatable {
   final List<AbuseReport>? abuseReports;
   final List<Favorite>? favorites;
   Service(
-      {this.id,
+      {this.isFavorited,
+      this.id,
       this.name,
       this.description,
       this.price,
@@ -54,6 +56,7 @@ class Service extends Equatable {
 
   static Service fromJson(Map<dynamic, dynamic> json) {
     return Service(
+      isFavorited: json['isFavorited'],
       id: json['id'],
       name: json['name'],
       description: json['description'],
@@ -94,6 +97,7 @@ class Service extends Equatable {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> _data = {};
+    if (isFavorited != null) _data['isFavorited'] = isFavorited;
     if (id != null) _data['id'] = id;
     if (name != null) _data['name'] = name;
     if (description != null) _data['description'] = description;
@@ -122,7 +126,8 @@ class Service extends Equatable {
   }
 
   Service copyWith(
-      {String? id,
+      {bool? isFavorited,
+      String? id,
       String? name,
       String? description,
       double? price,
@@ -141,6 +146,7 @@ class Service extends Equatable {
       List<AbuseReport>? abuseReports,
       List<Favorite>? favorites}) {
     return Service(
+        isFavorited: isFavorited ?? this.isFavorited,
         id: id ?? this.id,
         name: name ?? this.name,
         description: description ?? this.description,
@@ -162,6 +168,7 @@ class Service extends Equatable {
   }
 
   List<Object?> get props => [
+        isFavorited,
         id,
         name,
         description,
@@ -198,6 +205,8 @@ extension ServiceExt on Service {
 }
 
 class ServiceController extends ValueNotifier<Service> {
+  TextEditingController? isFavoritedController;
+
   TextEditingController? idController;
 
   TextEditingController? nameController;

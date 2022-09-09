@@ -20,10 +20,10 @@ class ProviderHomePage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ProviderHomePageState createState() => _ProviderHomePageState();
+  ProviderHomePageState createState() => ProviderHomePageState();
 }
 
-class _ProviderHomePageState extends State<ProviderHomePage> {
+class ProviderHomePageState extends State<ProviderHomePage> {
   int currentPage = 0;
   final controller = PageController(initialPage: 0);
   @override
@@ -112,8 +112,10 @@ class _ProviderHomePageState extends State<ProviderHomePage> {
           : FloatingActionButton(
               child: const Icon(IconlyLight.plus),
               onPressed: () async {
-                await context.navigator.pushNamed(AppRoutes.createService);
-                setState(() {});
+                await context.requireToCompleteProfile(onSuccess: () async {
+                  await context.navigator.pushNamed(AppRoutes.createService);
+                  setState(() {});
+                });
               }),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (value) {
@@ -252,10 +254,13 @@ class ServicesListPage extends StatelessWidget {
                                   ),
                                   TextsButton(
                                       onPressed: () async {
-                                        await context.navigator.pushNamed(
-                                            AppRoutes.createService,
-                                            arguments: item);
-                                        onEdited?.call(item);
+                                        await context.requireToCompleteProfile(
+                                            onSuccess: () async {
+                                          await context.navigator.pushNamed(
+                                              AppRoutes.createService,
+                                              arguments: item);
+                                          onEdited?.call(item);
+                                        });
                                       },
                                       child: Row(
                                         children: const [
