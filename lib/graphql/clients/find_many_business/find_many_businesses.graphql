@@ -1,5 +1,5 @@
-query findManyBusinesses($where: BusinessWhereInput, $take: Int, $skip: Int) {
-	findManyBusiness(where: $where, take: $take, skip: $skip) {
+query findManyBusinesses($where: BusinessWhereInput, $orderBy: [BusinessOrderByInput!] $take: Int, $skip: Int) {
+	findManyBusiness(where: $where, orderBy: $orderBy, take: $take, skip: $skip) {
 		status
 		message
 		data {

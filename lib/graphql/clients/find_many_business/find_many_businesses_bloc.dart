@@ -4,6 +4,7 @@ import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
 import 'package:models/business_where_input.dart';
+import 'package:models/business_order_by_input.dart';
 import 'package:models/business_list_response.dart';
 import 'find_many_businesses_ast.dart' show document;
 
@@ -88,7 +89,10 @@ class FindManyBusinessesBloc
   void findManyBusinessesLoadMore(FindManyBusinessesMoreLoaded event) {
     if (resultWrapper?.observableQuery != null) {
       client.findManyBusinessesLoadMore(resultWrapper!.observableQuery!,
-          where: event.where, take: event.take, skip: event.skip);
+          where: event.where,
+          orderBy: event.orderBy,
+          take: event.take,
+          skip: event.skip);
     }
   }
 
@@ -100,7 +104,10 @@ class FindManyBusinessesBloc
       try {
         await closeResultWrapper();
         resultWrapper = await client.findManyBusinesses(
-            where: event.where, take: event.take, skip: event.skip);
+            where: event.where,
+            orderBy: event.orderBy,
+            take: event.take,
+            skip: event.skip);
         //listen for changes
         resultWrapper!.subscription = resultWrapper!.stream?.listen((result) {
           //reset events before starting to emit new ones

@@ -4,6 +4,7 @@ import 'package:graphql/client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:massagex/graphql/common/common_client_helpers.dart';
 import 'package:models/order_where_input.dart';
+import 'package:models/order_order_by_input.dart';
 import 'package:models/user_response.dart';
 import 'find_my_business_orders_ast.dart' show document;
 
@@ -91,6 +92,7 @@ class FindMyBusinessOrdersBloc
         resultWrapper = await client.findMyBusinessOrders(
             uid: event.uid,
             where: event.where,
+            orderBy: event.orderBy,
             take: event.take,
             skip: event.skip);
         //listen for changes

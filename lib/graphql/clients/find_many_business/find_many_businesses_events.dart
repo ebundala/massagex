@@ -12,11 +12,12 @@ class FindManyBusinessesStarted extends FindManyBusinessesEvent {
 
 class FindManyBusinessesExcuted extends FindManyBusinessesEvent {
   final BusinessWhereInput? where;
+  final List<BusinessOrderByInput>? orderBy;
   final int? take;
   final int? skip;
-  FindManyBusinessesExcuted({this.where, this.take, this.skip});
+  FindManyBusinessesExcuted({this.where, this.orderBy, this.take, this.skip});
   @override
-  List<Object?> get props => [where, take, skip];
+  List<Object?> get props => [where, orderBy, take, skip];
 }
 
 class FindManyBusinessesIsLoading extends FindManyBusinessesEvent {
@@ -70,11 +71,13 @@ class FindManyBusinessesRefreshed extends FindManyBusinessesEvent {
 
 class FindManyBusinessesMoreLoaded extends FindManyBusinessesEvent {
   final BusinessWhereInput? where;
+  final List<BusinessOrderByInput>? orderBy;
   final int? take;
   final int? skip;
-  FindManyBusinessesMoreLoaded({this.where, this.take, this.skip});
+  FindManyBusinessesMoreLoaded(
+      {this.where, this.orderBy, this.take, this.skip});
   @override
-  List<Object?> get props => [where, take, skip];
+  List<Object?> get props => [where, orderBy, take, skip];
 }
 
 class FindManyBusinessesStreamEnded extends FindManyBusinessesEvent {

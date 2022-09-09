@@ -1,4 +1,4 @@
-query findMyBusinessOrders($uid: String!, $where: OrderWhereInput, $take: Int, $skip: Int) {
+query findMyBusinessOrders($uid: String!, $where: OrderWhereInput, $orderBy: [OrderOrderByInput!], $take: Int, $skip: Int) {
 	findUniqueUser(where: {
 		id: $uid
 	}) {
@@ -8,7 +8,7 @@ query findMyBusinessOrders($uid: String!, $where: OrderWhereInput, $take: Int, $
 			id
 			businessProfile {
 				id
-				orders(where: $where, take: $take, skip: $skip) {
+				orders(where: $where, orderBy: $orderBy, take: $take, skip: $skip) {
 					id
 					quantity		
 					orderStatus

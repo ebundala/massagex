@@ -18,6 +18,15 @@ const query = _i1.OperationDefinitionNode(
           defaultValue: _i1.DefaultValueNode(value: null),
           directives: []),
       _i1.VariableDefinitionNode(
+          variable: _i1.VariableNode(name: _i1.NameNode(value: 'orderBy')),
+          type: _i1.ListTypeNode(
+              type: _i1.NamedTypeNode(
+                  name: _i1.NameNode(value: 'OrderOrderByInput'),
+                  isNonNull: true),
+              isNonNull: false),
+          defaultValue: _i1.DefaultValueNode(value: null),
+          directives: []),
+      _i1.VariableDefinitionNode(
           variable: _i1.VariableNode(name: _i1.NameNode(value: 'skip')),
           type: _i1.NamedTypeNode(
               name: _i1.NameNode(value: 'Int'), isNonNull: false),
@@ -103,7 +112,11 @@ const query = _i1.OperationDefinitionNode(
                         _i1.ArgumentNode(
                             name: _i1.NameNode(value: 'take'),
                             value: _i1.VariableNode(
-                                name: _i1.NameNode(value: 'take')))
+                                name: _i1.NameNode(value: 'take'))),
+                        _i1.ArgumentNode(
+                            name: _i1.NameNode(value: 'orderBy'),
+                            value: _i1.VariableNode(
+                                name: _i1.NameNode(value: 'orderBy')))
                       ],
                       directives: [],
                       selectionSet: _i1.SelectionSetNode(selections: [

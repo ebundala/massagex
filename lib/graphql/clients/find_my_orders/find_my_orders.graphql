@@ -1,4 +1,4 @@
-query findMyOrders($uid: String!, $where: OrderWhereInput, $skip: Int, $take: Int) {
+query findMyOrders($uid: String!, $where: OrderWhereInput, $orderBy: [OrderOrderByInput!] $skip: Int, $take: Int) {
 	findUniqueUser(where: {
 		id: $uid
 	}) {
@@ -6,7 +6,7 @@ query findMyOrders($uid: String!, $where: OrderWhereInput, $skip: Int, $take: In
 		message
 		data {
 			id
-			ordered(where: $where, skip: $skip, take: $take) {
+			ordered(where: $where, skip: $skip, take: $take, orderBy: $orderBy ) {
 				id
 				quantity		
 				orderStatus

@@ -9,6 +9,7 @@ import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:massagex/graphql/clients/find_my_orders/find_my_orders_bloc.dart';
 import 'package:massagex/state/app/app_bloc.dart';
 import 'package:models/enum_order_status_filter.dart';
+import 'package:models/models.dart';
 import 'package:models/order_status.dart';
 import 'package:models/order_where_input.dart';
 
@@ -30,10 +31,10 @@ class _OrdersPageState extends State<OrdersPage> {
       orderStatus: EnumOrderStatusFilter(
           in$: const [OrderStatus.WAITING, OrderStatus.ACCEPTED]));
 
-  OrderWhereInput oldOrdersWhere = OrderWhereInput(
+  final oldOrdersWhere = OrderWhereInput(
       orderStatus: EnumOrderStatusFilter(
           in$: const [OrderStatus.PROCESSED, OrderStatus.REJECTED]));
-
+  final orderBy = OrderOrderByInput(createdAt: SortOrder.desc);
   @override
   void initState() {
     newOrdersBloc = FindMyOrdersBloc(client: context.client);

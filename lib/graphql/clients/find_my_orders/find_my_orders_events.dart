@@ -13,11 +13,13 @@ class FindMyOrdersStarted extends FindMyOrdersEvent {
 class FindMyOrdersExcuted extends FindMyOrdersEvent {
   final String uid;
   final OrderWhereInput? where;
+  final List<OrderOrderByInput>? orderBy;
   final int? skip;
   final int? take;
-  FindMyOrdersExcuted({required this.uid, this.where, this.skip, this.take});
+  FindMyOrdersExcuted(
+      {required this.uid, this.where, this.orderBy, this.skip, this.take});
   @override
-  List<Object?> get props => [uid, where, skip, take];
+  List<Object?> get props => [uid, where, orderBy, skip, take];
 }
 
 class FindMyOrdersIsLoading extends FindMyOrdersEvent {

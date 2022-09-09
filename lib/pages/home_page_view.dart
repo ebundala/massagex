@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconly/iconly.dart';
@@ -10,8 +12,19 @@ import 'package:massagex/widgets/components/chips.dart';
 import 'package:massagex/widgets/components/map_info_card.dart';
 import 'package:massagex/widgets/components/text_inputs.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
+import 'package:models/enum_business_mode_filter.dart';
+import 'package:models/enum_gender_filter.dart';
+import 'package:models/lat_lon.dart' as m;
 import 'package:models/business_mode.dart';
+import 'package:models/business_where_input.dart';
 import 'package:models/gender.dart';
+import 'package:models/location_relation_filter.dart';
+import 'package:models/location_where_input.dart';
+import 'package:models/query_mode.dart';
+import 'package:models/string_filter.dart';
+import 'package:models/user_relation_filter.dart';
+import 'package:models/user_where_input.dart';
+
 import 'package:place_picker/place_picker.dart' hide SearchInput;
 
 class HomePage extends StatefulWidget {
@@ -26,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   Gender? gender;
   bool isRefreshing = false;
   bool isLoadingMore = false;
-
+  final searchCtr = TextEditingController(text: "");
   final genderItems = Gender.values
       .map(
         (e) => DropdownMenuItem<Gender>(
@@ -41,6 +54,8 @@ class _HomePageState extends State<HomePage> {
       .toList();
 
   BusinessMode mode = BusinessMode.MOBILE$MODE;
+  final whereChangeStrem = StreamController<BuildContext>();
+
   @override
   void initState() {
     final loc = context.app.currentUser?.data?.location;
@@ -52,116 +67,181 @@ class _HomePageState extends State<HomePage> {
         ..formattedAddress = loc.name ?? ""
         ..latLng = latlng;
     }
+
+    whereChangeStrem.stream.listen((event) {
+      _reloadData(event);
+    });
     super.initState();
   }
 
   @override
+  void dispose() {
+    whereChangeStrem.close();
+    super.dispose();
+  }
+
+  BusinessWhereInput? computeWhere() {
+    return BusinessWhereInput(
+        owner: gender == null || gender == Gender.UNSPECIFIED
+            ? null
+            : UserRelationFilter(
+                is$: UserWhereInput(
+                  gender: EnumGenderFilter(equals: gender),
+                ),
+              ),
+        location: location == null
+            ? null
+            : LocationRelationFilter(
+                is$: LocationWhereInput(
+                  nearBy: m.LatLon(
+                      lon: location!.latLng!.longitude,
+                      lat: location!.latLng!.latitude),
+                ),
+              ),
+        mode: EnumBusinessModeFilter(equals: mode),
+        businessName: searchCtr.text.isEmpty == true
+            ? null
+            : StringFilter(
+                contains: searchCtr.text, mode: QueryMode.insensitive));
+  }
+
+  _reloadData(BuildContext context) {
+    context.bloc<FindManyBusinessesBloc>()
+      ..add(FindManyBusinessesReseted())
+      ..add(FindManyBusinessesExcuted(
+          take: context.app.pageSize, where: computeWhere()));
+  }
+
+  _notifyReloadData(BuildContext context) {
+    whereChangeStrem.add(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              const SliverToBoxAdapter(
-                child: Nunito(text: "location"),
-              ),
-              SliverToBoxAdapter(
-                child: StatefulBuilder(builder: (context, setState) {
-                  return Row(
-                    children: [
-                      Icon(IconlyLight.location,
-                          color: Theme.of(context).colorScheme.primary),
-                      Expanded(
-                          child: Nunito(
-                        text: location?.formattedAddress ?? "",
-                        overflow: TextOverflow.ellipsis,
-                        color: const Color.fromRGBO(22, 10, 49, 1),
-                        fontSize: 16,
-                      )),
-                      TextsButton(
-                        color: Theme.of(context).backgroundColor,
-                        child: const Nunito(text: "Change"),
-                        onPressed: () async {
-                          final result =
-                              await context.showPlacePicker(location?.latLng);
-                          if (result != null) {
-                            setState(
-                              () {
-                                location = result;
-                              },
-                            );
-                          }
-                        },
-                      )
-                    ],
-                  );
-                }),
-              ),
-              SliverToBoxAdapter(
-                  child: Row(
-                children: [
-                  const Expanded(flex: 2, child: SearchInput()),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  Expanded(
-                      child: DropdownInput<Gender>(
-                    fontSize: 14,
-                    value: gender,
-                    decoration: const InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 18),
-                        fillColor: Color.fromRGBO(242, 243, 242, 1),
-                        filled: true,
-                        border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)))),
-                    onChanged: (v) {
-                      setState(
-                        () {
-                          gender = v;
-                        },
-                      );
-                    },
-                    items: genderItems,
-                  ))
-                ],
-              )),
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 8),
-              ),
-              SliverToBoxAdapter(
-                child: TabBar(
-                    indicatorColor: Theme.of(context).colorScheme.primary,
-                    labelColor: Theme.of(context).colorScheme.onBackground,
-                    onTap: (v) {
-                      setState(() {
+    return BlocProvider<FindManyBusinessesBloc>(
+      create: (context) => FindManyBusinessesBloc(client: context.app.client!)
+        ..add(FindManyBusinessesReseted())
+        ..add(FindManyBusinessesExcuted(
+            take: context.app.pageSize, where: computeWhere())),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: DefaultTabController(
+          length: 2,
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                const SliverToBoxAdapter(
+                  child: Nunito(text: "location"),
+                ),
+                SliverToBoxAdapter(
+                  child: StatefulBuilder(builder: (context, setState) {
+                    return Row(
+                      children: [
+                        Icon(IconlyLight.location,
+                            color: Theme.of(context).colorScheme.primary),
+                        Expanded(
+                            child: Nunito(
+                          text: location?.formattedAddress ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          color: const Color.fromRGBO(22, 10, 49, 1),
+                          fontSize: 16,
+                        )),
+                        TextsButton(
+                          color: Theme.of(context).backgroundColor,
+                          child: const Nunito(text: "Change"),
+                          onPressed: () async {
+                            final result =
+                                await context.showPlacePicker(location?.latLng);
+                            if (result != null) {
+                              setState(
+                                () {
+                                  location = result;
+                                },
+                              );
+                              // ignore: use_build_context_synchronously
+                              _reloadData(context);
+                            }
+                          },
+                        )
+                      ],
+                    );
+                  }),
+                ),
+                SliverToBoxAdapter(
+                    child: Row(
+                  children: [
+                    Expanded(
+                        flex: 2,
+                        child: SearchInput(
+                          controller: searchCtr,
+                          decoration: InputDecoration(
+                              suffix: searchCtr.text.isEmpty == true
+                                  ? null
+                                  : InkWell(
+                                      onTap: () => searchCtr.clear(),
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.red,
+                                        size: 24,
+                                      ),
+                                    )),
+                          minLines: 1,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.search,
+                          onEditingComplete: () {
+                            _reloadData(context);
+                          },
+                        )),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    Expanded(
+                        child: DropdownInput<Gender>(
+                      fontSize: 14,
+                      value: gender,
+                      decoration: const InputDecoration(
+                          contentPadding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 18),
+                          fillColor: Color.fromRGBO(242, 243, 242, 1),
+                          filled: true,
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8.0)))),
+                      onChanged: (v) {
+                        gender = v;
+                        _reloadData(context);
+                      },
+                      items: genderItems,
+                    ))
+                  ],
+                )),
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 8),
+                ),
+                SliverToBoxAdapter(
+                  child: TabBar(
+                      indicatorColor: Theme.of(context).colorScheme.primary,
+                      labelColor: Theme.of(context).colorScheme.onBackground,
+                      onTap: (v) {
                         mode = v == 0
                             ? BusinessMode.MOBILE$MODE
                             : BusinessMode.OFFICE$MODE;
-                      });
-                    },
-                    tabs: const [
-                      Tab(
-                        text: "Mobile",
-                      ),
-                      Tab(
-                        text: "Office",
-                      )
-                    ]),
-              )
-            ];
-          },
-          floatHeaderSlivers: true,
-          body: BlocProvider<FindManyBusinessesBloc>(
-            create: (context) =>
-                FindManyBusinessesBloc(client: context.app.client!)
-                  ..add(FindManyBusinessesReseted())
-                  ..add(FindManyBusinessesExcuted(take: context.app.pageSize)),
-            child: Builder(builder: (context) {
+                        _reloadData(context);
+                      },
+                      tabs: const [
+                        Tab(
+                          text: "Mobile",
+                        ),
+                        Tab(
+                          text: "Office",
+                        )
+                      ]),
+                )
+              ];
+            },
+            floatHeaderSlivers: true,
+            body: Builder(builder: (context) {
               return BlocBuilder<FindManyBusinessesBloc,
                   FindManyBusinessesState>(builder: (context, state) {
                 final loading = state is FindManyBusinessesInProgress;
@@ -266,10 +346,12 @@ class _HomePageState extends State<HomePage> {
                                       spaceBetween: 4,
                                       titleFontSize: 16,
                                       bottom: DistanceChip(
-                                        iconSize: 20,
+                                        iconSize: 16,
+                                        labelPadding:
+                                            const EdgeInsets.only(right: 10),
                                         label: Nunito(
                                           text: item.distance!.display,
-                                          fontSize: 14,
+                                          fontSize: 10,
                                         ),
                                       ),
                                     ),
