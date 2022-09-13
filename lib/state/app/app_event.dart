@@ -51,6 +51,16 @@ class AppModeChaged extends AppEvent {
 }
 
 class AppNotified extends AppEvent {
+  final nt.Notification notification;
+  const AppNotified(this.notification);
   @override
-  List<Object> get props => [];
+  List<Object> get props => [notification];
+}
+
+class AppNotifiedAck extends AppEvent {
+  final nt.Notification notification;
+
+  const AppNotifiedAck(this.notification);
+  @override
+  List<Object> get props => [notification];
 }

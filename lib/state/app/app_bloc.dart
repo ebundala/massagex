@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -52,6 +53,7 @@ import 'package:massagex/utils.dart';
 import 'package:models/order.dart';
 import 'package:massagex/graphql/clients/register_device/register_device_bloc.dart';
 import 'package:massagex/graphql/clients/paybill/paybill_bloc.dart';
+import 'package:massagex/graphql/clients/reverse_geocode/reverse_geocode_bloc.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
@@ -71,10 +73,9 @@ Future<nt.Notification?> handleNotificationPayload(
               as List<dynamic>;
       final notification =
           jsonDecode(message.data["payload"]) as Map<dynamic, dynamic>;
-      notifications.insertAll(0, [notification]);
+      notifications.add(notification);
 
       await box.put(AppBloc.notificationsKey, notifications);
-      // print('Handling message $notification');
       return nt.Notification.fromJson(notification);
     }
   } catch (e) {
@@ -116,7 +117,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     'High Importance Notifications', // title
     description:
         'This channel is used for important notifications.', // description
-    importance: Importance.high,
+    importance: Importance.max,
   );
 
   GraphQLClient? client;
@@ -132,7 +133,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   StreamSubscription<BoxEvent>? idTokenStream;
   final FirebaseMessaging messaging = FirebaseMessaging.instance;
-  StreamSubscription<BoxEvent>? notificationsStream;
   final int pageSize;
   PaybillBloc? paybillBloc;
 
@@ -163,18 +163,13 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     await registerDeviceBloc!.close();
     await idTokenStream!.cancel();
     await fcmIdStream!.cancel();
-    await notificationsStream!.cancel();
     await paybillBloc!.close();
     await updateMyBusinessProfileBloc!.close();
     await updateMyProfileBloc!.close();
     await findUserBloc!.close();
     await geolocationBloc!.close();
     await deeplinkBloc!.close();
-    await authStream!.cancel();
     await providerModeSub!.cancel();
-    await fcmIdStream!.cancel();
-    await idTokenStream!.cancel();
-    await notificationsStream!.cancel();
 
     return super.close();
   }
@@ -234,7 +229,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           if (data["id"] != null && data["__typename"] != null) {
             return "${data["__typename"]}/${data["id"]}";
           }
-          return data["__typename"] as String?;
+          //return data["__typename"] as String?;
         },
         store: HiveStore(box),
       ),
@@ -361,49 +356,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       }
     });
 
-    // idTokenStream = userSettings!.watch(key: idTokenKey).listen((event) {
-    //   if (event.value != null) {
-    //     print("idToken changed ${event.value}");
-    //   } else {
-    //     add(const AppLogout());
-    //   }
-    // });
-
-    notificationsStream =
-        userSettings!.watch(key: notificationsKey).listen((event) {
-      add(const AppResseted());
-      add(AppNotified());
-    });
     providerModeSub = userSettings!.watch(key: providerkey).listen((event) {
       //disable traveling salesman if provider mode disabled
       if (event.value == false) {
         userSettings!.put(travellingSalesmanKey, false);
       }
-    });
-
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen((message) async {
-      //final notification =
-      await handleNotificationPayload(userSettings!, message);
-      // if (notification != null) {
-      // final data = parseNotification(notification);
-      // var body = "";
-      // if (data is Order) {
-      //   body = data.service!.name!;
-      // }
-      // if (data is Review) {
-      //   body = data.author!.displayName!;
-      // }
-
-      // showNotification(
-      //     notification.hashCode,
-      //     notification.message ??
-      //         notification.notificationType!
-      //             .toJson()
-      //             .replaceAll(RegExp("_"), " "),
-      //     body,
-      //     payload: message.data["payload"]);
-      // }
     });
 
     messaging.onTokenRefresh.listen((key) {
@@ -416,12 +373,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       if (user != null) {
         await upsertBusinessProfile(user.uid);
         print("firebase login ${user.uid}");
-
-        findUserBloc!
-          ..add(FindUserReseted())
-          ..add(
-            FindUserExcuted(id: user.uid),
-          );
         registerDeviceBloc!
           ..add(RegisterDeviceReseted())
           ..add(
@@ -429,6 +380,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               device: RegisterDeviceInput(userId: user.uid, id: deviceId!),
             ),
           );
+        findUserBloc!
+          ..add(FindUserReseted())
+          ..add(
+            FindUserExcuted(id: user.uid),
+          );
+
         if (state is AppFirstStarted ||
             state is AppLoggedOut ||
             state is AppStarted ||
@@ -448,6 +405,34 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     await appSettings!.put(fcmIdKey, await messaging.getToken());
     await userSettings!.put(idTokenKey, await fauth.currentUser?.getIdToken());
 
+    await Future.delayed(const Duration(seconds: 2), () {
+      add(const AppStart());
+    });
+  }
+
+  void initializeMessaging() async {
+    //should be called after auth passes
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessage.listen((message) async {
+      final notification =
+          await handleNotificationPayload(userSettings!, message);
+      if (notification != null) {
+        final data = parseNotification(notification);
+        var body = "";
+        if (data is Order) {
+          body = data.service!.name!;
+        }
+        // if (data is Review) {
+        //   body = data.author!.displayName!;
+        // }
+        add(const AppResseted());
+        add(AppNotified(notification));
+        showNotification(
+            notification.hashCode, notification.message ?? " ", body,
+            payload: message.data["payload"]);
+      }
+    });
+
     flutterLocalNotificationsPlugin.initialize(
         const InitializationSettings(
           android: AndroidInitializationSettings(
@@ -455,8 +440,10 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           ),
         ), onSelectNotification: (payload) async {
       final data = jsonDecode(payload ?? '{}');
-      final d = nt.Notification.fromJson(data);
-      await removeSeenNotification(d);
+      final notification = nt.Notification.fromJson(data);
+      // await removeSeenNotification(d);
+      add(const AppResseted());
+      add(AppNotified(notification));
       // deeplinkBloc!
       //   ..add(const DeeplinkResetted())
       //   ..add(DeeplinkExcuted(data: notification));
@@ -480,36 +467,26 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       //   sound: true,
       // );
     }
-
-    await Future.delayed(const Duration(seconds: 2), () {
-      add(const AppStart());
-    });
-
-    //handle app opened by notifications
-
-    Future.delayed(const Duration(seconds: 5)).then((value) async {
-      final details = await flutterLocalNotificationsPlugin
-          .getNotificationAppLaunchDetails();
-
-      if (details?.didNotificationLaunchApp == true) {
-        try {
-          final data =
-              nt.Notification.fromJson(jsonDecode(details!.payload ?? '{}'));
-          deeplinkBloc!
-            ..add(const DeeplinkResetted())
-            ..add(DeeplinkExcuted(data: data));
-        } catch (e) {
-          print(e);
-        }
-      }
-      if (notifications.isNotEmpty == true) {
-        final value = userSettings?.get(notificationsKey, defaultValue: []);
-        userSettings!.put(notificationsKey, value);
-      }
-    });
   }
 
-  showNotification(int id, String title, String body, {String? payload}) {
+  Future<void> handleLaunchByNotification() async {
+    //handle app opened by notifications make sure auth is ready before calling this
+    final details =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+    if (details?.didNotificationLaunchApp == true) {
+      try {
+        final data =
+            nt.Notification.fromJson(jsonDecode(details!.payload ?? '{}'));
+        add(const AppResseted());
+        add(AppNotified(data));
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  void showNotification(int id, String title, String body, {String? payload}) {
     flutterLocalNotificationsPlugin.show(
         id,
         title,
@@ -539,7 +516,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     }
   }
 
-  saveBusinessProfileData(BusinessCreateWithoutOwnerInput profile) async {
+  Future<void> saveBusinessProfileData(
+      BusinessCreateWithoutOwnerInput profile) async {
     await box!.put(businessProfileKey, profile.toJson());
   }
 
@@ -642,6 +620,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     });
   }
 
+  Future<Iterable<int>> getShowingNotifications() async {
+    final data = await (flutterLocalNotificationsPlugin
+            as AndroidFlutterLocalNotificationsPlugin)
+        .getActiveNotifications();
+
+    return Iterable.generate(data?.length ?? 0, (i) {
+      return data![i].id;
+    });
+  }
+
   Future<void> handleEvents(AppEvent event, Emitter<AppState> emit) async {
     // if (event is AppStart) {
     //   //registerLocationListener();
@@ -660,6 +648,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       emit(AppAuthenticated(
           isProviderMode: isProviderEnabled,
           isTravellingSalesman: isTravellingSalesman));
+      initializeMessaging();
+      handleLaunchByNotification();
+      startGeolocation();
     } else if (event is AppResseted) {
       emit(
         AppStateReset(
@@ -682,9 +673,18 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     } else if (event is AppNotified) {
       emit(
         AppNewNotification(
+            notification: event.notification,
             isProviderMode: isProviderEnabled,
             isTravellingSalesman: isTravellingSalesman),
       );
+    } else if (event is AppNotifiedAck) {
+      emit(
+        AppSeenNotification(
+            notification: event.notification,
+            isProviderMode: isProviderEnabled,
+            isTravellingSalesman: isTravellingSalesman),
+      );
+      removeSeenNotification(event.notification);
     } else if (event is AppIdTokenChanged) {
       if (token == null || token?.isEmpty == true) {
         add(const AppResseted());
@@ -694,7 +694,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       await box?.clear();
       await userSettings!.clear();
       //stop geolocation service
-
+      stopGeolocation();
       emit(
         AppLoggedOut(
             isProviderMode: isProviderEnabled,
@@ -721,12 +721,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   Future<nt.Notification> removeSeenNotification(
       nt.Notification notification) async {
+    await flutterLocalNotificationsPlugin.cancel(notification.hashCode);
     var oldData = userSettings!.get(notificationsKey, defaultValue: []) as List;
     var trancated = oldData
         .where((element) => !const DeepCollectionEquality()
             .equals(element, notification.toJson()))
         .toList();
-    await userSettings!.delete(AppBloc.notificationsKey);
     await userSettings!.put(notificationsKey, trancated);
     return notification;
   }
@@ -1337,6 +1337,39 @@ extension ClientContext on BuildContext {
     } else if (state is RegisterDeviceError || state is RegisterDeviceFailure) {
       onError?.call();
     }
+  }
+
+  Future<String> reverseGeocode(LatLng location) async {
+    final result = await waitForBlocOperation<
+            ReverseGeocodeBloc,
+            ReverseGeocodeEvent,
+            ReverseGeocodeState,
+            ReverseGeocodeSuccess,
+            ReverseGeocodeFailure,
+            ReverseGeocodeError,
+            ReverseGeocodeExcuted,
+            ReverseGeocodeReseted>(
+        bloc: ReverseGeocodeBloc(client: client),
+        excuted: ReverseGeocodeExcuted(
+            longitude: location.longitude, latitude: location.latitude),
+        reseted: ReverseGeocodeReseted());
+    if (result is ReverseGeocodeSuccess &&
+        result.data.data?.results?.isNotEmpty == true) {
+      return result.data.data!.results!.first.formatted$address!;
+    } else {
+      return "unnamed location";
+    }
+  }
+
+  Future<String?> getLocationName(LocationResult? loc) async {
+    if (loc?.formattedAddress == null ||
+        loc?.formattedAddress?.isEmpty == true ||
+        loc?.formattedAddress == "unknown") {
+      final name = await reverseGeocode(
+          LatLng(loc!.latLng!.latitude, loc.latLng!.longitude));
+      return name;
+    }
+    return loc?.formattedAddress;
   }
 }
 

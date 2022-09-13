@@ -41,8 +41,19 @@ class AppStateReset extends AppState {
 }
 
 class AppNewNotification extends AppState {
+  final nt.Notification notification;
   const AppNewNotification(
-      {required super.isProviderMode, required super.isTravellingSalesman});
+      {required this.notification,
+      required super.isProviderMode,
+      required super.isTravellingSalesman});
+}
+
+class AppSeenNotification extends AppState {
+  final nt.Notification notification;
+  const AppSeenNotification(
+      {required this.notification,
+      required super.isProviderMode,
+      required super.isTravellingSalesman});
 }
 
 class AppLoggedOut extends AppState {

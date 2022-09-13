@@ -7,6 +7,7 @@ import 'package:massagex/state/app/app_bloc.dart';
 import 'package:models/notification.dart' as nt;
 import 'package:models/notification_type.dart';
 import 'package:models/order.dart';
+import 'package:models/review.dart';
 
 class PushNotificationsListener extends StatefulWidget {
   const PushNotificationsListener({Key? key, required this.child})
@@ -17,12 +18,13 @@ class PushNotificationsListener extends StatefulWidget {
       _PushNotificationsListenerState();
 }
 
-class _PushNotificationsListenerState extends State<PushNotificationsListener> {
+class _PushNotificationsListenerState extends State<PushNotificationsListener>
+    with WidgetsBindingObserver {
   StreamSubscription<BoxEvent>? newOrderNotificationSubscription;
   StreamSubscription<BoxEvent>? acceptedOrderNotificationSubscription;
   StreamSubscription<BoxEvent>? canceledOrderNotificationSubscription;
   StreamSubscription<BoxEvent>? procesedOrderNotificationSubscription;
-
+  final List<AppLifecycleState> _stateHistoryList = [];
   void stop() {
     newOrderNotificationSubscription?.cancel();
     acceptedOrderNotificationSubscription?.cancel();
@@ -126,24 +128,75 @@ class _PushNotificationsListenerState extends State<PushNotificationsListener> {
     });
   }
 
+  parseNotification(BuildContext context, nt.Notification notification) async {
+    switch (notification.notificationType) {
+      case NotificationType.ORDER$RECIEVED:
+        final order = Order.fromJson(notification.payload!.value);
+        print("Order received");
+
+        await context
+            .showIncomingRequestNotification(order: order)
+            .then((value) {
+          context.app
+            ..add(const AppResseted())
+            ..add(AppNotifiedAck(notification));
+        });
+        break;
+      case NotificationType.ORDER$CANCELLED:
+        final order = Order.fromJson(notification.payload!.value);
+        print("Order canceled");
+        break;
+      case NotificationType.ORDER$DISPATCHED:
+        break;
+      case NotificationType.ORDER$ACCEPTED:
+        final order = Order.fromJson(notification.payload!.value);
+        print("Order accepted");
+        break;
+      case NotificationType.ORDER$PAYED:
+        final order = Order.fromJson(notification.payload!.value);
+        print("Order payed");
+        break;
+      case NotificationType.ORDER$DELIVERED:
+        break;
+      case NotificationType.ORDER$UPDATED:
+        break;
+      case NotificationType.REVIEW$RECIEVED:
+        break;
+      case NotificationType.REVIEW$UPDATED:
+        break;
+      default:
+        break;
+    }
+  }
+
   @override
   void dispose() {
-    stop();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    if (WidgetsBinding.instance.lifecycleState != null) {
+      _stateHistoryList.add(WidgetsBinding.instance.lifecycleState!);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _stateHistoryList.add(state);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AppBloc, AppState>(
         listener: (BuildContext context, state) {
-          if (state is AppAuthenticated) {
-            start();
-            //Start geolocation service
-            context.app.startGeolocation();
-          }
-          if (state is AppLoggedOut) {
-            stop();
-            context.app.stopGeolocation();
+          if (state is AppNewNotification) {
+            // handle notifications
+            print(state.notification);
+            parseNotification(context, state.notification);
           }
         },
         child: widget.child);
