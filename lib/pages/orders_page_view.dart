@@ -37,9 +37,26 @@ class _OrdersPageState extends State<OrdersPage> {
   final orderBy = OrderOrderByInput(createdAt: SortOrder.desc);
   @override
   void initState() {
-    newOrdersBloc = FindMyOrdersBloc(client: context.client);
-    oldOrdersBloc = FindMyOrdersBloc(client: context.client);
-
+    newOrdersBloc = FindMyOrdersBloc(client: context.client)
+      ..add(FindMyOrdersReseted())
+      ..add(
+        FindMyOrdersExcuted(
+          uid: context.app.fauth.currentUser!.uid,
+          where: newOrdersWhere,
+          take: context.app.pageSize,
+          orderBy: [orderBy],
+        ),
+      );
+    oldOrdersBloc = FindMyOrdersBloc(client: context.client)
+      ..add(FindMyOrdersReseted())
+      ..add(
+        FindMyOrdersExcuted(
+          uid: context.app.fauth.currentUser!.uid,
+          where: oldOrdersWhere,
+          take: context.app.pageSize,
+          orderBy: [orderBy],
+        ),
+      );
     super.initState();
   }
 
@@ -63,23 +80,10 @@ class _OrdersPageState extends State<OrdersPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: BlocBuilder<FindMyOrdersBloc, FindMyOrdersState>(
-          bloc: newOrdersBloc
-            ..add(FindMyOrdersReseted())
-            ..add(
-              FindMyOrdersExcuted(
-                  uid: context.app.fauth.currentUser!.uid,
-                  where: newOrdersWhere),
-            ),
+          bloc: newOrdersBloc,
           builder: (context, nState) {
             return BlocBuilder<FindMyOrdersBloc, FindMyOrdersState>(
-                bloc: oldOrdersBloc
-                  ..add(FindMyOrdersReseted())
-                  ..add(
-                    FindMyOrdersExcuted(
-                        uid: context.app.fauth.currentUser!.uid,
-                        where: oldOrdersWhere,
-                        take: context.app.pageSize),
-                  ),
+                bloc: oldOrdersBloc,
                 builder: (context, oState) {
                   final loading = oState is FindMyOrdersInProgress ||
                       nState is FindMyOrdersInProgress;
@@ -89,23 +93,24 @@ class _OrdersPageState extends State<OrdersPage> {
                   return NotificationListener<OverscrollNotification>(
                     onNotification: (e) {
                       if (e.overscroll > 0) {
-                        final loaded = oState.data?.data?.ordered?.length ?? 0;
-                        context.waitForBlocOperation<
-                                FindMyOrdersBloc,
-                                FindMyOrdersEvent,
-                                FindMyOrdersState,
-                                FindMyOrdersSuccess,
-                                FindMyOrdersFailure,
-                                FindMyOrdersError,
-                                FindMyOrdersExcuted,
-                                FindMyOrdersReseted>(
-                            bloc: oldOrdersBloc,
-                            excuted: FindMyOrdersExcuted(
-                                uid: context.app.fauth.currentUser!.uid,
-                                skip: loaded,
-                                take: context.app.pageSize),
-                            reseted: FindMyOrdersReseted(),
-                            callback: (v) => isLoadingMore = !isLoadingMore);
+                        // final loaded = oState.data?.data?.ordered?.length ?? 0;
+                        // context.waitForBlocOperation<
+                        //         FindMyOrdersBloc,
+                        //         FindMyOrdersEvent,
+                        //         FindMyOrdersState,
+                        //         FindMyOrdersSuccess,
+                        //         FindMyOrdersFailure,
+                        //         FindMyOrdersError,
+                        //         FindMyOrdersExcuted,
+                        //         FindMyOrdersReseted>(
+                        //     bloc: oldOrdersBloc,
+                        //     excuted: FindMyOrdersExcuted(
+                        //         uid: context.app.fauth.currentUser!.uid,
+                        //         skip: loaded,
+                        //         orderBy: [orderBy],
+                        //         take: context.app.pageSize),
+                        //     reseted: FindMyOrdersReseted(),
+                        //     callback: (v) => isLoadingMore = !isLoadingMore);
                       }
                       return false;
                     },
@@ -124,6 +129,7 @@ class _OrdersPageState extends State<OrdersPage> {
                           excuted: FindMyOrdersExcuted(
                               uid: context.app.fauth.currentUser!.uid,
                               where: newOrdersWhere,
+                              orderBy: [orderBy],
                               take: context.app.pageSize),
                           reseted: FindMyOrdersReseted(),
                         );
@@ -141,6 +147,7 @@ class _OrdersPageState extends State<OrdersPage> {
                             excuted: FindMyOrdersExcuted(
                                 uid: context.app.fauth.currentUser!.uid,
                                 where: oldOrdersWhere,
+                                orderBy: [orderBy],
                                 take: context.app.pageSize),
                             reseted: FindMyOrdersReseted(),
                             callback: (v) => isLoadingMore = !isLoadingMore);

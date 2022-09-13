@@ -21,28 +21,19 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   AndroidNotificationChannel channel;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  await flutterLocalNotificationsPlugin.initialize(
-      const InitializationSettings(
-        android: AndroidInitializationSettings(
-          "launch_background",
-        ),
-      ), onSelectNotification: (payload) {
-    try {
-      // final data = jsonDecode(payload!);
-      // final item = _.Notification.fromJson(data);
-
-      return;
-    } catch (e) {
-      return;
-    }
-  });
+  await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
+    android: AndroidInitializationSettings(
+      "launch_background",
+    ),
+  ));
   if (!kIsWeb) {
     channel = const AndroidNotificationChannel(
       'high_importance_channel', // id
       'High Importance Notifications', // title
       description:
           'This channel is used for important notifications.', // description
-      importance: Importance.high,
+      importance: Importance.max,
+      playSound: true,
     );
 
     /// Create an Android Notification Channel.
@@ -79,7 +70,8 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
           android: AndroidNotificationDetails(channel.id, channel.name,
               channelDescription: channel.description,
               fullScreenIntent: true,
-              importance: Importance.max
+              importance: Importance.max,
+              priority: Priority.max
               // icon: 'ic_launcher',
               ),
         ),

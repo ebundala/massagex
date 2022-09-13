@@ -9,6 +9,7 @@ import 'package:massagex/widgets/texts/styled_text.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:massagex/graphql/clients/find_route/find_route_bloc.dart';
 import 'package:models/lat_lng_input.dart';
+import 'package:place_picker/entities/location_result.dart';
 import 'package:widgetbook_annotation/widgetbook_annotation.dart'
     show WidgetbookUseCase;
 import 'package:widgetbook/widgetbook.dart' hide WidgetbookUseCase;
@@ -61,7 +62,7 @@ class _LiveMapState extends State<LiveMap> {
     _mapControllerCompleter.future.then((value) async {
       mapController = value;
       const imageConfig = ImageConfiguration(
-        size: Size(60, 60),
+        size: Size(80, 80),
       );
       final startIcon = await BitmapDescriptor.fromAssetImage(
           imageConfig, "assets/images/starting_pos.png");
@@ -73,17 +74,23 @@ class _LiveMapState extends State<LiveMap> {
       setState(() {
         markers.addAll([
           Marker(
-              markerId: const MarkerId("startingPoint"),
-              position: widget.data.startingPoint,
-              icon: startIcon),
+            markerId: const MarkerId("startingPoint"),
+            position: widget.data.startingPoint,
+            icon: startIcon,
+            infoWindow: const InfoWindow(title: "Starting Point"),
+          ),
           Marker(
-              markerId: const MarkerId("destinationPoint"),
-              position: widget.data.destinationPoint,
-              icon: destnationIcon),
+            markerId: const MarkerId("destinationPoint"),
+            position: widget.data.destinationPoint,
+            icon: destnationIcon,
+            infoWindow: const InfoWindow(title: "Destination Point"),
+          ),
           Marker(
-              markerId: const MarkerId("currentPosition"),
-              position: widget.data.startingPoint,
-              icon: positionIcon)
+            markerId: const MarkerId("currentPosition"),
+            position: widget.data.startingPoint,
+            icon: positionIcon,
+            infoWindow: const InfoWindow(title: "Current Position"),
+          )
         ]);
         widget.data.positionUpdateStream.stream.listen(updateCurrentPosition);
       });
@@ -233,17 +240,43 @@ class _LiveMapState extends State<LiveMap> {
                             //   ],
                             // ),
                             Expanded(
-                              child: MapNavigationDestinationInfo(
-                                startingPoint: (widget.data as TravellerMapData)
-                                    .startingPointName,
-                                startingPointSubtitle:
-                                    (widget.data as TravellerMapData)
-                                        .startingPointSubtitle,
-                                destination: widget.data.destinationName,
-                                destinationSubTitle:
-                                    (widget.data as TravellerMapData)
-                                        .destinationSubtitle,
-                              ),
+                              child: FutureBuilder<String?>(
+                                  future: context.getLocationName(
+                                      LocationResult()
+                                        ..formattedAddress =
+                                            (widget.data as TravellerMapData)
+                                                .destinationName
+                                        ..latLng = LatLng(
+                                            widget
+                                                .data.destinationPoint.latitude,
+                                            widget.data.destinationPoint
+                                                .longitude)),
+                                  builder: (context, destSnapshot) {
+                                    return FutureBuilder<String?>(
+                                        future: context.getLocationName(
+                                            LocationResult()
+                                              ..formattedAddress = (widget.data
+                                                      as TravellerMapData)
+                                                  .startingPointName
+                                              ..latLng = LatLng(
+                                                  widget.data.startingPoint
+                                                      .latitude,
+                                                  widget.data.startingPoint
+                                                      .longitude)),
+                                        builder: (context, snapshot) {
+                                          return MapNavigationDestinationInfo(
+                                            startingPoint: snapshot.data ?? "",
+                                            startingPointSubtitle: (widget.data
+                                                    as TravellerMapData)
+                                                .startingPointSubtitle,
+                                            destination:
+                                                widget.data.destinationName,
+                                            destinationSubTitle: (widget.data
+                                                    as TravellerMapData)
+                                                .destinationSubtitle,
+                                          );
+                                        });
+                                  }),
                             )
                           ],
                         ),
@@ -270,16 +303,23 @@ class _LiveMapState extends State<LiveMap> {
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(4.0, 36, 4.0, 8),
-                child: WaitingMapInfoCard(
-                    avator: widget.data.avator,
-                    displayName: widget.data.displayName,
-                    rating: widget.data.rating,
-                    onCall: () => widget.data.onCall(context),
-                    eta: (widget.data as WaitingMapData).eta,
-                    destination:
-                        (widget.data as WaitingMapData).destinationName,
-                    userSubTitle: widget.data.userSubTitle,
-                    count: widget.data.count),
+                child: FutureBuilder<String?>(
+                    future: context.getLocationName(LocationResult()
+                      ..formattedAddress =
+                          (widget.data as WaitingMapData).destinationName
+                      ..latLng = LatLng(widget.data.destinationPoint.latitude,
+                          widget.data.destinationPoint.longitude)),
+                    builder: (context, snapshot) {
+                      return WaitingMapInfoCard(
+                          avator: widget.data.avator,
+                          displayName: widget.data.displayName,
+                          rating: widget.data.rating,
+                          onCall: () => widget.data.onCall(context),
+                          eta: (widget.data as WaitingMapData).eta,
+                          destination: snapshot.data ?? "",
+                          userSubTitle: widget.data.userSubTitle,
+                          count: widget.data.count);
+                    }),
               ),
             ))
         : SizedBox(

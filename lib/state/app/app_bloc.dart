@@ -486,7 +486,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     }
   }
 
-  void showNotification(int id, String title, String body, {String? payload}) {
+  void showNotification(int id, String title, String body,
+      {String? payload, bool fullScreenIntent = false}) {
     flutterLocalNotificationsPlugin.show(
         id,
         title,
@@ -495,9 +496,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           android: AndroidNotificationDetails(
             channel.id, channel.name,
             channelDescription: channel.description,
-            importance: Importance.high,
-            priority: Priority.high,
-            fullScreenIntent: true,
+            importance: Importance.max,
+            priority: Priority.max,
+            fullScreenIntent: fullScreenIntent,
             playSound: true,
             // icon: 'ic_launcher',
           ),
