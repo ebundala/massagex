@@ -7,6 +7,8 @@ import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/pages/home_page_view.dart';
 import 'package:massagex/widgets/texts/styled_text.dart';
 
+import 'account_page_view.dart';
+
 class UserHomePage extends StatefulWidget {
   const UserHomePage({
     Key? key,
@@ -105,11 +107,11 @@ class UserHomePageState extends State<UserHomePage> {
               currentPage = i;
             });
           },
-          children: [
-            const HomePage(),
-            const OrdersPage(),
-            const NotificationsPage(),
-            Container(color: Colors.blueGrey)
+          children: const [
+            HomePage(),
+            OrdersPage(),
+            NotificationsPage(),
+            AccountPage()
           ],
         ),
       ),
