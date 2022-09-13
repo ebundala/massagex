@@ -1,0 +1,16 @@
+query reverseGeocode($latitude: Float!, $longitude: Float!) {
+	reverseGeocode(data: {
+		latlng: {
+			lat: $latitude
+			lng: $longitude
+		}
+	}) {
+		status
+		message
+		data {
+			results {
+				formatted_address
+			}
+		}
+	}
+}
