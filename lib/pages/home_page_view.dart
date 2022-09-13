@@ -54,7 +54,6 @@ class _HomePageState extends State<HomePage> {
       .toList();
 
   BusinessMode mode = BusinessMode.MOBILE$MODE;
-  final whereChangeStrem = StreamController<BuildContext>();
 
   @override
   void initState() {
@@ -68,16 +67,7 @@ class _HomePageState extends State<HomePage> {
         ..latLng = latlng;
     }
 
-    whereChangeStrem.stream.listen((event) {
-      _reloadData(event);
-    });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    whereChangeStrem.close();
-    super.dispose();
   }
 
   BusinessWhereInput? computeWhere() {
@@ -110,10 +100,6 @@ class _HomePageState extends State<HomePage> {
       ..add(FindManyBusinessesReseted())
       ..add(FindManyBusinessesExcuted(
           take: context.app.pageSize, where: computeWhere()));
-  }
-
-  _notifyReloadData(BuildContext context) {
-    whereChangeStrem.add(context);
   }
 
   @override

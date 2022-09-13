@@ -63,27 +63,6 @@ import 'package:uuid/uuid.dart';
 part 'app_event.dart';
 part 'app_state.dart';
 
-Future<nt.Notification?> handleNotificationPayload(
-    Box box, RemoteMessage message) async {
-  try {
-    if (message.data['payload'] != null) {
-      // await box.delete(AppBloc.notificationsKey);
-      var notifications =
-          await box.get(AppBloc.notificationsKey, defaultValue: <dynamic>[])
-              as List<dynamic>;
-      final notification =
-          jsonDecode(message.data["payload"]) as Map<dynamic, dynamic>;
-      notifications.add(notification);
-
-      await box.put(AppBloc.notificationsKey, notifications);
-      return nt.Notification.fromJson(notification);
-    }
-  } catch (e) {
-    return null;
-  }
-  return null;
-}
-
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({required this.url, this.pageSize = 10})
       : super(const AppInitial(
@@ -112,13 +91,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   StreamSubscription<BoxEvent>? authStream;
 
   Box<Map<dynamic, dynamic>?>? box;
-  final AndroidNotificationChannel channel = const AndroidNotificationChannel(
-    'high_importance_channel', // id
-    'High Importance Notifications', // title
-    description:
-        'This channel is used for important notifications.', // description
-    importance: Importance.max,
-  );
 
   GraphQLClient? client;
   DeeplinkBloc? deeplinkBloc;
@@ -456,7 +428,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
-          ?.createNotificationChannel(channel);
+          ?.createNotificationChannel(androidNotificationChanel);
 
       /// Update the iOS foreground notification presentation options to allow
       /// heads up notifications.
@@ -494,8 +466,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         body,
         NotificationDetails(
           android: AndroidNotificationDetails(
-            channel.id, channel.name,
-            channelDescription: channel.description,
+            androidNotificationChanel.id, androidNotificationChanel.name,
+            channelDescription: androidNotificationChanel.description,
             importance: Importance.max,
             priority: Priority.max,
             fullScreenIntent: fullScreenIntent,

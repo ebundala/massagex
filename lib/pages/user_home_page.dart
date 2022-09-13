@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
+import 'package:massagex/pages/notifications_page_view.dart';
 import 'package:massagex/pages/orders_page_view.dart';
 import 'package:massagex/pages/page_layout.dart';
 import 'package:massagex/state/app/app_bloc.dart';
@@ -107,7 +108,7 @@ class UserHomePageState extends State<UserHomePage> {
           children: [
             const HomePage(),
             const OrdersPage(),
-            Container(color: Colors.black),
+            const NotificationsPage(),
             Container(color: Colors.blueGrey)
           ],
         ),
