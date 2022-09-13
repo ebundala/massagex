@@ -4,6 +4,7 @@ import 'package:massagex/pages/orders_page_view.dart';
 import 'package:massagex/pages/page_layout.dart';
 import 'package:massagex/state/app/app_bloc.dart';
 import 'package:massagex/pages/home_page_view.dart';
+import 'package:massagex/widgets/texts/styled_text.dart';
 
 class UserHomePage extends StatefulWidget {
   const UserHomePage({
@@ -40,13 +41,58 @@ class UserHomePageState extends State<UserHomePage> {
           });
         },
         currentIndex: currentPage,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(IconlyLight.home), label: "Home"),
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
+              icon: Icon(IconlyLight.home), label: "Home"),
+          const BottomNavigationBarItem(
               icon: Icon(IconlyLight.calendar), label: "Schedule"),
           BottomNavigationBarItem(
-              icon: Icon(IconlyLight.notification), label: "Notification"),
-          BottomNavigationBarItem(
+              icon: SizedBox(
+                height: 24,
+                width: 24,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    const Positioned.fill(
+                        child: Icon(IconlyLight.notification)),
+                    Positioned(
+                        top: -8,
+                        right: -8,
+
+                        // width: 12,
+                        child: StreamBuilder<Object>(
+                            stream: context.app.userSettings!
+                                .watch(key: AppBloc.notificationsKey),
+                            builder: (context, snapshot) {
+                              final notifications = context.app.userSettings!
+                                  .get(AppBloc.notificationsKey,
+                                      defaultValue: []) as List;
+                              if (notifications.isEmpty) {
+                                return const SizedBox(
+                                  height: 0,
+                                  width: 0,
+                                );
+                              }
+                              return Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
+                                child: Nunito(
+                                  text: "${notifications.length}",
+                                  fontSize: 12,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              );
+                            }))
+                  ],
+                ),
+              ),
+              label: "Notification"),
+          const BottomNavigationBarItem(
               icon: Icon(IconlyLight.profile), label: "Profile")
         ],
       ),

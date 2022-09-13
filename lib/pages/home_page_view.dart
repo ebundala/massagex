@@ -140,12 +140,16 @@ class _HomePageState extends State<HomePage> {
                         Icon(IconlyLight.location,
                             color: Theme.of(context).colorScheme.primary),
                         Expanded(
-                            child: Nunito(
-                          text: location?.formattedAddress ?? "",
-                          overflow: TextOverflow.ellipsis,
-                          color: const Color.fromRGBO(22, 10, 49, 1),
-                          fontSize: 16,
-                        )),
+                            child: FutureBuilder<String?>(
+                                future: context.getLocationName(location),
+                                builder: (context, snapshot) {
+                                  return Nunito(
+                                    text: snapshot.data ?? "",
+                                    overflow: TextOverflow.ellipsis,
+                                    color: const Color.fromRGBO(22, 10, 49, 1),
+                                    fontSize: 16,
+                                  );
+                                })),
                         TextsButton(
                           color: Theme.of(context).backgroundColor,
                           child: const Nunito(text: "Change"),

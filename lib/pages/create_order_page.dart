@@ -72,26 +72,26 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
     super.initState();
   }
 
-  List<bool> checkOrderStatus(Order order) {
-    final rawData = context.app.userSettings!
-        .get(AppBloc.notificationsKey, defaultValue: [])
-        ?.map((json) => nt.Notification.fromJson(json))
-        .where((element) =>
-            element.notificationType == NotificationType.ORDER$ACCEPTED ||
-            element.notificationType == NotificationType.ORDER$CANCELLED)
-        .where(
-            (element) => Order.fromJson(element.payload!.value).id == order.id);
-    nt.Notification notification;
+  List<bool> checkOrderStatus(Order order, AppState state) {
+    final id = order.id;
     var error = false;
     var success = false;
-    if (rawData!.isNotEmpty == true) {
-      notification = rawData.first;
-      if (notification.notificationType == NotificationType.ORDER$ACCEPTED) {
-        success = true;
-      } else {
-        error = true;
+
+    if (state is AppNewNotification) {
+      if (state.notification.notificationType ==
+          NotificationType.ORDER$ACCEPTED) {
+        final orderId =
+            Order.fromJson(state.notification.payload!.toJson()).id!;
+
+        success = orderId == id;
+      } else if (state.notification.notificationType ==
+          NotificationType.ORDER$CANCELLED) {
+        final orderId =
+            Order.fromJson(state.notification.payload!.toJson()).id!;
+        error = orderId == id;
       }
     }
+
     return [success, error];
   }
 
@@ -171,12 +171,16 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
               Icon(IconlyLight.location,
                   color: Theme.of(context).colorScheme.primary),
               Expanded(
-                  child: Nunito(
-                text: address?.formattedAddress ?? "",
-                overflow: TextOverflow.ellipsis,
-                color: const Color.fromRGBO(22, 10, 49, 1),
-                fontSize: 16,
-              )),
+                  child: FutureBuilder<String?>(
+                      future: context.getLocationName(address),
+                      builder: (context, snapshot) {
+                        return Nunito(
+                          text: snapshot.data ?? "",
+                          overflow: TextOverflow.ellipsis,
+                          color: const Color.fromRGBO(22, 10, 49, 1),
+                          fontSize: 16,
+                        );
+                      })),
               if (mode == BusinessMode.MOBILE$MODE)
                 TextsButton(
                   color: Theme.of(context).backgroundColor,
@@ -367,88 +371,76 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                                               backgroundColor: Colors.white,
                                               elevation: 8,
                                               builder: (ctx) {
-                                                return StreamBuilder<BoxEvent>(
-                                                    stream: context
-                                                        .app.userSettings!
-                                                        .watch(
-                                                            key: AppBloc
-                                                                .notificationsKey),
-                                                    builder:
-                                                        (context, snapshot) {
-                                                      final status =
-                                                          checkOrderStatus(
-                                                              order);
-                                                      return RequestBottomSheet(
-                                                          success: status[0],
-                                                          error: status[1],
-                                                          waitingText:
-                                                              "Please Hold on! We are requesting now",
-                                                          waitingTextSubTitle:
-                                                              "Apologies for your waiting",
-                                                          waitingButtonText:
-                                                              "REQUESTING...",
-                                                          avator:
-                                                              'assets/images/intro_picture_4.png',
-                                                          displayName: widget
-                                                              .service
-                                                              .business!
-                                                              .businessName!,
-                                                          userSubTitle:
-                                                              "Massage therapist",
-                                                          count: 1000,
-                                                          rating: 3.5,
-                                                          badgeIcon1: const Icon(
-                                                              IconlyLight
-                                                                  .shield_done,
-                                                              color:
-                                                                  Colors.green),
-                                                          badgeIcon2: const Icon(
-                                                              IconlyLight.star,
-                                                              color: Colors
-                                                                  .orange),
-                                                          badgeIcon3: const Icon(
-                                                              IconlyLight
-                                                                  .shield_fail,
-                                                              color:
-                                                                  Colors.red),
-                                                          badgeText1:
-                                                              "${order.business!.acceptance!}%",
-                                                          badgeText2:
-                                                              "${order.business!.owner!.compoundRating!}%",
-                                                          badgeText3:
-                                                              "${order.business!.cancelation!}%",
-                                                          badgeSubText1:
-                                                              "accaptance",
-                                                          badgeSubText2:
-                                                              "rating",
-                                                          badgeSubText3:
-                                                              "cancelation",
-                                                          successButtonText:
-                                                              "CHECK SCHEDULE",
-                                                          successText:
-                                                              "Congratulations",
-                                                          successTextSubTitle:
-                                                              "Please Hold on! We are requesting now",
-                                                          errorButtonText:
-                                                              "Go back",
-                                                          errorText: "Oh Snap!",
-                                                          errorTextSubTitle:
-                                                              "Please Hold on! We are requesting now",
-                                                          onCall: (ctx) async {
-                                                            // TODO only allow calls for accepted orders
-                                                            await launchUrlString(
-                                                                "tel:${order.business!.owner!.phoneNumber}");
-                                                          },
-                                                          onCancel: (ctx) {
-                                                            Navigator.of(ctx)
-                                                                .pop();
-                                                          },
-                                                          onComplete:
-                                                              (ctx, status) {
-                                                            Navigator.of(ctx)
-                                                                .pop();
-                                                          });
-                                                    });
+                                                return BlocBuilder<AppBloc,
+                                                        AppState>(
+                                                    builder: (context, state) {
+                                                  final status =
+                                                      checkOrderStatus(
+                                                          order, state);
+                                                  return RequestBottomSheet(
+                                                      success: status[0],
+                                                      error: status[1],
+                                                      waitingText:
+                                                          "Please Hold on! We are requesting now",
+                                                      waitingTextSubTitle:
+                                                          "Apologies for your waiting",
+                                                      waitingButtonText:
+                                                          "REQUESTING...",
+                                                      avator:
+                                                          'assets/images/intro_picture_4.png',
+                                                      displayName: widget.service
+                                                          .business!.businessName!,
+                                                      userSubTitle:
+                                                          "Massage therapist",
+                                                      count: 1000,
+                                                      rating: 3.5,
+                                                      badgeIcon1: const Icon(
+                                                          IconlyLight
+                                                              .shield_done,
+                                                          color: Colors.green),
+                                                      badgeIcon2: const Icon(
+                                                          IconlyLight.star,
+                                                          color: Colors.orange),
+                                                      badgeIcon3: const Icon(
+                                                          IconlyLight
+                                                              .shield_fail,
+                                                          color: Colors.red),
+                                                      badgeText1:
+                                                          "${order.business!.acceptance!}%",
+                                                      badgeText2:
+                                                          "${order.business!.owner!.compoundRating!}%",
+                                                      badgeText3:
+                                                          "${order.business!.cancelation!}%",
+                                                      badgeSubText1:
+                                                          "accaptance",
+                                                      badgeSubText2: "rating",
+                                                      badgeSubText3:
+                                                          "cancelation",
+                                                      successButtonText:
+                                                          "CHECK SCHEDULE",
+                                                      successText:
+                                                          "Congratulations",
+                                                      successTextSubTitle:
+                                                          "Please Hold on! We are requesting now",
+                                                      errorButtonText:
+                                                          "Go back",
+                                                      errorText: "Oh Snap!",
+                                                      errorTextSubTitle:
+                                                          "Please Hold on! We are requesting now",
+                                                      onCall: (ctx) async {
+                                                        if (status[0]) {
+                                                          await launchUrlString(
+                                                              "tel:${order.business!.owner!.phoneNumber}");
+                                                        }
+                                                      },
+                                                      onCancel: (ctx) {
+                                                        Navigator.of(ctx).pop();
+                                                      },
+                                                      onComplete:
+                                                          (ctx, status) {
+                                                        Navigator.of(ctx).pop();
+                                                      });
+                                                });
                                               });
                                         }
                                       }, onError: () {

@@ -176,7 +176,8 @@ class CompleteProfilePageState extends State<CompleteProfilePage> {
                         onTap: () async {
                           var phoneNumber =
                               context.app.fauth.currentUser?.phoneNumber;
-                          if (phoneNumber == null) {
+                          if (phoneNumber == null ||
+                              phoneNumber.isEmpty == true) {
                             await context.navigator
                                 .pushNamed(AppRoutes.verifyPhoneOTP);
                           }
